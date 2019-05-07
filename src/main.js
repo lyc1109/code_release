@@ -10,6 +10,8 @@ Vue.prototype.$http = http
 import VueBus from 'vue-bus';
 Vue.use(VueBus);
 Vue.config.productionTip = false
+require('@/assets/css/common.scss')
+require('@/../public/font/iconfont/iconfont.css')
 
 // router.beforeEach((to, from, next) => {
 //   // 默认所有路由都需要授权

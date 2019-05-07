@@ -13,9 +13,13 @@
                         <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
                     </el-input>
                 </div>
-                <div class="login_btn">
-                    <el-button type="primary" size="large" class="login_btn">登录</el-button>
-                    <el-button size="large" class="register_btn">注册</el-button>
+                <div class="login_btn" v-if="isLogin">
+                    <el-button class="login_btn" @click="login">登录</el-button>
+                    <el-button class="register_btn" @click="register">注册</el-button>
+                </div>
+                <div class="logined_btn" v-else>
+                    <el-button class="login_btn">个人中心</el-button>
+                    <el-button class="register_btn">退出</el-button>
                 </div>
             </div>
             <nav style="margin-top: 20px;">
@@ -45,15 +49,46 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 阅读推荐-->
+            <article style="margin-top: 20px;">
+                <el-tabs v-model="article" type="border-card" @tab-click="changeArticle(article)">
+                    <el-tab-pane v-for="(item, index) in articleData" :key="index" :label="item.name"
+                                 :name="item.value">
+                        <!--文章-->
+                        <div class="index_article">
+                            <div class="article_list" v-for="(item, index) in articleList" :key="index">
+                                <div class="article_img">
+                                    <img :src="item.imgUrl" alt="">
+                                </div>
+                                <div class="article_info">
+                                    <h3><el-button type="text">{{ item.title }}</el-button></h3>
+                                    <p>{{ item.desc }}</p>
+                                    <div class="article_info_detail">
+                                        <span>发布时间：{{ item.created }}</span>
+                                        <i class="iconai-eye iconfont"></i>
+                                        <span style="margin-left: 5px;">{{ item.watchNum }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
+            </article>
         </div>
         <!--底部-->
         <el-footer class="index_foot">
             Copyright © 2019 二维码发布
         </el-footer>
+
+<!--        登录-->
+        <login :is-show="showLogin" @toggle="toggleLogin" :type="loginType" :title="loginTit"></login>
     </div>
 </template>
 
 <script>
+    import login from '@/views/login/login'
+
     export default {
         name: 'home',
         data() {
@@ -167,7 +202,46 @@
                         url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
                         title: '手机端进入可快速扫码>>>'
                     }
-                ]
+                ],
+                article: 'tj',
+                articleData: [
+                    {name: '阅读推荐', value: 'tj'},
+                    {name: '微商杂谈', value: 'zt'},
+                    {name: '养生之道', value: 'ys'}
+                ],
+                articleList: [
+                    {
+                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
+                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
+                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
+                        created: '2019-05-06',
+                        watchNum: 700
+                    },
+                    {
+                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
+                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
+                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
+                        created: '2019-05-06',
+                        watchNum: 700
+                    },
+                    {
+                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
+                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
+                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
+                        created: '2019-05-06',
+                        watchNum: 700
+                    },
+                    {
+                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
+                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
+                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
+                        created: '2019-05-06',
+                        watchNum: 700
+                    }
+                ],
+                showLogin: false,
+                loginType: '',
+                isLogin: true
             }
         },
         created() {
@@ -194,9 +268,33 @@
             changeTab(val) {
                 console.log(val)
             },
+            // 更多微信群
             moreEWM() {
                 this.$router.push('/')
+            },
+            // 跳转文章
+            changeArticle(val) {
+                console.log(val)
+            },
+            // 控制登录显示隐藏
+            toggleLogin(val) {
+                return val ? this.showLogin = true : this.showLogin = false
+            },
+            // 登录
+            login() {
+                this.loginTit = '登录'
+                this.loginType = 'login'
+                this.showLogin = true
+            },
+            // 注册
+            register() {
+                this.loginTit = '注册'
+                this.loginType = 'register'
+                this.showLogin = true
             }
+        },
+        components: {
+            login
         }
     }
 </script>
@@ -214,10 +312,12 @@
             font-size: 24px;
             flex: 1;
         }
+
         .all_search {
             flex: 2;
         }
-        .login_btn {
+
+        .login_btn, .logined_btn {
             flex: 1;
             text-align: right;
 
@@ -225,6 +325,7 @@
                 border-top-right-radius: 0;
                 border-bottom-right-radius: 0;
             }
+
             .register_btn {
                 border-top-left-radius: 0;
                 border-bottom-left-radius: 0;
@@ -249,7 +350,7 @@
             margin-bottom: 10px;
             cursor: pointer;
 
-            &:hover{
+            &:hover {
                 border-color: #3266cc;
             }
 
@@ -272,6 +373,7 @@
                     /*height: 115px;*/
                 }
             }
+
             span {
                 color: #555;
                 font-size: 12px;
@@ -281,6 +383,68 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
+            }
+        }
+    }
+
+    .index_article {
+        /*padding: 20px;*/
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+
+        .article_list {
+            width: 50%;
+            border-right: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            box-sizing: border-box;
+            display: flex;
+            padding: 10px;
+
+            &:nth-child(even) {
+                border-right: 0 none;
+            }
+            &:nth-child(odd) {
+                padding-left: 0;
+            }
+
+            .article_img {
+                flex: 0 0 180px;
+
+                img {
+                    width: 180px;
+                }
+            }
+            .article_info{
+                margin-left: 10px;
+                width: 300px;
+                position: relative;
+
+                h3{
+                    .el-button {
+                        font-size: 16px;
+                        font-weight: normal;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        width: 100%;
+                        padding: 0;
+                    }
+                }
+                .article_info_detail{
+                    font-size: 12px;
+                    position: absolute;
+                    bottom: 0;
+
+                    span{
+                        margin-right: 10px;
+                    }
+                    .iconai-eye{
+                        color: #ccc;
+                        position: relative;
+                        top: 2px;
+                    }
+                }
             }
         }
     }
