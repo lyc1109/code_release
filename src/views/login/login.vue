@@ -1,18 +1,18 @@
 <template>
     <div>
         <el-dialog :visible.sync="login" :title="title" @close="toggle">
-            <div class="flex" v-if="showType === 'login'">
-                <div class="other_login">
-                    <div class="wx_btn">
-                        <el-button type="success" @click="wxLogin" class="login_btns"><i
-                                class="iconweixin iconfont"></i>微信登录
-                        </el-button>
-                    </div>
-                    <div class="qq_btn">
-                        <el-button type="primary" @click="qqLogin" class="login_btns"><i class="iconicon iconfont"></i>QQ登录
-                        </el-button>
-                    </div>
-                </div>
+            <div v-if="showType === 'login'">
+<!--                <div class="other_login">-->
+<!--                    <div class="wx_btn">-->
+<!--                        <el-button type="success" @click="wxLogin" class="login_btns"><i-->
+<!--                                class="iconweixin iconfont"></i>微信登录-->
+<!--                        </el-button>-->
+<!--                    </div>-->
+<!--                    <div class="qq_btn">-->
+<!--                        <el-button type="primary" @click="qqLogin" class="login_btns"><i class="iconicon iconfont"></i>QQ登录-->
+<!--                        </el-button>-->
+<!--                    </div>-->
+<!--                </div>-->
                 <el-form :model="loginForm" ref="loginForm" :rules="loginRule" label-width="100px">
                     <el-form-item prop="email" label="邮箱">
                         <el-input v-model="loginForm.email" placeholder="请输入邮箱" size="small"></el-input>
@@ -21,7 +21,7 @@
                         <el-input v-model="loginForm.pwd" placeholder="请输入密码" size="small" type="password"></el-input>
                     </el-form-item>
                     <el-form-item prop="forgetPwd" class="text-right">
-                        <el-button type="text" size="small">忘记密码？</el-button>
+                        <el-button type="text" size="small" @click="forgetPwd">忘记密码？</el-button>
                     </el-form-item>
                     <el-form-item prop="loginBtn">
                         <el-button type="primary" @click="success" class="login_btns">登录</el-button>
@@ -33,13 +33,15 @@
                 </el-form>
             </div>
 
-            <register-box v-if="showType === 'register'" @close="close"></register-box>
+            <register-box v-if="showType === 'register'" @close="hide"></register-box>
+            <forgetPwd-box v-if="showType === 'forget'" @close="hide"></forgetPwd-box>
         </el-dialog>
     </div>
 </template>
 
 <script>
     import registerBox from '@/views/login/register'
+    import forgetPwdBox from '@/views/login/changePwd'
 
     export default {
         name: "login",
@@ -117,10 +119,15 @@
             toRegister() {
                 this.showType = 'register'
                 this.title = '注册'
+            },
+            forgetPwd() {
+                this.showType = 'forget'
+                this.title = '忘记密码'
             }
         },
         components: {
-            registerBox
+            registerBox,
+            forgetPwdBox
         }
     }
 </script>

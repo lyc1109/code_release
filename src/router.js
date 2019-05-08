@@ -11,7 +11,10 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: () => import('./views/Home')
+      component: () => import('./views/Home'),
+      meta: {
+        title: '首页'
+      }
     },
     {
       path: '/about',
@@ -20,6 +23,22 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+    },
+    {
+      path: '/area',
+      name: 'area',
+      component: () => import('./views/area'),
+      meta: {
+        title: '地区微信'
+      }
+    },
+    {
+      path: '/group/:id',
+      name: 'groupDetail',
+      component: () => import('./views/groupDetail'),
+      meta: {
+        title: '微信群详情'
+      }
     }
   ]
 })
