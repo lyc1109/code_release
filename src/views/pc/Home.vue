@@ -20,7 +20,7 @@
                                  :name="item.value">
                         <!--文章-->
                         <div class="index_article">
-                            <div class="article_list" v-for="(item, index) in articleList" :key="index">
+                            <div class="article_list" v-for="(item, index) in articleList" :key="index" @click="articleDetail(item.id)">
                                 <div class="article_img">
                                     <img :src="item.imgUrl" alt="">
                                 </div>
@@ -54,8 +54,8 @@
 </template>
 
 <script>
-    import headerBox from '@/components/header'
-    import footerBox from '@/components/footer'
+    import headerBox from '@/components/pc/header'
+    import footerBox from '@/components/pc/footer'
 
     export default {
         name: 'home',
@@ -163,6 +163,7 @@
                 ],
                 articleList: [
                     {
+                        id: '1',
                         imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
                         title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
                         desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
@@ -170,6 +171,7 @@
                         watchNum: 700
                     },
                     {
+                        id: '2',
                         imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
                         title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
                         desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
@@ -177,6 +179,7 @@
                         watchNum: 700
                     },
                     {
+                        id: '3',
                         imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
                         title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
                         desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
@@ -184,6 +187,7 @@
                         watchNum: 700
                     },
                     {
+                        id: '4',
                         imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
                         title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
                         desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
@@ -231,6 +235,10 @@
             // 微信群详情
             groupDetail(id) {
                 this.$router.push(`/group/${id}`)
+            },
+            // 文章详情
+            articleDetail(id) {
+                this.$router.push(`/article/${id}`)
             }
         },
         components: {

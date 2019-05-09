@@ -4,41 +4,84 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
+let pcRouter = [
+  {
+    path: '/',
+    name: 'home',
+    component: () => import('./views/pc/Home'),
+    meta: {
+      title: '首页'
+    }
+  },
+  {
+    path: '/area',
+    name: 'area',
+    component: () => import('./views/pc/area'),
+    meta: {
+      title: '地区微信'
+    }
+  },
+  {
+    path: '/group/:id',
+    name: 'groupDetail',
+    component: () => import('./views/pc/groupDetail'),
+    meta: {
+      title: '微信群详情'
+    }
+  },
+  {
+    path: '/article/:id',
+    name: 'articleDetail',
+    component: () => import('./views/pc/articleDetail'),
+    meta: {
+      title: '文章详情'
+    }
+  },
+  {
+    path: '/person',
+    name: 'person',
+    component: () => import('./views/pc/person/index'),
+    meta: {
+      title: '个人中心'
+    }
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: () => import('./views/pc/search'),
+    meta: {
+      title: '搜索结果'
+    }
+  },
+  {
+    path: '/recharge',
+    name: 'recharge',
+    component: () => import('./views/pc/person/recharge'),
+    meta: {
+      title: '我要充值'
+    }
+  }
+]
+
+let mobileRouter = [
+  {
+    path: '/',
+    name: 'home',
+    component: () => import('./views/mobile/home'),
+    meta: {
+      title: '首页'
+    }
+  }
+]
+let routes
+let reg = /Android|webOS|iPhone|iPod|iPad|BlackBerry/i
+if (reg.test(navigator.userAgent)) {
+  routes = [...mobileRouter]
+} else {
+  routes = [...pcRouter]
+}
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: () => import('./views/Home'),
-      meta: {
-        title: '首页'
-      }
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
-    },
-    {
-      path: '/area',
-      name: 'area',
-      component: () => import('./views/area'),
-      meta: {
-        title: '地区微信'
-      }
-    },
-    {
-      path: '/group/:id',
-      name: 'groupDetail',
-      component: () => import('./views/groupDetail'),
-      meta: {
-        title: '微信群详情'
-      }
-    }
-  ]
+  routes: routes
 })

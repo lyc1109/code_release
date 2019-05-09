@@ -1,7 +1,7 @@
 <template>
     <div class="home">
         <header-box actived="/article"></header-box>
-        <el-breadcrumb :separator-class="el-icon-arrow-right" style="margin-top: 20px;">
+        <el-breadcrumb separator-class="el-icon-arrow-right" style="margin-top: 20px;">
             <el-breadcrumb-item v-for="(item, index) in breadList" :key="index" :to="{ path: item.url }">{{ item.name }}</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="group_main flex">
@@ -78,8 +78,8 @@
 </template>
 
 <script>
-    import headerBox from '@/components/header'
-    import footerBox from '@/components/footer'
+    import headerBox from '@/components/pc/header'
+    import footerBox from '@/components/pc/footer'
 
     export default {
         name: "groupDetail",

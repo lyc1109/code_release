@@ -19,7 +19,7 @@
                      text-color="#fff"
                      active-text-color="#ffd04b"
                      @select="selectNav" router>
-                <el-menu-item v-for="(item, index) in tabList" :key="index" :index="item.url">{{ item.name }}</el-menu-item>
+                <el-menu-item v-for="(item, index) in type === 'basic' ? tabList : personTabList" :key="index" :index="item.url">{{ item.name }}</el-menu-item>
             </el-menu>
         </nav>
         <div class="login_btn" v-if="isLogin">
@@ -27,8 +27,9 @@
             <el-button class="register_btn" @click="register">注册</el-button>
         </div>
         <div class="logined_btn" v-else>
-            <el-button class="login_btn">个人中心</el-button>
-            <el-button class="register_btn">退出</el-button>
+            {{ username }}
+            <el-button class="login_btn" @click="toPerson">个人中心</el-button>
+            <el-button class="register_btn" @click="quit">退出</el-button>
         </div>
 
         <!--        登录-->
@@ -37,7 +38,8 @@
 </template>
 
 <script>
-    import login from '@/views/login/login'
+    import login from '@/views/pc/login/login'
+    import https from '@/api/index'
 
     export default {
         name: 'HelloWorld',
@@ -45,6 +47,10 @@
             actived: {
                 type: String,
                 default: '/'
+            },
+            type: {
+                type: String,
+                default: 'basic'
             }
         },
         data() {
@@ -65,10 +71,17 @@
                     // {name: '微信文章'},
                     // {name: '红群'}
                 ],
-                isLogin: true,
+                personTabList: [
+                    { name: '个人中心', url: '/person' },
+                    { name: '网站首页', url: '/' },
+                    { name: '基本资料', url: '/basic' },
+                    { name: '会员公告', url: '/vip' }
+                ],
+                isLogin: false,
                 showLogin: false,
                 loginType: '',
-                loginTit: ''
+                loginTit: '',
+                username: ''
             }
         },
         watch: {
@@ -76,7 +89,15 @@
                 this.activeNav = val
             }
         },
+        mounted() {
+            this.fetchData()
+        },
         methods: {
+            fetchData() {
+                https.getUserInfo().then((res) => {
+                    console.log(res)
+                })
+            },
             // 搜索
             search() {
                 console.log('搜索')
@@ -104,6 +125,14 @@
             // 控制登录显示隐藏
             toggleLogin(val) {
                 return val ? this.showLogin = true : this.showLogin = false
+            },
+            // 个人中心
+            toPerson() {
+                this.$router.push(`/person`)
+            },
+            // 退出
+            quit() {
+                console.log('已退出')
             }
         },
         components: {
@@ -120,7 +149,7 @@
         .logo {
             color: #333;
             font-size: 24px;
-            flex: 1;
+            flex: 0.7;
         }
 
         .all_search {
@@ -128,7 +157,7 @@
         }
 
         .login_btn, .logined_btn {
-            flex: 1;
+            flex: 1.2;
             text-align: right;
 
             .login_btn {

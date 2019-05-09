@@ -24,7 +24,7 @@
                         <el-button type="text" size="small" @click="forgetPwd">忘记密码？</el-button>
                     </el-form-item>
                     <el-form-item prop="loginBtn">
-                        <el-button type="primary" @click="success" class="login_btns">登录</el-button>
+                        <el-button type="primary" @click="success('loginForm')" class="login_btns">登录</el-button>
                     </el-form-item>
                     <el-form-item prop="register" class="text-right">
                         <span>没有账号？点击</span>
@@ -40,8 +40,8 @@
 </template>
 
 <script>
-    import registerBox from '@/views/login/register'
-    import forgetPwdBox from '@/views/login/changePwd'
+    import registerBox from '@/views/pc/login/register'
+    import forgetPwdBox from '@/views/pc/login/changePwd'
 
     export default {
         name: "login",
@@ -104,18 +104,23 @@
                 this.$emit('close')
             },
             // 确定
-            success() {
+            success(formName) {
+                this.$refs.formName.validate((valid) => {
+                    if (valid) {
+                        this.$message.success('登录成功')
+                    }
+                })
                 this.toggle()
                 this.$emit('success')
             },
             // 微信登录
-            wxLogin() {
-                console.log('微信登录')
-            },
-            // QQ登录
-            qqLogin() {
-                console.log('QQ登录')
-            },
+            // wxLogin() {
+            //     console.log('微信登录')
+            // },
+            // // QQ登录
+            // qqLogin() {
+            //     console.log('QQ登录')
+            // },
             toRegister() {
                 this.showType = 'register'
                 this.title = '注册'

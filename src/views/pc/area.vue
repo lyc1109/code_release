@@ -27,8 +27,8 @@
 </template>
 
 <script>
-    import headerBox from '@/components/header'
-    import footerBox from '@/components/footer'
+    import headerBox from '@/components/pc/header'
+    import footerBox from '@/components/pc/footer'
 
     export default {
         name: "area",

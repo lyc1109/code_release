@@ -12,6 +12,9 @@ Vue.use(VueBus);
 Vue.config.productionTip = false
 require('@/assets/css/common.scss')
 require('@/../public/font/iconfont/iconfont.css')
+import Vant from 'vant'
+import 'vant/lib/index.css'
+Vue.use(Vant)
 
 // router.beforeEach((to, from, next) => {
 //   // 默认所有路由都需要授权
@@ -38,7 +41,6 @@ require('@/../public/font/iconfont/iconfont.css')
 //     next()
 //   }
 // })
-
 router.afterEach((route) => {
   if(route.meta.title) {
     document.title = route.meta.title;
