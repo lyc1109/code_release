@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog :visible.sync="login" :title="title" @close="toggle">
+        <el-dialog :visible.sync="login" :title="title" @close="toggle" width="30%">
             <div v-if="showType === 'login'">
 <!--                <div class="other_login">-->
 <!--                    <div class="wx_btn">-->
@@ -13,12 +13,12 @@
 <!--                        </el-button>-->
 <!--                    </div>-->
 <!--                </div>-->
-                <el-form :model="loginForm" ref="loginForm" :rules="loginRule" label-width="100px">
-                    <el-form-item prop="email" label="邮箱">
-                        <el-input v-model="loginForm.email" placeholder="请输入邮箱" size="small"></el-input>
+                <el-form :model="loginForm" ref="loginForm" :rules="loginRule" label-width="70px">
+                    <el-form-item prop="principal" label="邮箱">
+                        <el-input v-model="loginForm.principal" placeholder="请输入邮箱" size="small"></el-input>
                     </el-form-item>
-                    <el-form-item prop="pwd" label="密码">
-                        <el-input v-model="loginForm.pwd" placeholder="请输入密码" size="small" type="password"></el-input>
+                    <el-form-item prop="pass" label="密码">
+                        <el-input v-model="loginForm.pass" placeholder="请输入密码" size="small" type="password"></el-input>
                     </el-form-item>
                     <el-form-item prop="forgetPwd" class="text-right">
                         <el-button type="text" size="small" @click="forgetPwd">忘记密码？</el-button>
@@ -33,7 +33,7 @@
                 </el-form>
             </div>
 
-            <register-box v-if="showType === 'register'" @close="hide"></register-box>
+            <register-box v-if="showType === 'register'" @close="hide" @success="successReg"></register-box>
             <forgetPwd-box v-if="showType === 'forget'" @close="hide"></forgetPwd-box>
         </el-dialog>
     </div>
@@ -70,12 +70,12 @@
             return {
                 login: this.isShow,
                 loginForm: {
-                    email: '',
-                    pwd: ''
+                    principal: '',
+                    pass: ''
                 },
                 loginRule: {
-                    email: [{required: true, message: '请输入邮箱', trigger: 'blur'}],
-                    pwd: [{required: true, validator: validPwd, trigger: 'blur'}]
+                    principal: [{required: true, message: '请输入邮箱', trigger: 'blur'}],
+                    pass: [{required: true, validator: validPwd, trigger: 'blur'}]
                 },
                 showType: this.type
             }
@@ -99,19 +99,26 @@
                 this.$emit('toggle', false)
             },
             // 取消
-            hide() {
+            hide(val) {
+                console.log(val)
                 this.toggle()
-                this.$emit('close')
+                this.$emit('success', val)
             },
             // 确定
             success(formName) {
-                this.$refs.formName.validate((valid) => {
+                this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.$message.success('登录成功')
+                        this.$api.login(this.loginForm)
+                            .then((res) => {
+                                if (res) {
+                                    sessionStorage.setItem('user', JSON.stringify(res.user))
+                                    this.$message.success('登录成功')
+                                    this.toggle()
+                                    this.$emit('success', true)
+                                }
+                            })
                     }
                 })
-                this.toggle()
-                this.$emit('success')
             },
             // 微信登录
             // wxLogin() {
@@ -128,6 +135,9 @@
             forgetPwd() {
                 this.showType = 'forget'
                 this.title = '忘记密码'
+            },
+            successReg(val) {
+                this.$emit('success', val)
             }
         },
         components: {

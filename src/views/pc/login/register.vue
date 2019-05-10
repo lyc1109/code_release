@@ -1,17 +1,17 @@
 <template>
     <div style="padding-right: 20px;">
         <el-form :model="registerForm" ref="register" :rules="registerRule" label-width="100px">
-            <el-form-item prop="email" label="邮箱">
-                <el-input v-model="registerForm.email" placeholder="请输入邮箱" size="small" @change="changeEmail"></el-input>
+            <el-form-item prop="mail" label="邮箱">
+                <el-input v-model="registerForm.mail" placeholder="请输入邮箱" size="small" @change="changeEmail"></el-input>
             </el-form-item>
             <el-form-item prop="code" label="验证码" class="code_form">
-                <el-input v-model="registerForm.code" placeholder="请输入验证码" size="small" class="code_input" type="number"></el-input>
-                <el-button size="mini" style="margin-left: 10px;">
-                    <img src="https://weixinqun.com/validatecode?0.4172283221113815" alt="">
-                </el-button>
+                <el-input v-model="registerForm.code" placeholder="请输入验证码" size="small" class="code_input"></el-input>
+<!--                <el-button size="mini" style="margin-left: 10px;">-->
+                    <img :src="codeUrl" alt="" @click="refreshImg" class="code_img">
+<!--                </el-button>-->
             </el-form-item>
-            <el-form-item prop="pwd" label="密码">
-                <el-input v-model="registerForm.pwd" type="password" placeholder="请输入密码" size="small"></el-input>
+            <el-form-item prop="pass" label="密码">
+                <el-input v-model="registerForm.pass" type="password" placeholder="请输入密码" size="small"></el-input>
             </el-form-item>
             <el-form-item prop="confirmPwd" label="确认密码">
                 <el-input v-model="registerForm.confirmPwd" type="password" placeholder="请确认密码" size="small"></el-input>
@@ -34,7 +34,7 @@
                 else callback()
             }
             let confirmPwd = (rule, value, callback) => {
-                if (value !== this.registerForm.pwd) {
+                if (value !== this.registerForm.pass) {
                     callback(new Error('两次输入的密码不一致'))
                 } else if (!value) {
                     callback(new Error('请再次输入密码'))
@@ -53,28 +53,30 @@
             }
             return {
                 registerForm: {
-                    email: '',
+                    mail: '',
                     code: '',
-                    pwd: '',
+                    pass: '',
                     confirmPwd: ''
                 },
                 registerRule: {
-                    email: [
+                    mail: [
                         {required: true, message: '请输入邮箱', trigger: 'blur'},
                         {type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change']}
                     ],
                     code: [{required: true, validator: validCode, trigger: 'blur'}],
-                    pwd: [
+                    pass: [
                         {required: true, validator: validPwd, trigger: 'blur'}
                     ],
                     confirmPwd: [
                         {required: true, validator: confirmPwd, trigger: 'blur'}
                     ]
                 },
-                disabled: true
+                disabled: true,
+                codeUrl: `/api/img/verification?${Math.random()}`
             }
         },
         methods: {
+            // 改邮箱时
             changeEmail(val) {
                 let reg = new RegExp('^[a-z0-9]+([._\\\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$')
                 if (reg.test(val)) {
@@ -83,13 +85,25 @@
                     this.disabled = true
                 }
             },
+            // 注册成功
             success(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.$emit('close', false)
-                        this.$message.success('注册成功')
+                        this.$api.register(this.registerForm)
+                            .then((res) => {
+                                if (res) {
+                                    this.$emit('success', true)
+                                    this.$emit('close', false)
+                                    this.$message.success('注册成功')
+                                }
+                            })
                     }
                 })
+            },
+            // 刷新图片验证码
+            refreshImg() {
+                const hash = Math.random()
+                this.codeUrl = `/api/img/verification?${hash}`
             }
         }
     }
@@ -104,8 +118,14 @@
             display: flex;
 
             .code_input{
-                flex: 0 0 76%;
+                flex: 0 0 60%;
             }
         }
+    }
+    .code_img{
+        width: 80px;
+        height: 30px;
+        margin: 4px 0 0 5px;
+        border: 1px solid #ececec;
     }
 </style>

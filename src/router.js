@@ -7,6 +7,10 @@ Vue.use(Router)
 let pcRouter = [
   {
     path: '/',
+    redirect: '/home'
+  },
+  {
+    path: '/home',
     name: 'home',
     component: () => import('./views/pc/Home'),
     meta: {
@@ -42,7 +46,8 @@ let pcRouter = [
     name: 'person',
     component: () => import('./views/pc/person/index'),
     meta: {
-      title: '个人中心'
+      title: '个人中心',
+      requireAuth: true
     }
   },
   {
@@ -58,7 +63,8 @@ let pcRouter = [
     name: 'recharge',
     component: () => import('./views/pc/person/recharge'),
     meta: {
-      title: '我要充值'
+      title: '我要充值',
+      requireAuth: true
     }
   }
 ]

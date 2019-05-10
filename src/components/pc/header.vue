@@ -33,7 +33,7 @@
         </div>
 
         <!--        登录-->
-        <login :is-show="showLogin" @toggle="toggleLogin" :type="loginType" :title="loginTit"></login>
+        <login :is-show="showLogin" @toggle="toggleLogin" :type="loginType" :title="loginTit" @success="successLogin"></login>
     </header>
 </template>
 
@@ -77,7 +77,7 @@
                     { name: '基本资料', url: '/basic' },
                     { name: '会员公告', url: '/vip' }
                 ],
-                isLogin: false,
+                isLogin: true,
                 showLogin: false,
                 loginType: '',
                 loginTit: '',
@@ -94,9 +94,15 @@
         },
         methods: {
             fetchData() {
-                https.getUserInfo().then((res) => {
-                    console.log(res)
-                })
+                const token = sessionStorage.getItem('user')
+                if (token && token != null && token != '') {
+                    this.isLogin = false
+                } else {
+                    this.isLogin = true
+                }
+                // https.getUserInfo().then((res) => {
+                //     console.log(res)
+                // })
             },
             // 搜索
             search() {
@@ -132,7 +138,26 @@
             },
             // 退出
             quit() {
-                console.log('已退出')
+                this.$confirm('确定退出吗？')
+                    .then(() => {
+                        this.$api.logout().then((res) => {
+                            if (res) {
+                                this.isLogin = false
+                                setTimeout(() => {
+                                    this.$router.go(0)
+                                }, 1000)
+                                sessionStorage.removeItem('user')
+                                this.$message.success('已退出登录')
+                            }
+                        })
+                    })
+            },
+            // 登录成功
+            successLogin(val) {
+                setTimeout(() => {
+                    this.$router.go(0)
+                }, 1000)
+                this.showLogin = false
             }
         },
         components: {
