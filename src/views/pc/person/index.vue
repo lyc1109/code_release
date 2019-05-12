@@ -2,7 +2,7 @@
     <div class="home">
         <header-box actived="/person" type="person"></header-box>
         <el-row class="article_main">
-            <el-col :span="6" :offset="1">
+            <el-col :span="6" style="margin-right: 20px;">
                 <div class="user_avatar">
                     <img src="../../../assets/images/avatar.jpg" alt="">
                 </div>
@@ -25,8 +25,46 @@
                     </el-submenu>
                 </el-menu>
             </el-col>
-            <el-col :span="18">
-                
+            <el-col :span="17">
+                <div class="person_index" v-if="defaultVal === ''">
+                    <el-tabs v-model="personTab" type="card" @tab-click="changePersonTab">
+                        <el-tab-pane v-for="(item, index) in personTabList" :key="index" :label="item.name" :name="item.value"></el-tab-pane>
+                    </el-tabs>
+
+                    <!--发布/文章-->
+                    <div class="publish_list" v-if="personTab === 'fb' || personTab === 'wz'">
+                        <el-select v-model="listName" placeholder="请选择栏目">
+                            <el-option v-for="(item, index) in listNameList" :key="index" :label="item.name" :value="item.id"></el-option>
+                        </el-select>
+                        <div class="article_list" v-for="(item, index) in articleList" :key="index" @click="articleDetail(item.id)">
+                            <div class="article_img">
+                                <img :src="item.imgUrl" alt="">
+                            </div>
+                            <div class="article_info">
+                                <h3><el-button type="text">{{ item.title }}</el-button></h3>
+                                <p>{{ item.desc }}</p>
+                                <div class="article_info_detail">
+                                    <span>微信群</span>
+                                    <span>发布时间：{{ item.created }}</span>
+                                    <i class="iconai-eye iconfont"></i>
+                                    <span style="margin-left: 5px;">{{ item.watchNum }}</span>
+                                </div>
+                            </div>
+                            <div class="share">
+                                <el-button type="text">编辑</el-button>
+                                <el-button type="text" style="color: red;">删除</el-button>
+                            </div>
+                        </div>
+                        <el-pagination :current-page.sync="page.current"
+                                       :page-size="page.size"
+                                       :total="page.total"
+                                       background
+                                       layout="total, prev, pager, next, jumper"
+                                       @size-change="changeSize"
+                                       @current-change="changePage" style="float: right;margin-top: 10px;"></el-pagination>
+                    </div>
+                    <div class="article_list"></div>
+                </div>
             </el-col>
         </el-row>
         <footer-box></footer-box>
@@ -61,7 +99,77 @@
                     { name: '明细纪录', value: 'mx' },
                     { name: '金币规则', value: 'gz' }
                 ],
-                defaultOpen: [ 'content', 'person' ]
+                defaultOpen: [ 'content', 'person' ],
+                personTab: 'fb',
+                personTabList: [
+                    { name: '发布', value: 'fb' },
+                    { name: '推广', value: 'tg' },
+                    { name: '文章', value: 'wz' }
+                ],
+                articleList: [
+                    {
+                        id: '1',
+                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
+                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
+                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
+                        created: '2019-05-06',
+                        watchNum: 700
+                    },
+                    {
+                        id: '2',
+                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
+                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
+                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
+                        created: '2019-05-06',
+                        watchNum: 700
+                    },
+                    {
+                        id: '3',
+                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
+                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
+                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
+                        created: '2019-05-06',
+                        watchNum: 700
+                    },
+                    {
+                        id: '4',
+                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
+                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
+                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
+                        created: '2019-05-06',
+                        watchNum: 700
+                    }
+                ],
+                page: {
+                    current: 1,
+                    size: 5,
+                    total: 10
+                },
+                listName: '',
+                listNameList: [
+                    { name: '妈妈群', id: 'mm' },
+                    { name: '粉丝群', id: 'fs' }
+                ]
+            }
+        },
+        methods: {
+            // 筛选首页文章
+            changePersonTab(val) {
+                console.log(val)
+            },
+            // 文章详情
+            articleDetail(id) {
+                this.$router.push(`/article/${id}`)
+            },
+            // 修改文章每页展示的条数
+            changeSize(val) {
+                this.page.size = val
+                this.fetchData()
+            },
+            // 修改文章页数
+            changePage(val) {
+                this.page.current = val
+                this.fetchData()
             }
         },
         components: {
@@ -103,6 +211,74 @@
             }
             p {
                 font-size: 16px;
+            }
+        }
+    }
+    .publish_list {
+        /*padding: 20px;*/
+        /*display: flex;*/
+        flex-wrap: wrap;
+        width: 100%;
+
+        .article_list {
+            /*width: 50%;*/
+            /*border-right: 1px solid #eee;*/
+            border-bottom: 1px solid #eee;
+            box-sizing: border-box;
+            display: flex;
+            padding: 10px 0;
+            position: relative;
+
+            /*&:nth-child(even) {*/
+            /*    border-right: 0 none;*/
+            /*}*/
+            /*&:nth-child(odd) {*/
+            /*    padding-left: 0;*/
+            /*}*/
+
+            .article_img {
+                flex: 0 0 180px;
+
+                img {
+                    width: 180px;
+                }
+            }
+            .article_info{
+                margin-left: 10px;
+                /*width: 300px;*/
+                position: relative;
+
+                h3{
+                    .el-button {
+                        font-size: 16px;
+                        font-weight: normal;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        width: 100%;
+                        padding: 0;
+                        text-align: left;
+                    }
+                }
+                .article_info_detail{
+                    font-size: 12px;
+                    position: absolute;
+                    bottom: 0;
+
+                    span{
+                        margin-right: 10px;
+                    }
+                    .iconai-eye{
+                        color: #ccc;
+                        position: relative;
+                        top: 2px;
+                    }
+                }
+            }
+            .share{
+                position: absolute;
+                bottom: 10px;
+                right: 0;
             }
         }
     }
