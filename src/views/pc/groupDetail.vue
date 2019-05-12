@@ -19,60 +19,58 @@
                 <p>{{ groupData.desc }}</p>
                 <div class="main_group_info flex">
                     <div class="main_group_info_left">
-                        <i class="iconfont"></i>
+                        <i class="iconfont iconsuozaixingye"></i>
                         <span>行业：</span>
                         <span>{{ groupData.trade }}</span>
                     </div>
                     <div class="main_group_info_right">
-                        <i class="iconfont"></i>
+                        <i class="iconfont icondingwei"></i>
                         <span>地区：</span>
                         <span>{{ groupData.area }}</span>
                     </div>
                 </div>
                 <div class="main_group_info flex">
                     <div class="main_group_info_left">
-                        <i class="iconfont"></i>
+                        <i class="iconfont iconshouji"></i>
+                        <span>手机：</span>
+                        <span>{{ groupData.mobile }}</span>
+                    </div>
+                    <div class="main_group_info_right">
+                        <i class="iconfont iconshijian"></i>
                         <span>时间：</span>
                         <span>{{ groupData.created }}</span>
-                    </div>
-                    <div class="main_group_info_right">
-                        <i class="iconfont"></i>
-                        <span>标签：</span>
-                        <span>{{ groupData.tag }}</span>
-                    </div>
-                </div>
-                <div class="main_group_info flex">
-                    <div class="main_group_info_left">
-                        <i class="iconfont"></i>
-                        <span>微信号：</span>
-                        <span>{{ groupData.wechat }}</span>
-                    </div>
-                    <div class="main_group_info_right">
-                        <i class="iconfont"></i>
-                        <span>热度：</span>
-                        <span>{{ groupData.hot }}</span>
                     </div>
                 </div>
                 <div class="main_group_action flex">
                     <div>
-                        <div class="iconfont"></div>
+                        <div class="iconfont iconzan"></div>
                         <p>{{ groupData.like }}个赞</p>
                     </div>
                     <div>
-                        <div class="iconfont"></div>
-                        <p>{{ groupData.tread }}次踩</p>
+                        <div class="iconfont iconzizhutuiguang"></div>
+                        <p>{{ groupData.tread }}次推广</p>
                     </div>
                     <div>
-                        <div class="iconfont"></div>
-                        <p>分享</p>
-                    </div>
-                    <div>
-                        <div class="iconfont"></div>
+                        <div class="iconfont iconshouji"></div>
                         <p>手机端</p>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!--热门微信群-->
+        <el-tabs v-model="hotGroup">
+            <el-tab-pane label="热门微信群" name="hot">
+                <div class="wxq">
+                    <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)">
+                        <div>
+                            <img :src="item.url">
+                        </div>
+                        <span>{{ item.title }}</span>
+                    </div>
+                </div>
+            </el-tab-pane>
+        </el-tabs>
         <footer-box style="margin-top: 20px;"></footer-box>
     </div>
 </template>
@@ -107,7 +105,90 @@
                     { name: '微信群', url: '/' },
                     { name: '创业群', url: '/' },
                     { name: '积分宝群', url: this.$route.path }
-                ]
+                ],
+                ewmList: [
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>'
+                    }
+                ],
+                hotGroup: 'hot'
             }
         },
         methods: {
@@ -117,6 +198,10 @@
                 })
                 data.btnType = 'primary'
                 return data.name.includes('群主') ? this.btnType = 'qz' : this.btnType = 'q'
+            },
+            // 微信群详情
+            groupDetail(id) {
+                this.$router.push(`/group/${id}`)
             }
         },
         components: {
@@ -131,8 +216,8 @@
         margin-top: 20px;
 
         .group_left{
-            text-align: center;
-            flex: 1;
+            /*text-align: center;*/
+            flex: 0.6;
 
             .type_img{
                 margin-top: 10px;
@@ -146,9 +231,10 @@
             flex: 2;
 
             h3{
-                text-align: center;
+                /*text-align: center;*/
                 border-bottom: 1px dashed #eee;
                 line-height: 40px;
+                font-size: 24px;
             }
             &>p{
                 font-size: 14px;
@@ -157,19 +243,98 @@
                 margin-bottom: 20px;
             }
             .main_group_info{
+                &:nth-child(3){
+                    margin-bottom: 10px;
+                }
                 .main_group_info_left, .main_group_info_right{
                     flex: 1;
                     line-height: 30px;
-                    padding-left: 50px;
+                    /*padding-left: 50px;*/
+
+                    .iconfont{
+                        margin-right: 8px;
+                    }
+                }
+
+                .iconsuozaixingye{
+                    color: #4ac14a;
+                }
+                .icondingwei{
+                    color: #d42e2e;
+                }
+                .iconshouji{
+                    color: #2380e0;
+                }
+                .iconshijian{
+                    color: #f3cb5b;
                 }
             }
             .main_group_action{
                 margin: 10px 0;
-                justify-content: center;
+                padding: 5% 15%;
+                /*justify-content: center;*/
 
                 &>div{
-                    margin: 0 10px;
+                    margin: 0 30px;
+
+                    .iconfont{
+                        font-size: 36px;
+                        color: #ff3265;
+                    }
+                    p{
+                        margin-top: 10px;
+                    }
                 }
+            }
+        }
+    }
+    .wxq {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+
+        .wxq_box {
+            width: 10.985%;
+            text-align: center;
+            box-sizing: border-box;
+            margin-right: 5%;
+            margin-bottom: 10px;
+            cursor: pointer;
+
+            &:hover {
+                border-color: #3266cc;
+            }
+
+            & > last-child {
+                margin-right: 0;
+            }
+
+            & > div {
+                width: 90%;
+                height: 0;
+                padding: 8px;
+                padding-bottom: 100%;
+                position: relative;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+
+                img {
+                    /*width: 100%;*/
+                    /*height: 100%;*/
+                    /*width: 115px;*/
+                    /*height: 115px;*/
+                }
+            }
+
+            span {
+                color: #555;
+                font-size: 12px;
+                margin-top: 8px;
+                display: inline-block;
+                width: 90%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
         }
     }

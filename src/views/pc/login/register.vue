@@ -92,6 +92,7 @@
                         this.$api.register(this.registerForm)
                             .then((res) => {
                                 if (res) {
+                                    sessionStorage.setItem('user', JSON.stringify(res.user))
                                     this.$emit('success', true)
                                     this.$emit('close', false)
                                     this.$message.success('注册成功')
