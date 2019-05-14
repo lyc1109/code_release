@@ -16,7 +16,7 @@ import VueBus from 'vue-bus';
 Vue.use(VueBus);
 Vue.config.productionTip = false
 require('@/assets/css/common.scss')
-require('@/../public/font/iconfont/iconfont.css')
+require('@/../public/fonts/iconfont/iconfont.css')
 import Vant from 'vant'
 import 'vant/lib/index.css'
 

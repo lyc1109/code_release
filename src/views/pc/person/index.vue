@@ -14,18 +14,19 @@
                     </div>
                 </div>
 
-                <el-menu :default-active="defaultVal" mode="vertical" background-color="#545c64" active-text-color="#ffd04b" text-color="#fff" :default-openeds="defaultOpen">
+                <el-menu :default-active="defaultVal" mode="vertical" background-color="#545c64" active-text-color="#ffd04b" text-color="#fff" :default-openeds="defaultOpen" @select="changeMenu">
                     <el-submenu index="content">
                         <template slot="title">内容管理</template>
                         <el-menu-item v-for="(item, index) in contentList" :key="index" :index="item.value">{{ item.name }}</el-menu-item>
                     </el-submenu>
                     <el-submenu index="person">
                         <template slot="title">个人中心</template>
-                        <el-menu-item v-for="(item, index) in personList" :key="index" :index="item.value" router>{{ item.name }}</el-menu-item>
+                        <el-menu-item v-for="(item, index) in personList" :key="index" :index="item.value">{{ item.name }}</el-menu-item>
                     </el-submenu>
                 </el-menu>
             </el-col>
             <el-col :span="17">
+                <!--个人中心首页-->
                 <div class="person_index" v-if="defaultVal === ''">
                     <el-tabs v-model="personTab" type="card" @tab-click="changePersonTab">
                         <el-tab-pane v-for="(item, index) in personTabList" :key="index" :label="item.name" :name="item.value"></el-tab-pane>
@@ -63,8 +64,44 @@
                                        @size-change="changeSize"
                                        @current-change="changePage" style="float: right;margin-top: 10px;"></el-pagination>
                     </div>
-                    <div class="article_list"></div>
+                    <div class="article_list" v-if="personTab === 'tg'">
+                        <el-select v-model="articleVal" placeholder="请选择栏目">
+                            <el-option v-for="(item, index) in articleTypeList" :key="index" :label="item.name" :value="item.id"></el-option>
+                        </el-select>
+                        <div class="wxq">
+                            <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)">
+                                <div>
+                                    <img :src="item.url">
+                                </div>
+                                <h5>{{ item.title }}</h5>
+                                <span>推广{{ item.spread }}次, 赚取{{ item.money }}金币</span>
+                                <span @click="delArticle(item)">删除</span>
+                            </div>
+                        </div>
+                        <el-pagination :current-page.sync="page.current"
+                                       :page-size="page.articleSize"
+                                       :total="page.total"
+                                       background
+                                       layout="total, prev, pager, next, jumper"
+                                       @size-change="changeArticleSize"
+                                       @current-change="changeArticleCurrent" style="float: right;margin-top: 10px;margin-bottom: 10px;"></el-pagination>
+                    </div>
                 </div>
+
+                <!--发布编辑-->
+                <publish-box
+                        v-if="defaultVal === 'wxq' || defaultVal === 'gzh' || defaultVal === 'gr' || defaultVal === 'qt'" :types="defaultVal" @jump="getVal">
+                </publish-box>
+                <!--发布文章-->
+                <publish-article v-if="defaultVal === 'wz'"></publish-article>
+                <!--资料-->
+                <profile-box v-if="defaultVal === 'zl'"></profile-box>
+                <!--充值-->
+                <recharge-box v-if="defaultVal === 'cz'"></recharge-box>
+                <!--明细-->
+                <record-box v-if="defaultVal === 'mx'"></record-box>
+                <!--规则-->
+                <rule-box v-if="defaultVal === 'gz'"></rule-box>
             </el-col>
         </el-row>
         <footer-box></footer-box>
@@ -74,6 +111,12 @@
 <script>
     import headerBox from '@/components/pc/header'
     import footerBox from '@/components/pc/footer'
+    import publishBox from '@/views/pc/person/publish'
+    import publishArticle from '@/views/pc/person/publishArticle'
+    import profileBox from '@/views/pc/person/profile'
+    import rechargeBox from '@/views/pc/person/recharge'
+    import recordBox from '@/views/pc/person/record'
+    import ruleBox from '@/views/pc/person/rule'
 
     export default {
         name: "person",
@@ -89,7 +132,7 @@
                 contentList: [
                     { name: '发布微信群', value: 'wxq' },
                     { name: '发布公众号', value: 'gzh' },
-                    { name: '发布个人微信', value: 'wxh' },
+                    { name: '发布个人微信', value: 'gr' },
                     { name: '发布文章', value: 'wz' },
                     { name: '发布其他', value: 'qt' }
                 ],
@@ -143,16 +186,149 @@
                 page: {
                     current: 1,
                     size: 5,
+                    articleSize: 10,
                     total: 10
                 },
                 listName: '',
                 listNameList: [
                     { name: '妈妈群', id: 'mm' },
                     { name: '粉丝群', id: 'fs' }
-                ]
+                ],
+                ewmList: [
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>'
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    },
+                    {
+                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
+                        title: '手机端进入可快速扫码>>>',
+                        spread: 12,
+                        money: 50
+                    }
+                ],
+                articleVal: '',
+                articleTypeList: []
             }
         },
+        created() {
+            this.fetchData()
+        },
         methods: {
+            // 初始化数据
+            fetchData() {
+                if (this.$route.query.type) {
+                    this.defaultVal = this.$route.query.type
+                }
+                console.log('初始化数据')
+            },
             // 筛选首页文章
             changePersonTab(val) {
                 console.log(val)
@@ -170,11 +346,56 @@
             changePage(val) {
                 this.page.current = val
                 this.fetchData()
+            },
+            // 删除推广文章
+            delArticle(data) {
+                this.$confirm('确定删除此推广文章？')
+                    .then(() => {
+                        this.$message.success('删除成功')
+                        this.fetchData()
+                    })
+            },
+            // 修改文章每页展示的条数
+            changeArticleSize(val) {
+                this.page.articleSize = val
+                this.fetchData()
+            },
+            // 修改文章页数
+            changeArticleCurrent(val) {
+                this.page.current = val
+                this.fetchData()
+            },
+            // 修改menu
+            changeMenu(val) {
+                this.defaultVal = val
+                const obj = this.contentList.filter((value) => {
+                    return this.defaultVal === value.value
+                })
+                const obj1 = this.personList.filter((value) => {
+                    return this.defaultVal === value.value
+                })
+                console.log(obj)
+                this.$router.replace({
+                    path: this.$route.path,
+                    query: {
+                        title: obj.length > 0 ? obj[0].name : obj1[0].name,
+                        type: this.defaultVal
+                    }
+                })
+            },
+            getVal(obj) {
+                this.defaultVal = obj.type
             }
         },
         components: {
             headerBox,
-            footerBox
+            footerBox,
+            publishBox,
+            publishArticle,
+            profileBox,
+            rechargeBox,
+            recordBox,
+            ruleBox
         }
     }
 </script>
@@ -279,6 +500,63 @@
                 position: absolute;
                 bottom: 10px;
                 right: 0;
+            }
+        }
+    }
+    .wxq {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+
+        .wxq_box {
+            width: 16.985%;
+            text-align: center;
+            box-sizing: border-box;
+            margin-right: 3%;
+            margin-bottom: 10px;
+            cursor: pointer;
+
+            &:hover {
+                border-color: #3266cc;
+            }
+
+            & > last-child {
+                margin-right: 0;
+            }
+
+            & > div {
+                width: 90%;
+                height: 0;
+                padding: 8px;
+                padding-bottom: 100%;
+                position: relative;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+
+                img {
+                    /*width: 100%;*/
+                    /*height: 100%;*/
+                    /*width: 115px;*/
+                    /*height: 115px;*/
+                }
+            }
+
+            h5 {
+                color: #333;
+                font-size: 16px;
+                margin-top: 8px;
+                display: inline-block;
+                width: 90%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            span{
+                color: #888;
+                font-size: 12px;
+                margin-top: 5px;
+                display: inline-block;
+                width: 100%;
             }
         }
     }

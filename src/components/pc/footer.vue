@@ -17,5 +17,6 @@
         text-align: center;
         font-size: 14px;
         color: #555;
+        margin-top: 30px;
     }
 </style>

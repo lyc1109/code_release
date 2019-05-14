@@ -88,6 +88,7 @@ if (reg.test(navigator.userAgent)) {
 }
 export default new Router({
   mode: 'history',
-  base: process.env.BASE_URL,
+  // base: '/code',
+  base: process.env.VUE_APP_BASE_URL,
   routes: routes
 })
