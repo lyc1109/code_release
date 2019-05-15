@@ -22,13 +22,18 @@ import 'vant/lib/index.css'
 
 Vue.use(Vant)
 
+let reg = /Android|webOS|iPhone|iPod|iPad|BlackBerry/i
+
 router.beforeEach((to, from, next) => {
     if (to.matched.some(res => res.meta.requireAuth)) {
         const token = sessionStorage.getItem('user')
         if (!token || token == null || token == '') {
             Element.MessageBox.alert('必须登录才可访问此页面!')
                 .then(() => {
-                    router.replace('/')
+                    if (reg.test(navigator.userAgent))
+                        router.replace('/login')
+                    else
+                        router.replace('/')
                 })
         } else {
             next()

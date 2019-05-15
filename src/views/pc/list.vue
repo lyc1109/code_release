@@ -2,6 +2,11 @@
     <div>
         <div class="home">
             <header-box actived="/area"></header-box>
+            <el-carousel direction="vertical" height="30px" class="notice">
+                <el-carousel-item v-for="(item,index) in noticeList" :key="index">
+                    <p>{{ item.title }}</p>
+                </el-carousel-item>
+            </el-carousel>
             <div style="position: relative;margin-top: 20px;">
                 <!--微信群-->
                 <div class="wxq" v-if="tabVal === 'wxq'">
@@ -121,7 +126,12 @@
                     current: 1,
                     size: 5,
                     total: 10
-                }
+                },
+                noticeList: [
+                    { title: '我是公告1' },
+                    { title: '我是公告2' },
+                    { title: '我是公告3' }
+                ]
             }
         },
         methods: {
@@ -197,6 +207,25 @@
                 margin-top: 8px;
                 display: inline-block;
                 width: 90%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+    }
+    .notice{
+        border: 1px solid #C9DFF4;
+        background: #F5F8FC;
+        padding-left: 10px;
+        border-radius: 3px;
+        margin-top: 10px;
+
+        .el-carousel__item{
+            line-height: 30px;
+
+            p{
+                color: #1479d7;
+                width: 98%;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;

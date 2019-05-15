@@ -45,15 +45,15 @@
                                 <h3><el-button type="text">{{ item.title }}</el-button></h3>
                                 <p>{{ item.desc }}</p>
                                 <div class="article_info_detail">
-                                    <span>微信群</span>
+                                    <span>{{ item.type }}</span>
                                     <span>发布时间：{{ item.created }}</span>
                                     <i class="iconai-eye iconfont"></i>
                                     <span style="margin-left: 5px;">{{ item.watchNum }}</span>
                                 </div>
                             </div>
                             <div class="share">
-                                <el-button type="text">编辑</el-button>
-                                <el-button type="text" style="color: red;">删除</el-button>
+                                <el-button type="text" @click.stop="edit(item)">编辑</el-button>
+                                <el-button type="text" style="color: red;" @click.stop="del(item.id)">删除</el-button>
                             </div>
                         </div>
                         <el-pagination :current-page.sync="page.current"
@@ -64,6 +64,7 @@
                                        @size-change="changeSize"
                                        @current-change="changePage" style="float: right;margin-top: 10px;"></el-pagination>
                     </div>
+                    <!--推广-->
                     <div class="article_list" v-if="personTab === 'tg'">
                         <el-select v-model="articleVal" placeholder="请选择栏目">
                             <el-option v-for="(item, index) in articleTypeList" :key="index" :label="item.name" :value="item.id"></el-option>
@@ -156,7 +157,8 @@
                         title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
                         desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
                         created: '2019-05-06',
-                        watchNum: 700
+                        watchNum: 700,
+                        type: '微信群'
                     },
                     {
                         id: '2',
@@ -164,7 +166,8 @@
                         title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
                         desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
                         created: '2019-05-06',
-                        watchNum: 700
+                        watchNum: 700,
+                        type: '微信群'
                     },
                     {
                         id: '3',
@@ -172,7 +175,8 @@
                         title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
                         desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
                         created: '2019-05-06',
-                        watchNum: 700
+                        watchNum: 700,
+                        type: '微信群'
                     },
                     {
                         id: '4',
@@ -180,7 +184,8 @@
                         title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
                         desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
                         created: '2019-05-06',
-                        watchNum: 700
+                        watchNum: 700,
+                        type: '公众号'
                     }
                 ],
                 page: {
@@ -319,14 +324,16 @@
             }
         },
         created() {
+            if (this.$route.query && this.$route.query.type) {
+                this.defaultVal = this.$route.query.type
+            }
             this.fetchData()
         },
+        // mounted() {
+        // },
         methods: {
             // 初始化数据
             fetchData() {
-                if (this.$route.query.type) {
-                    this.defaultVal = this.$route.query.type
-                }
                 console.log('初始化数据')
             },
             // 筛选首页文章
@@ -374,8 +381,7 @@
                 const obj1 = this.personList.filter((value) => {
                     return this.defaultVal === value.value
                 })
-                console.log(obj)
-                this.$router.replace({
+                this.$router.push({
                     path: this.$route.path,
                     query: {
                         title: obj.length > 0 ? obj[0].name : obj1[0].name,
@@ -385,6 +391,28 @@
             },
             getVal(obj) {
                 this.defaultVal = obj.type
+            },
+            // 编辑
+            edit(data) {
+                const obj = this.contentList.filter((value) => {
+                    return value.name.includes(data.type)
+                })
+                this.$router.push({
+                    path: this.$route.path,
+                    query: {
+                        title: `发布${data.type}`,
+                        type: obj.length > 0 ? obj[0].value : '',
+                        id: data.id
+                    }
+                })
+                this.defaultVal = obj[0].value
+            },
+            // 删除
+            del(id) {
+                this.$confirm('确定删除？')
+                    .then(() => {
+                        this.$message.success('删除成功')
+                    })
             }
         },
         components: {

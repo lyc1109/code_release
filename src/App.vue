@@ -11,12 +11,18 @@
 <!--      <el-button>el-button</el-button>-->
 <!--    </div>-->
 <!--    <HelloWorld msg="Welcome to Your Vue.js App"/>-->
+    <right-box></right-box>
   </div>
 </template>
 
 <script>
+  import rightBox from '@/components/pc/suspension'
+
 export default {
-  name: 'app'
+  name: 'app',
+  components: {
+    rightBox
+  }
 }
 </script>
 <style>

@@ -1,46 +1,41 @@
 <template>
-    <div class="home">
-        <header-box actived="/article"></header-box>
-<!--        <el-breadcrumb separator-class="el-icon-arrow-right" style="margin-top: 20px;">-->
-<!--            <el-breadcrumb-item v-for="(item, index) in breadList" :key="index" :to="{ path: item.url }">{{ item.name }}</el-breadcrumb-item>-->
-<!--        </el-breadcrumb>-->
-        <div class="group_main flex">
-            <div class="group_left">
-                <el-button-group>
-                    <el-button :type="item.btnType" v-for="(item, index) in btnList" :key="index" @click="changeType(item)">{{ item.name }}</el-button>
-                </el-button-group>
-                <div class="type_img">
-                    <img src="https://img8.souweixin.com/20190504/1309613/fc9d6cfdbf6c38769d320924235572a7.jpeg" alt="" v-if="btnType === 'qz'">
-                    <img src="https://img8.souweixin.com/20190504/1309613/65742e2498d88b2b46c142b17f64a0f7.png?h=500&w=260" alt="" v-if="btnType === 'q'">
+    <div>
+        <header-box :isShowNav="false"></header-box>
+        <div class="group_detail_m">
+            <h1>{{ groupData.name }}</h1>
+            <p>{{ groupData.desc }}</p>
+            <van-tabs v-model="btnType" type="card">
+                <van-tab v-for="(item, index) in btnList" :key="index" :title="item.name"></van-tab>
+            </van-tabs>
+            <div class="type_img">
+                <img src="https://img8.souweixin.com/20190504/1309613/fc9d6cfdbf6c38769d320924235572a7.jpeg" alt=""
+                     v-if="btnType === 0">
+                <img src="https://img8.souweixin.com/20190504/1309613/65742e2498d88b2b46c142b17f64a0f7.png?h=500&w=260"
+                     alt="" v-if="btnType === 1">
+            </div>
+            <div class="group_detail_info_m">
+                <div class="main_group_info">
+                    <i class="iconfont iconsuozaixingye"></i>
+                    <span>行业：</span>
+                    <van-tag type="primary" size="medium">{{ groupData.trade }}</van-tag>
+                </div>
+                <div class="main_group_info">
+                    <i class="iconfont icondingwei"></i>
+                    <span>地区：</span>
+                    <van-tag type="primary" size="medium">{{ groupData.area }}</van-tag>
+                </div>
+                <div class="main_group_info">
+                    <i class="iconfont iconshouji"></i>
+                    <span>手机：</span>
+                    <span>{{ groupData.mobile }}</span>
+                </div>
+                <div class="main_group_info">
+                    <i class="iconfont iconshijian"></i>
+                    <span>时间：</span>
+                    <span>{{ groupData.created }}</span>
                 </div>
             </div>
-            <div class="main_group">
-                <h3>{{ groupData.name }}</h3>
-                <p>{{ groupData.desc }}</p>
-                <div class="main_group_info flex">
-                    <div class="main_group_info_left">
-                        <i class="iconfont iconsuozaixingye"></i>
-                        <span>行业：</span>
-                        <el-tag size="mini">{{ groupData.trade }}</el-tag>
-                    </div>
-                    <div class="main_group_info_right">
-                        <i class="iconfont icondingwei"></i>
-                        <span>地区：</span>
-                        <el-tag size="mini">{{ groupData.area }}</el-tag>
-                    </div>
-                </div>
-                <div class="main_group_info flex">
-                    <div class="main_group_info_left">
-                        <i class="iconfont iconshouji"></i>
-                        <span>手机：</span>
-                        <span>{{ groupData.mobile }}</span>
-                    </div>
-                    <div class="main_group_info_right">
-                        <i class="iconfont iconshijian"></i>
-                        <span>时间：</span>
-                        <span>{{ groupData.created }}</span>
-                    </div>
-                </div>
+            <div class="group_detail_operate_m">
                 <div class="main_group_action flex">
                     <div>
                         <div class="iconfont iconzan"></div>
@@ -61,26 +56,21 @@
                 </div>
             </div>
         </div>
-
-        <!--热门微信群-->
-        <el-tabs v-model="hotGroup">
-            <el-tab-pane label="热门微信群" name="hot">
-                <div class="wxq">
-                    <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)">
-                        <div>
-                            <img :src="item.url">
-                        </div>
-                        <span>{{ item.title }}</span>
-                    </div>
-                </div>
-            </el-tab-pane>
-        </el-tabs>
-        <footer-box style="margin-top: 20px;"></footer-box>
+        <!--微信文章-->
+        <div class="article_index_title"><span>热门</span></div>
+        <!--微信群-->
+        <div class="article_index flex">
+            <div class="article_index_list" v-for="(item, index) in ewmList" :key="index">
+                <img :src="item.url" alt="">
+                <p>{{ item.title }}</p>
+            </div>
+        </div>
+        <footer-box></footer-box>
     </div>
 </template>
 
 <script>
-    import headerBox from '@/components/pc/header'
+    import headerBox from '@/components/mobile/header'
     import footerBox from '@/components/pc/footer'
 
     export default {
@@ -88,8 +78,8 @@
         data() {
             return {
                 btnList: [
-                    { name: '群主微信号', btnType: 'primary' },
-                    { name: '群二维码', btnType: '' }
+                    {name: '群主微信号', btnType: 'primary'},
+                    {name: '群二维码', btnType: ''}
                 ],
                 btnType: 'qz',
                 groupData: {
@@ -106,10 +96,10 @@
                     mobile: 13522223333
                 },
                 breadList: [
-                    { name: '首页', url: '/' },
-                    { name: '微信群', url: '/' },
-                    { name: '创业群', url: '/' },
-                    { name: '积分宝群', url: this.$route.path }
+                    {name: '首页', url: '/'},
+                    {name: '微信群', url: '/'},
+                    {name: '创业群', url: '/'},
+                    {name: '积分宝群', url: this.$route.path}
                 ],
                 ewmList: [
                     {
@@ -217,52 +207,37 @@
 </script>
 
 <style scoped lang="scss" type="text/scss">
-    .group_main{
-        margin-top: 20px;
+    .group_detail_m{
+        padding: 2%;
 
-        .group_left{
-            /*text-align: center;*/
-            flex: 0.6;
+        .main_group_action{
+            margin: 10px 0;
+            padding: 2%;
+            /*justify-content: center;*/
 
-            .type_img{
-                margin-top: 10px;
+            &>div{
+                margin: 0 2rem;
 
-                img{
-                    width: 225px;
+                .iconfont{
+                    font-size: 3.6rem;
+                    color: #ff3265;
+                }
+                p{
+                    margin-top: 10px;
                 }
             }
         }
-        .main_group{
-            flex: 2;
+        .group_detail_info_m{
+            padding: 2% 5%;
 
-            h3{
-                /*text-align: center;*/
-                border-bottom: 1px dashed #eee;
-                line-height: 40px;
-                font-size: 24px;
-            }
-            &>p{
-                font-size: 14px;
-                font-weight: 400;
-                /*text-align: center;*/
-                margin-bottom: 20px;
-            }
             .main_group_info{
-                &:nth-child(3){
-                    margin-bottom: 10px;
-                }
-                .main_group_info_left, .main_group_info_right{
-                    flex: 1;
-                    line-height: 30px;
-                    /*padding-left: 50px;*/
+                line-height: 30px;
 
-                    .iconfont{
-                        margin-right: 8px;
-                        position: relative;
-                        top: 2px;
-                    }
+                .iconfont{
+                    margin-right: 8px;
+                    position: relative;
+                    top: 2px;
                 }
-
                 .iconsuozaixingye{
                     color: #4ac14a;
                 }
@@ -276,35 +251,27 @@
                     color: #f3cb5b;
                 }
             }
-            .main_group_action{
-                margin: 10px 0;
-                padding: 5% 10%;
-                /*justify-content: center;*/
+        }
+    }
+    .type_img {
+        margin-top: 10px;
+        text-align: center;
 
-                &>div{
-                    margin: 0 30px;
-
-                    .iconfont{
-                        font-size: 36px;
-                        color: #ff3265;
-                    }
-                    p{
-                        margin-top: 10px;
-                    }
-                }
-            }
+        img {
+            width: 80%;
         }
     }
     .wxq {
         margin-top: 10px;
         display: flex;
         flex-wrap: wrap;
+        margin-left: 2%;
 
         .wxq_box {
-            width: 10.985%;
+            width: 31.33%;
             text-align: center;
             box-sizing: border-box;
-            margin-right: 5%;
+            margin-right: 2%;
             margin-bottom: 10px;
             cursor: pointer;
 
@@ -343,6 +310,42 @@
                 text-overflow: ellipsis;
                 white-space: nowrap;
             }
+        }
+    }
+    .article_index {
+        flex-wrap: wrap;
+        margin-top: 2rem;
+        padding: 0 2%;
+
+        .article_index_list {
+            width: 31.33%;
+            padding-right: 2%;
+            text-align: center;
+
+            img {
+                width: 80%;
+            }
+
+            p {
+                line-height: 25px;
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                height: 25px;
+            }
+        }
+    }
+    .article_index_title{
+        border-left: 4px solid #2ca0ff;
+        border-bottom: 1px solid #ececec;
+        line-height: 30px;
+        margin-top: 2rem;
+
+        span{
+            margin-left: 10px;
+            font-size: 1.6rem;
+            color: #333;
         }
     }
 </style>

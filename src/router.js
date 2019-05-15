@@ -18,9 +18,9 @@ let pcRouter = [
     }
   },
   {
-    path: '/area',
-    name: 'area',
-    component: () => import('./views/pc/area'),
+    path: '/list',
+    name: 'list',
+    component: () => import('./views/pc/list'),
     meta: {
       title: '地区微信'
     }
@@ -30,7 +30,7 @@ let pcRouter = [
     name: 'groupDetail',
     component: () => import('./views/pc/groupDetail'),
     meta: {
-      title: '微信群详情'
+      title: '二维码详情'
     }
   },
   {
@@ -72,10 +72,54 @@ let pcRouter = [
 let mobileRouter = [
   {
     path: '/',
+    redirect: '/home'
+  },
+  {
+    path: '/home',
     name: 'home',
     component: () => import('./views/mobile/home'),
     meta: {
       title: '首页'
+    }
+  },
+  {
+    path: '/list',
+    name: 'list',
+    component: () => import('./views/mobile/list'),
+    meta: {
+      title: '列表页'
+    }
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: () => import('./views/mobile/search'),
+    meta: {
+      title: '搜索页'
+    }
+  },
+  {
+    path: '/group/:id',
+    name: 'groupDetail',
+    component: () => import('./views/mobile/groupDetail'),
+    meta: {
+      title: '二维码详情'
+    }
+  },
+  {
+    path: '/article/:id',
+    name: 'articleDetail',
+    component: () => import('./views/mobile/articleDetail'),
+    meta: {
+      title: '文章详情'
+    }
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('./views/mobile/login/index'),
+    meta: {
+      title: '登录'
     }
   }
 ]
@@ -89,6 +133,6 @@ if (reg.test(navigator.userAgent)) {
 export default new Router({
   mode: 'history',
   // base: '/code',
-  base: process.env.VUE_APP_BASE_URL,
+  base: process.env.BASE_URL,
   routes: routes
 })

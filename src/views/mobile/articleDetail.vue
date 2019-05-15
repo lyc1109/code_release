@@ -1,7 +1,7 @@
 <template>
-    <div class="home">
-        <header-box actived="/article"></header-box>
-        <el-card shadow="never" class="article_main">
+    <div>
+        <header-box :isShowNav="false"></header-box>
+        <div class="article_detail_m">
             <h1>{{ article.title }}</h1>
             <div class="article_info">
                 <span>发布人：{{ article.author }}</span>
@@ -10,13 +10,13 @@
             <div class="article_content">
                 <p v-html="article.content"></p>
             </div>
-        </el-card>
+        </div>
         <footer-box></footer-box>
     </div>
 </template>
 
 <script>
-    import headerBox from '@/components/pc/header'
+    import headerBox from '@/components/mobile/header'
     import footerBox from '@/components/pc/footer'
 
     export default {
@@ -31,6 +31,7 @@
                 }
             }
         },
+        methods: {},
         components: {
             headerBox,
             footerBox
@@ -39,30 +40,28 @@
 </script>
 
 <style scoped lang="scss" type="text/scss">
-    .article_main{
-        margin-top: 20px;
-        /*border: 1px solid #eee;*/
-        /*padding: 20px;*/
-        
-        h1{
-            text-align: center;
-        }
+    .article_detail_m{
+        margin-top: 1rem;
+        padding: 0 2rem;
+
+        /*h1{*/
+        /*    text-align: left;*/
+        /*}*/
         .article_info{
-            margin: 10px 0;
-            text-align: center;
-            
+            margin: .5rem 0;
+
             span{
-                font-size: 14px;
+                font-size: 1.4rem;
                 color: #888;
-                margin-right: 10px;
+                margin-right: .5rem;
             }
         }
         .article_content{
-            margin-top: 30px;
+            margin-top: 2rem;
 
             p{
                 color: #333;
-                font-size: 16px;
+                font-size: 1.6rem;
             }
         }
     }

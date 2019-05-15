@@ -123,3 +123,9 @@ ul{
 .text-right{
     text-align: right;
 }
+
+@media screen and (max-width: 520px) {
+    html{
+        font-size: 62.5%;
+    }
+}

@@ -1,40 +1,45 @@
 <template>
-    <header>
-        <div class="logo">微信群</div>
-        <div class="all_search">
-            <el-input v-model="allSearch" placeholder="请输入关键字搜索" @keypress.native="search">
-                <!--                        <el-select slot="prepend" v-model="typeVal" placeholder="请选择类型" @change="changeType"-->
-                <!--                                   style="width: 90px;">-->
-                <!--                            <el-option v-for="(item, index) in typeList" :key="index" :label="item.name"-->
-                <!--                                       :value="item.value"></el-option>-->
-                <!--                        </el-select>-->
-                <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
-            </el-input>
-        </div>
-        <!--栏目-->
-        <nav style="margin: 0 5px;">
-            <el-menu :default-active="activeNav"
-                     mode="horizontal"
-                     background-color="#545c64"
-                     text-color="#fff"
-                     active-text-color="#ffd04b"
-                     @select="selectNav" router>
-                <el-menu-item v-for="(item, index) in type === 'basic' ? tabList : personTabList" :key="index" :index="item.url">{{ item.name }}</el-menu-item>
-            </el-menu>
-        </nav>
-        <div class="login_btn" v-if="isLogin">
-            <el-button class="login_btn" @click="login">登录</el-button>
-            <el-button class="register_btn" @click="register">注册</el-button>
-        </div>
-        <div class="logined_btn" v-else>
-            {{ username }}
-            <el-button class="login_btn" @click="toPerson">个人中心</el-button>
-            <el-button class="register_btn" @click="quit">退出</el-button>
-        </div>
+    <div>
+        <header>
+            <div class="logo">微信群</div>
+            <div class="all_search">
+                <el-input v-model="allSearch" placeholder="请输入关键字搜索" @keypress.native="search">
+                    <!--                        <el-select slot="prepend" v-model="typeVal" placeholder="请选择类型" @change="changeType"-->
+                    <!--                                   style="width: 90px;">-->
+                    <!--                            <el-option v-for="(item, index) in typeList" :key="index" :label="item.name"-->
+                    <!--                                       :value="item.value"></el-option>-->
+                    <!--                        </el-select>-->
+                    <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
+                </el-input>
+            </div>
+            <!--栏目-->
+            <nav style="margin: 0 5px;">
+                <el-menu :default-active="activeNav"
+                         mode="horizontal"
+                         background-color="#545c64"
+                         text-color="#fff"
+                         active-text-color="#ffd04b"
+                         @select="selectNav" router>
+                    <el-menu-item v-for="(item, index) in type === 'basic' ? tabList : personTabList" :key="index"
+                                  :index="item.url">{{ item.name }}
+                    </el-menu-item>
+                </el-menu>
+            </nav>
+            <div class="login_btn" v-if="isLogin">
+                <el-button class="login_btn" @click="login">登录</el-button>
+                <el-button class="register_btn" @click="register">注册</el-button>
+            </div>
+            <div class="logined_btn" v-else>
+                {{ username }}
+                <el-button class="login_btn" @click="toPerson">个人中心</el-button>
+                <el-button class="register_btn" @click="quit">退出</el-button>
+            </div>
 
-        <!--        登录-->
-        <login :is-show="showLogin" @toggle="toggleLogin" :type="loginType" :title="loginTit" @success="successLogin"></login>
-    </header>
+            <!--        登录-->
+            <login :is-show="showLogin" @toggle="toggleLogin" :type="loginType" :title="loginTit"
+                   @success="successLogin"></login>
+        </header>
+    </div>
 </template>
 
 <script>
@@ -59,10 +64,10 @@
                 activeNav: this.actived,
                 tabList: [
                     {name: '首页', url: '/'},
-                    {name: '微信文章', url: '/article'},
-                    {name: '地区微信', url: '/area'},
-                    {name: '微信公众', url: '/public'},
-                    {name: '个人微信', url: '/person'},
+                    {name: '微信文章', url: '/list'},
+                    {name: '地区微信', url: '/list'},
+                    {name: '微信公众', url: '/list'},
+                    {name: '个人微信', url: '/list'},
                     // {name: 'QQ群'},
                     // {name: '短视频'},
                     // {name: '小程序'},
@@ -72,10 +77,8 @@
                     // {name: '红群'}
                 ],
                 personTabList: [
-                    { name: '个人中心', url: '/person' },
-                    { name: '网站首页', url: '/' },
-                    { name: '基本资料', url: '/basic' },
-                    { name: '会员公告', url: '/vip' }
+                    {name: '个人中心', url: '/person'},
+                    {name: '网站首页', url: '/'}
                 ],
                 isLogin: true,
                 showLogin: false,
