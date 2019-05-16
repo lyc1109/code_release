@@ -26,7 +26,7 @@
                       :title="item.title"
                       :value="item.value"
                       is-link
-                      :to="item.url"></van-cell>
+                      :to="item.url" @click="toDetail(item)"></van-cell>
         </van-cell-group>
 
         <rule-box :is-show="rule" @toggle="toggleRule"></rule-box>
@@ -59,7 +59,7 @@
                     { title: '明细记录', value: '', url: '/record' },
                     { title: '金币规则', value: '', url: '' }
                 ],
-                rule: false
+                rule: true
             }
         },
         methods: {
