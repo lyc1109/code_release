@@ -40,9 +40,13 @@
             },
             // 注册
             register() {
-                this.loginTit = '注册'
-                this.loginType = 'register'
-                this.showLogin = true
+                if (!this.reg.test(this.navigator.userAgent)) {
+                    this.loginTit = '注册'
+                    this.loginType = 'register'
+                    this.showLogin = true
+                } else {
+                    this.$router.push('/register')
+                }
             },
             // 登录成功
             successRegister(val) {

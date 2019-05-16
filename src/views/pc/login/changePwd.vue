@@ -17,7 +17,7 @@
                           size="small"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" style="width: 100%;" @click="success('changePwd')">注册</el-button>
+                <el-button type="primary" style="width: 100%;" @click="success('changePwd')">确定</el-button>
             </el-form-item>
         </el-form>
 
@@ -115,11 +115,17 @@
                     }
                 })
             },
+            // 确认修改
             success(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.$emit('close', false)
-                        this.$message.success('密码修改成功')
+                        this.$api.changePassByMail(this.changePwdForm)
+                            .then((res) => {
+                                if (res) {
+                                    this.$emit('close', false)
+                                    this.$message.success('密码修改成功')
+                                }
+                            })
                     }
                 })
             },

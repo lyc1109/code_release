@@ -121,6 +121,86 @@ let mobileRouter = [
     meta: {
       title: '登录'
     }
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('./views/mobile/login/register'),
+    meta: {
+      title: '注册'
+    }
+  },
+  {
+    path: '/forget',
+    name: 'forget',
+    component: () => import('./views/mobile/login/forget'),
+    meta: {
+      title: '忘记密码'
+    }
+  },
+  {
+    path: '/person',
+    name: 'person',
+    component: () => import('./views/mobile/person/index'),
+    meta: {
+      title: '个人中心'
+    }
+  },
+  {
+    path: '/publish',
+    name: 'publish',
+    component: () => import('./views/mobile/person/publish'),
+    meta: {
+      title: '发布'
+    }
+  },
+  {
+    path: '/publish_article',
+    name: 'publish_article',
+    component: () => import('./views/mobile/person/publish_article'),
+    meta: {
+      title: '发布文章'
+    }
+  },
+  {
+    path: '/my_publish',
+    name: 'my_publish',
+    component: () => import('./views/mobile/person/my_publish'),
+    meta: {
+      title: '我的发布'
+    }
+  },
+  {
+    path: '/my_spread',
+    name: 'my_spread',
+    component: () => import('./views/mobile/person/my_spread'),
+    meta: {
+      title: '我的推广'
+    }
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: () => import('./views/mobile/person/profile'),
+    meta: {
+      title: '个人资料'
+    }
+  },
+  {
+    path: '/recharge',
+    name: 'recharge',
+    component: () => import('./views/mobile/person/recharge'),
+    meta: {
+      title: '我要充值'
+    }
+  },
+  {
+    path: '/record',
+    name: 'record',
+    component: () => import('./views/mobile/person/record'),
+    meta: {
+      title: '明细记录'
+    }
   }
 ]
 let routes

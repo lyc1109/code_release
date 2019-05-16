@@ -1,7 +1,7 @@
 <template>
     <div class="login_bg">
         <div class="search_img">
-            <span>微信群</span>
+            <span>微群发布</span>
             <!--<img src="" alt="">-->
         </div>
         <van-cell-group>
@@ -19,10 +19,10 @@
                     left-icon="lock"></van-field>
         </van-cell-group>
         <div style="margin-top: 1rem;">
-            没有账号？点击 <router-link to="/register">注册</router-link>
-            <router-link to="/forget" style="float: right;">忘记密码？</router-link>
+            没有账号？点击 <router-link to="/register" style="color: #fff;">注册</router-link>
+            <router-link to="/forget" style="float: right;color: #fff;">忘记密码？</router-link>
         </div>
-        <van-button type="primary" @click="success">登录</van-button>
+        <van-button type="info" @click="success" style="width: 100%;margin-top: 4rem;">登录</van-button>
     </div>
 </template>
 
@@ -30,7 +30,7 @@
     import bg from '@/assets/images/login.jpg'
 
     export default {
-        name: "index",
+        name: "login",
         data() {
             return {
                 loginForm: {

@@ -8,7 +8,7 @@
             </div>
             <div slot="right">
                  <van-icon name="search" @click="search" />
-                <van-icon name="user-circle-o" @click="isLogin ? person : login"></van-icon>
+                <van-icon name="user-circle-o" @click="loginOrPerson"></van-icon>
             </div>
         </van-nav-bar>
         <!--导航-->
@@ -44,6 +44,11 @@
                 isLogin: false,
             }
         },
+        mounted() {
+            if (sessionStorage.getItem('user') && sessionStorage.getItem('user') !== null && sessionStorage.getItem('user') !== '') {
+                this.isLogin = true
+            }
+        },
         methods: {
             showNav() {
                 this.isShowNav = !this.isShowNav
@@ -56,13 +61,11 @@
             search() {
                 this.$router.push('/search')
             },
-            // 个人中心
-            person() {
-                this.$router.push('/person')
-            },
-            // 登录
-            login() {
-                this.$router.push('/login')
+            loginOrPerson() {
+                if (this.isLogin)
+                    this.$router.push('/person')
+                else
+                    this.$router.push('/login')
             }
         }
     }
