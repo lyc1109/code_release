@@ -17,24 +17,26 @@ Vue.use(VueBus);
 Vue.config.productionTip = false
 require('@/assets/css/common.scss')
 require('@/../public/fonts/iconfont/iconfont.css')
-import Vant from 'vant'
+import Vant, {Toast, Dialog} from 'vant'
 import 'vant/lib/index.css'
 
 Vue.use(Vant)
-
 let reg = /Android|webOS|iPhone|iPod|iPad|BlackBerry/i
-
 router.beforeEach((to, from, next) => {
     if (to.matched.some(res => res.meta.requireAuth)) {
         const token = sessionStorage.getItem('user')
         if (!token || token == null || token == '') {
-            Element.MessageBox.alert('必须登录才可访问此页面!')
-                .then(() => {
-                    if (reg.test(navigator.userAgent))
+            if (reg.test(navigator.userAgent)) {
+                Dialog.alert({message: '必须登录才可访问此页面'})
+                    .then(() => {
                         router.replace('/login')
-                    else
+                    })
+            } else {
+                Element.MessageBox.alert('必须登录才可访问此页面!')
+                    .then(() => {
                         router.replace('/')
-                })
+                    })
+            }
         } else {
             next()
         }

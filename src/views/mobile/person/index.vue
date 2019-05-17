@@ -18,7 +18,7 @@
                       :title="item.title"
                       :value="item.value"
                       is-link
-                      :to="item.url"></van-cell>
+                      :to="{ path: item.url, query: { title: item.title, type: item.id } }"></van-cell>
         </van-cell-group>
         <van-cell-group title="个人中心">
             <van-cell v-for="(item, index) in operateList2"
@@ -35,6 +35,7 @@
 
 <script>
     import ruleBox from '@/views/mobile/person/rule'
+    import { Dialog, Toast } from 'vant'
 
     export default {
         name: "person",
@@ -47,26 +48,40 @@
                     {title: '文章', num: 8, url: '/my_publish'}
                 ],
                 operateList: [
-                    { title: '发布微信群', value: '', url: '/publish' },
-                    { title: '发布公众号', value: '', url: '/publish' },
-                    { title: '发布个人微信号', value: '', url: '/publish' },
-                    { title: '发布文章', value: '', url: '/publish_article' },
-                    { title: '发布其他', value: '', url: '/publish' }
+                    {title: '发布微信群', value: '', url: '/publish', id: 'wxq'},
+                    {title: '发布公众号', value: '', url: '/publish', id: 'gzh'},
+                    {title: '发布个人微信号', value: '', url: '/publish', id: 'gr'},
+                    {title: '发布文章', value: '', url: '/publish_article', id: 'wz'},
+                    {title: '发布其他', value: '', url: '/publish', id: 'qt'}
                 ],
                 operateList2: [
-                    { title: '修改资料', value: '', url: '/profile' },
-                    { title: '我要充值', value: '', url: '/recharge' },
-                    { title: '明细记录', value: '', url: '/record' },
-                    { title: '金币规则', value: '', url: '' }
+                    {title: '修改资料', value: '', url: '/profile'},
+                    {title: '我要充值', value: '', url: '/recharge'},
+                    {title: '明细记录', value: '', url: '/record'},
+                    {title: '金币规则', value: '', url: ''},
+                    {title: '退出', value: '', url: ''}
                 ],
-                rule: true
+                rule: false
             }
         },
         methods: {
             toDetail(data) {
                 if (data.title === '金币规则')
                     this.rule = true
-                else
+                else if (data.title === '退出') {
+                    Dialog.confirm({message: '确定退出吗？'})
+                        .then(() => {
+                            this.$api.logout().then((res) => {
+                                if (res) {
+                                    setTimeout(() => {
+                                        this.$router.push('/home')
+                                    }, 1000)
+                                    sessionStorage.removeItem('user')
+                                    Toast.success('已退出登录')
+                                }
+                            })
+                        })
+                } else
                     this.$router.push(data.url)
             },
             toggleRule(val) {
@@ -83,8 +98,8 @@
     .person_m {
         background: #5e789b;
         padding-top: 2rem;
-        
-        .user_name{
+
+        .user_name {
             color: #fff;
             text-align: center;
             font-size: 1.8rem;
@@ -121,7 +136,8 @@
             font-size: 1.6rem;
         }
     }
-    .van-cell-group__title{
+
+    .van-cell-group__title {
         border-top: 1px solid #ccc;
         font-weight: bold;
     }

@@ -143,7 +143,8 @@ let mobileRouter = [
     name: 'person',
     component: () => import('./views/mobile/person/index'),
     meta: {
-      title: '个人中心'
+      title: '个人中心',
+      requireAuth: true
     }
   },
   {
@@ -151,7 +152,8 @@ let mobileRouter = [
     name: 'publish',
     component: () => import('./views/mobile/person/publish'),
     meta: {
-      title: '发布'
+      title: '发布',
+      requireAuth: true
     }
   },
   {
@@ -159,7 +161,8 @@ let mobileRouter = [
     name: 'publish_article',
     component: () => import('./views/mobile/person/publish_article'),
     meta: {
-      title: '发布文章'
+      title: '发布文章',
+      requireAuth: true
     }
   },
   {
@@ -167,7 +170,8 @@ let mobileRouter = [
     name: 'my_publish',
     component: () => import('./views/mobile/person/my_publish'),
     meta: {
-      title: '我的发布'
+      title: '我的发布',
+      requireAuth: true
     }
   },
   {
@@ -175,7 +179,8 @@ let mobileRouter = [
     name: 'my_spread',
     component: () => import('./views/mobile/person/my_spread'),
     meta: {
-      title: '我的推广'
+      title: '我的推广',
+      requireAuth: true
     }
   },
   {
@@ -183,7 +188,8 @@ let mobileRouter = [
     name: 'profile',
     component: () => import('./views/mobile/person/profile'),
     meta: {
-      title: '个人资料'
+      title: '个人资料',
+      requireAuth: true
     }
   },
   {
@@ -191,7 +197,8 @@ let mobileRouter = [
     name: 'recharge',
     component: () => import('./views/mobile/person/recharge'),
     meta: {
-      title: '我要充值'
+      title: '我要充值',
+      requireAuth: true
     }
   },
   {
@@ -199,7 +206,8 @@ let mobileRouter = [
     name: 'record',
     component: () => import('./views/mobile/person/record'),
     meta: {
-      title: '明细记录'
+      title: '明细记录',
+      requireAuth: true
     }
   }
 ]
