@@ -3,12 +3,12 @@
         <header-box actived="/"></header-box>
             <div style="position: relative;margin-top: 20px;">
                 <!--微信群-->
-                <div class="wxq" v-if="tabVal === 'wxq'">
+                <div class="wxq" v-if="ewmList.length">
                     <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)">
                         <div>
-                            <img :src="item.url">
+                            <img :src="item.imgUrl1">
                         </div>
-                        <span>{{ item.title }}</span>
+                        <span>{{ item.name }}</span>
                     </div>
                 </div>
             </div>
@@ -61,100 +61,7 @@
         name: 'home',
         data() {
             return {
-                typeVal: 'qun',
-                typeList: [
-                    {name: '微信群', value: 'qun'},
-                    {name: '个人号', value: 'grh'},
-                    {name: '公众号', value: 'gzh'}
-                ],
-                tabVal: 'wxq',
-                tabData: [
-                    {name: '微信群', value: 'wxq'},
-                    {name: '公众号', value: 'gzh'},
-                    {name: '个人微信', value: 'grwx'}
-                ],
-                ewmList: [
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    }
-                ],
+                ewmList: [],
                 article: 'tj',
                 articleData: [
                     {name: '阅读推荐', value: 'tj'},
@@ -208,7 +115,13 @@
         methods: {
             // 初始化数据
             fetchData() {
-                console.log('初始化数据')
+                const page = {
+                    pageNum: 1,
+                    pageSize: 15
+                }
+                this.$api.getTradeDetail(page).then((res) => {
+                    this.ewmList = res.info.list
+                })
             },
             // 切换正文tabs
             changeTab(val) {

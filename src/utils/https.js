@@ -46,7 +46,7 @@ let emitError = (errorMsg) => {
 
 axios.interceptors.response.use(
     (response) => {
-        console.log(response)
+        // console.log(response)
         // hideLoading()
         const respData = response.data
 

@@ -10,23 +10,23 @@
                     <el-button :type="item.btnType" v-for="(item, index) in btnList" :key="index" @click="changeType(item)">{{ item.name }}</el-button>
                 </el-button-group>
                 <div class="type_img">
-                    <img src="https://img8.souweixin.com/20190504/1309613/fc9d6cfdbf6c38769d320924235572a7.jpeg" alt="" v-if="btnType === 'qz'">
-                    <img src="https://img8.souweixin.com/20190504/1309613/65742e2498d88b2b46c142b17f64a0f7.png?h=500&w=260" alt="" v-if="btnType === 'q'">
+                    <img :src="groupData.ownerWechat" alt="" v-if="btnType === 'qz'">
+                    <img :src="groupData.imgUrl1" alt="" v-if="btnType === 'q'">
                 </div>
             </div>
             <div class="main_group">
                 <h3>{{ groupData.name }}</h3>
-                <p>{{ groupData.desc }}</p>
+                <p>{{ groupData.description }}</p>
                 <div class="main_group_info flex">
                     <div class="main_group_info_left">
                         <i class="iconfont iconsuozaixingye"></i>
                         <span>行业：</span>
-                        <el-tag size="mini">{{ groupData.trade }}</el-tag>
+                        <el-tag size="mini">{{ groupData.sectionId }}</el-tag>
                     </div>
                     <div class="main_group_info_right">
                         <i class="iconfont icondingwei"></i>
                         <span>地区：</span>
-                        <el-tag size="mini">{{ groupData.area }}</el-tag>
+                        <el-tag size="mini">{{ groupData.position1 + groupData.position2 }}</el-tag>
                     </div>
                 </div>
                 <div class="main_group_info flex">
@@ -38,13 +38,13 @@
                     <div class="main_group_info_right">
                         <i class="iconfont iconshijian"></i>
                         <span>时间：</span>
-                        <span>{{ groupData.created }}</span>
+                        <span>{{ groupData.createTime }}</span>
                     </div>
                 </div>
                 <div class="main_group_action flex">
-                    <div>
+                    <div @click="toLike">
                         <div class="iconfont iconzan"></div>
-                        <p>{{ groupData.like }}个赞</p>
+                        <p>{{ groupData.star }}个赞</p>
                     </div>
                     <div>
                         <div class="iconfont iconredu"></div>
@@ -52,7 +52,7 @@
                     </div>
                     <div>
                         <div class="iconfont iconzizhutuiguang"></div>
-                        <p>{{ groupData.tread }}次推广</p>
+                        <p>{{ groupData.typ }}次推广</p>
                     </div>
                     <div>
                         <div class="iconfont iconshouji"></div>
@@ -64,13 +64,13 @@
 
         <!--热门微信群-->
         <el-tabs v-model="hotGroup">
-            <el-tab-pane label="热门微信群" name="hot">
+            <el-tab-pane label="热门" name="hot">
                 <div class="wxq">
                     <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)">
                         <div>
-                            <img :src="item.url">
+                            <img :src="item.imgUrl1">
                         </div>
-                        <span>{{ item.title }}</span>
+                        <span>{{ item.name }}</span>
                     </div>
                 </div>
             </el-tab-pane>
@@ -94,16 +94,19 @@
                 btnType: 'qz',
                 groupData: {
                     name: '积分宝群',
-                    desc: '积分宝项目交流群，分红//群',
-                    trade: '创业群',
-                    area: '广东',
-                    created: '2019-05-08',
-                    tag: '积分宝',
+                    description: '积分宝项目交流群，分红//群',
+                    sectionId: '',
+                    area: '',
+                    createTime: new Date(),
                     wechat: 'nmd22288',
-                    hot: '3002',
-                    like: 2,
-                    tread: 1,
-                    mobile: 13522223333
+                    hot: 0,
+                    star: 0,
+                    typ: 0,
+                    mobile: 13522223333,
+                    position1: '',
+                    position2: '',
+                    ownerWechat: '',
+                    imgUrl1: ''
                 },
                 breadList: [
                     { name: '首页', url: '/' },
@@ -111,92 +114,35 @@
                     { name: '创业群', url: '/' },
                     { name: '积分宝群', url: this.$route.path }
                 ],
-                ewmList: [
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    }
-                ],
+                ewmList: [],
                 hotGroup: 'hot'
             }
         },
+        created() {
+            this.fetchHostList()
+            this.fetchData()
+        },
         methods: {
+            // 获取热门二维码
+            fetchHostList() {
+                const page = {
+                    pageNum: 1,
+                    pageSize: 15
+                }
+                this.$api.getTradeDetail(page).then((res) => {
+                    this.ewmList = res.info.list
+                })
+            },
+            // 获取二维码信息
+            fetchData() {
+                this.$api.getCodeDetail({
+                    id: this.$route.params.id
+                }).then((res) => {
+                    if (res) {
+                        this.groupData = res.info
+                    }
+                })
+            },
             changeType(data) {
                 this.btnList.forEach((value) => {
                     value.btnType = ''
@@ -207,6 +153,20 @@
             // 微信群详情
             groupDetail(id) {
                 this.$router.push(`/group/${id}`)
+                this.fetchData()
+                this.$forceUpdate()
+            },
+            // 点赞
+            toLike() {
+                this.$api.getStar({
+                    id: this.$route.params.id
+                }).then((res) => {
+                    if (res.data) {
+                        this.groupData.star = res.data
+                    } else {
+                        this.$message.error(res.msg)
+                    }
+                })
             }
         },
         components: {

@@ -1,6 +1,6 @@
 <template>
     <el-footer class="index_foot">
-        Copyright © 2019 二维码发布
+        Copyright © 2019 微群发布
     </el-footer>
 </template>
 

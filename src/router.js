@@ -22,7 +22,7 @@ let pcRouter = [
     name: 'list',
     component: () => import('./views/pc/list'),
     meta: {
-      title: '地区微信'
+      title: '二维码列表'
     }
   },
   {

@@ -1,25 +1,36 @@
 <template>
     <div class="home">
-        <header-box actived="/"></header-box>
+        <!--<header-box actived="/"></header-box>-->
         <el-main>
             <div class="search_img">
-                <span>微信群</span>
+                <router-link to="/">
+                    <span>微信群</span>
+                </router-link>
                 <!--<img src="" alt="">-->
             </div>
             <el-input v-model="search" placeholder="请输入搜索关键词" @keypress.native="searchs(search)">
                 <el-button slot="append" icon="el-icon-search" @click="searchs(search)"></el-button>
             </el-input>
-            <el-tabs v-model="result" style="margin-top: 20px;" v-if="resultData.length > 0">
+            <el-tabs v-model="result" style="margin-top: 20px;" v-if="resultData.length">
                 <el-tab-pane :label="`已为您找到${resultData.length}条结果`" name="result">
                     <!--微信群-->
                     <div class="wxq">
-                        <div class="wxq_box" v-for="(item, index) in resultData" :key="index" @click="groupDetail(item.id)">
+                        <div class="wxq_box" v-for="(item, index) in resultData" :key="index"
+                             @click="groupDetail(item.id)">
                             <div>
-                                <img :src="item.url">
+                                <img :src="item.imgUrl1">
                             </div>
-                            <span>{{ item.title }}</span>
+                            <span>{{ item.name }}</span>
                         </div>
                     </div>
+
+                    <el-pagination :current-page.sync="page.current"
+                                   :page-size="page.size"
+                                   :total="page.total"
+                                   background
+                                   layout="total, prev, pager, next, jumper"
+                                   @size-change="changeSize"
+                                   @current-change="changePage" style="float: right;margin-top: 10px;"></el-pagination>
                 </el-tab-pane>
             </el-tabs>
         </el-main>
@@ -28,7 +39,7 @@
 </template>
 
 <script>
-    import headerBox from '@/components/pc/header'
+    //    import headerBox from '@/components/pc/header'
     import footerBox from '@/components/pc/footer'
 
     export default {
@@ -37,115 +48,76 @@
             return {
                 result: 'result',
                 search: '',
-                resultData: [
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    }
-                ]
+                resultData: [],
+                page: {
+                    current: 1,
+                    size: 15,
+                    total: 10
+                },
+                params: {
+                    name: this.$route.query.result ? this.$route.query.result : '',
+                    pageNum: 1,
+                    pageSize: 15
+                }
             }
         },
+        mounted() {
+            this.fetchData()
+        },
         methods: {
+            // 初始化数据
+            fetchData() {
+                this.search = this.$route.query.result ? this.$route.query.result : ''
+                this.$api.getSearchResult(this.params).then((res) => {
+                    if (res) {
+                        this.page.total = res.info.total
+                        this.resultData = res.info.list
+                    }
+                })
+            },
             // 微信群详情
             groupDetail(id) {
                 this.$router.push(`/group/${id}`)
             },
+            // 搜索
             searchs(search) {
-                console.log(`搜索结果是：${search}`)
-            }
+                this.params.name = search
+                this.fetchData()
+                this.$router.replace({
+                    path: this.$route.path,
+                    query: {
+                        result: search
+                    }
+                })
+            },
+            // 修改文章每页展示的条数
+            changeSize(val) {
+                this.page.size = this.params.pageSize = val
+                this.fetchData()
+            },
+            // 修改文章页数
+            changePage(val) {
+                this.page.current = this.params.pageNum = val
+                this.fetchData()
+            },
         },
         components: {
-            headerBox,
+//            headerBox,
             footerBox
         }
     }
 </script>
 
 <style scoped lang="scss" type="text/scss">
-    .search_img{
+    .search_img {
         text-align: center;
         margin: 3% 0;
 
-        span{
+        span {
             font-size: 40px;
         }
     }
+
     .wxq {
         margin-top: 10px;
         display: flex;

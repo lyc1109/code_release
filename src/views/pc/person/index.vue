@@ -4,9 +4,9 @@
         <el-row class="article_main">
             <el-col :span="6" style="margin-right: 20px;">
                 <div class="user_avatar">
-                    <img src="../../../assets/images/avatar.jpg" alt="">
+                    <img :src="user && user.coverUrl ? user.coverUrl : avatar" alt="">
                 </div>
-                <p class="user_name">最帅的仔</p>
+                <p class="user_name">{{ user.user }}</p>
                 <div class="user_info_num_list flex">
                     <div class="user_info_num" v-for="(item, index) in userInfo" :key="index">
                         <span class="info_num">{{ item.num }}</span>
@@ -14,41 +14,52 @@
                     </div>
                 </div>
 
-                <el-menu :default-active="defaultVal" mode="vertical" background-color="#545c64" active-text-color="#ffd04b" text-color="#fff" :default-openeds="defaultOpen" @select="changeMenu">
+                <el-menu :default-active="defaultVal" mode="vertical" background-color="#545c64"
+                         active-text-color="#ffd04b" text-color="#fff" :default-openeds="defaultOpen"
+                         @select="changeMenu">
                     <el-submenu index="content">
                         <template slot="title">内容管理</template>
-                        <el-menu-item v-for="(item, index) in contentList" :key="index" :index="item.value">{{ item.name }}</el-menu-item>
+                        <el-menu-item v-for="(item, index) in contentList" :key="index" :index="item.value">{{ item.name
+                            }}
+                        </el-menu-item>
                     </el-submenu>
                     <el-submenu index="person">
                         <template slot="title">个人中心</template>
-                        <el-menu-item v-for="(item, index) in personList" :key="index" :index="item.value">{{ item.name }}</el-menu-item>
+                        <el-menu-item v-for="(item, index) in personList" :key="index" :index="item.value">{{ item.name
+                            }}
+                        </el-menu-item>
                     </el-submenu>
                 </el-menu>
             </el-col>
             <el-col :span="17">
                 <!--个人中心首页-->
                 <div class="person_index" v-if="defaultVal === ''">
-                    <el-tabs v-model="personTab" type="card" @tab-click="changePersonTab">
-                        <el-tab-pane v-for="(item, index) in personTabList" :key="index" :label="item.name" :name="item.value"></el-tab-pane>
+                    <el-tabs v-model="personTab" type="card" @tab-click="changePersonTab(personTab)">
+                        <el-tab-pane v-for="(item, index) in personTabList" :key="index" :label="item.name"
+                                     :name="item.value"></el-tab-pane>
                     </el-tabs>
 
                     <!--发布/文章-->
                     <div class="publish_list" v-if="personTab === 'fb' || personTab === 'wz'">
-                        <el-select v-model="listName" placeholder="请选择栏目">
-                            <el-option v-for="(item, index) in listNameList" :key="index" :label="item.name" :value="item.id"></el-option>
+                        <el-select v-model="listName" placeholder="请选择栏目" @change="changeList">
+                            <el-option v-for="(item, index) in listNameList" :key="index" :label="item.name"
+                                       :value="item.id"></el-option>
                         </el-select>
-                        <div class="article_list" v-for="(item, index) in articleList" :key="index" @click="articleDetail(item.id)">
+                        <div class="article_list" v-for="(item, index) in articleList" :key="index"
+                             @click="articleDetail(item.id)" v-if="articleList.length">
                             <div class="article_img">
-                                <img :src="item.imgUrl" alt="">
+                                <img :src="item.imgUrl1" alt="">
                             </div>
                             <div class="article_info">
-                                <h3><el-button type="text">{{ item.title }}</el-button></h3>
-                                <p>{{ item.desc }}</p>
+                                <h3>
+                                    <el-button type="text">{{ item.name }}</el-button>
+                                </h3>
+                                <p>{{ item.description }}</p>
                                 <div class="article_info_detail">
-                                    <span>{{ item.type }}</span>
-                                    <span>发布时间：{{ item.created }}</span>
+                                    <span>{{ item.sectionId }}</span>
+                                    <span>发布时间：{{ item.createTime }}</span>
                                     <i class="iconai-eye iconfont"></i>
-                                    <span style="margin-left: 5px;">{{ item.watchNum }}</span>
+                                    <span style="margin-left: 5px;">{{ item.popOriginalId }}</span>
                                 </div>
                             </div>
                             <div class="share">
@@ -62,20 +73,25 @@
                                        background
                                        layout="total, prev, pager, next, jumper"
                                        @size-change="changeSize"
-                                       @current-change="changePage" style="float: right;margin-top: 10px;"></el-pagination>
+                                       @current-change="changePage" style="float: right;margin-top: 10px;"
+                                       v-if="articleList.length"></el-pagination>
+                        <p class="text-center" style="font-size: 20px;" v-if="!articleList.length || !ewmList.length">
+                            暂无数据</p>
                     </div>
                     <!--推广-->
                     <div class="article_list" v-if="personTab === 'tg'">
-                        <el-select v-model="articleVal" placeholder="请选择栏目">
-                            <el-option v-for="(item, index) in articleTypeList" :key="index" :label="item.name" :value="item.id"></el-option>
+                        <el-select v-model="listName" placeholder="请选择栏目" @change="changeList">
+                            <el-option v-for="(item, index) in listNameList" :key="index" :label="item.name"
+                                       :value="item.id"></el-option>
                         </el-select>
                         <div class="wxq">
-                            <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)">
+                            <div class="wxq_box" v-for="(item, index) in ewmList" :key="index"
+                                 @click="groupDetail(item.id)">
                                 <div>
-                                    <img :src="item.url">
+                                    <img :src="item.imgUrl1">
                                 </div>
-                                <h5>{{ item.title }}</h5>
-                                <span>推广{{ item.spread }}次, 赚取{{ item.money }}金币</span>
+                                <h5>{{ item.name }}</h5>
+                                <span>推广{{ item.typ }}次, 赚取{{ item.popularizePrice }}金币</span>
                                 <span @click="delArticle(item)">删除</span>
                             </div>
                         </div>
@@ -85,13 +101,15 @@
                                        background
                                        layout="total, prev, pager, next, jumper"
                                        @size-change="changeArticleSize"
-                                       @current-change="changeArticleCurrent" style="float: right;margin-top: 10px;margin-bottom: 10px;"></el-pagination>
+                                       @current-change="changeArticleCurrent"
+                                       style="float: right;margin-top: 10px;margin-bottom: 10px;" v-if="ewmList.length"></el-pagination>
                     </div>
                 </div>
 
                 <!--发布编辑-->
                 <publish-box
-                        v-if="defaultVal === 'wxq' || defaultVal === 'gzh' || defaultVal === 'gr' || defaultVal === 'qt'" :types="defaultVal" @jump="getVal">
+                        v-if="defaultVal === 'wxq' || defaultVal === 'gzh' || defaultVal === 'gr' || defaultVal === 'qt'"
+                        :types="defaultVal" @jump="getVal">
                 </publish-box>
                 <!--发布文章-->
                 <publish-article v-if="defaultVal === 'wz'"></publish-article>
@@ -118,11 +136,13 @@
     import rechargeBox from '@/views/pc/person/recharge'
     import recordBox from '@/views/pc/person/record'
     import ruleBox from '@/views/pc/person/rule'
+    import avatar from '@/assets/images/avatar.jpg'
 
     export default {
         name: "person",
         data() {
             return {
+                avatar: avatar,
                 userInfo: [
                     {title: '金币', num: 500},
                     {title: '发布', num: 5},
@@ -131,63 +151,26 @@
                 ],
                 defaultVal: '',
                 contentList: [
-                    { name: '发布微信群', value: 'wxq' },
-                    { name: '发布公众号', value: 'gzh' },
-                    { name: '发布个人微信', value: 'gr' },
-                    { name: '发布文章', value: 'wz' },
-                    { name: '发布其他', value: 'qt' }
+                    {name: '发布微信群', value: 'wxq'},
+                    {name: '发布公众号', value: 'gzh'},
+                    {name: '发布个人微信', value: 'gr'},
+                    {name: '发布文章', value: 'wz'},
+                    {name: '发布其他', value: 'qt'}
                 ],
                 personList: [
-                    { name: '修改资料', value: 'zl' },
-                    { name: '我要充值', value: 'cz' },
-                    { name: '明细纪录', value: 'mx' },
-                    { name: '金币规则', value: 'gz' }
+                    {name: '修改资料', value: 'zl'},
+                    {name: '我要充值', value: 'cz'},
+                    {name: '明细纪录', value: 'mx'},
+                    {name: '金币规则', value: 'gz'}
                 ],
-                defaultOpen: [ 'content', 'person' ],
+                defaultOpen: ['content', 'person'],
                 personTab: 'fb',
                 personTabList: [
-                    { name: '发布', value: 'fb' },
-                    { name: '推广', value: 'tg' },
-                    { name: '文章', value: 'wz' }
+                    {name: '发布', value: 'fb'},
+                    {name: '推广', value: 'tg'},
+                    {name: '文章', value: 'wz'}
                 ],
-                articleList: [
-                    {
-                        id: '1',
-                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
-                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
-                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
-                        created: '2019-05-06',
-                        watchNum: 700,
-                        type: '微信群'
-                    },
-                    {
-                        id: '2',
-                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
-                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
-                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
-                        created: '2019-05-06',
-                        watchNum: 700,
-                        type: '微信群'
-                    },
-                    {
-                        id: '3',
-                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
-                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
-                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
-                        created: '2019-05-06',
-                        watchNum: 700,
-                        type: '微信群'
-                    },
-                    {
-                        id: '4',
-                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
-                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
-                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
-                        created: '2019-05-06',
-                        watchNum: 700,
-                        type: '公众号'
-                    }
-                ],
+                articleList: [],
                 page: {
                     current: 1,
                     size: 5,
@@ -195,132 +178,12 @@
                     total: 10
                 },
                 listName: '',
-                listNameList: [
-                    { name: '妈妈群', id: 'mm' },
-                    { name: '粉丝群', id: 'fs' }
-                ],
-                ewmList: [
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>',
-                        spread: 12,
-                        money: 50
-                    }
-                ],
-                articleVal: '',
-                articleTypeList: []
+                listNameList: [],
+                ewmList: [],
+                user: {
+                    user: '',
+                    coverUrl: ''
+                }
             }
         },
         created() {
@@ -328,17 +191,58 @@
                 this.defaultVal = this.$route.query.type
             }
             this.fetchData()
+            this.fetchTabs()
+            this.fetchPublish()
         },
-        // mounted() {
-        // },
         methods: {
             // 初始化数据
             fetchData() {
-                console.log('初始化数据')
+                this.$api.getUserInfo().then((res) => {
+                    if (res) {
+                        this.user = res.user
+                    }
+                })
+                // 获取个人中心信息
+//                this.$api.getBuzzInfo().then((res) => {
+//                    if (res) {
+//                        this.userInfo = res.data
+//                    }
+//                })
+            },
+            fetchTabs() {
+                this.$api.getTradeList().then((res) => {
+                    this.listNameList = res.data
+                })
+            },
+            // 获取发布列表
+            fetchPublish() {
+                this.$api.getPublishBySectionId({
+                    sectionId: this.listName,
+                    pageNum: this.page.current,
+                    pageSize: this.page.size
+                }).then((res) => {
+                    if (res) {
+                        this.page.total = res.info.total
+                        this.articleList = res.info.list
+                    }
+                })
             },
             // 筛选首页文章
             changePersonTab(val) {
-                console.log(val)
+                this.listName = ''
+                this.page.current = 1
+                switch (val) {
+                    case 'fb':
+                        this.fetchPublish()
+                        break
+                    case 'tg':
+                        this.fetchSpread()
+                        break
+                    case 'wz':
+                        this.fetchArticle()
+                        break
+                    // no default
+                }
             },
             // 文章详情
             articleDetail(id) {
@@ -413,6 +317,48 @@
                     .then(() => {
                         this.$message.success('删除成功')
                     })
+            },
+            // 修改栏目
+            changeList(val) {
+                this.listName = val
+                switch (this.personTab) {
+                    case 'fb':
+                        this.fetchPublish()
+                        break
+                    case 'tg':
+                        this.fetchSpread()
+                        break
+                    case 'wz':
+                        this.fetchArticle()
+                        break
+                    // no default
+                }
+            },
+            // 推广列表
+            fetchSpread() {
+                this.$api.getPopularizeBySectionId({
+                    sectionId: this.listName,
+                    pageNum: this.page.current,
+                    pageSize: this.page.size
+                }).then((res) => {
+                    if (res) {
+                        this.page.total = res.info.total
+                        this.ewmList = res.info.list
+                    }
+                })
+            },
+            // 文章列表
+            fetchArticle() {
+                this.$api.getArticleDetail({
+                    sectionId: this.listName,
+                    pageNum: this.page.current,
+                    pageSize: this.page.size
+                }).then((res) => {
+                    if (res) {
+                        this.page.total = res.info.total
+                        this.articleList = res.info.list
+                    }
+                })
             }
         },
         components: {
@@ -463,6 +409,7 @@
             }
         }
     }
+
     .publish_list {
         /*padding: 20px;*/
         /*display: flex;*/
@@ -492,12 +439,12 @@
                     width: 180px;
                 }
             }
-            .article_info{
+            .article_info {
                 margin-left: 10px;
                 /*width: 300px;*/
                 position: relative;
 
-                h3{
+                h3 {
                     .el-button {
                         font-size: 16px;
                         font-weight: normal;
@@ -509,28 +456,29 @@
                         text-align: left;
                     }
                 }
-                .article_info_detail{
+                .article_info_detail {
                     font-size: 12px;
                     position: absolute;
                     bottom: 0;
 
-                    span{
+                    span {
                         margin-right: 10px;
                     }
-                    .iconai-eye{
+                    .iconai-eye {
                         color: #ccc;
                         position: relative;
                         top: 2px;
                     }
                 }
             }
-            .share{
+            .share {
                 position: absolute;
                 bottom: 10px;
                 right: 0;
             }
         }
     }
+
     .wxq {
         margin-top: 10px;
         display: flex;
@@ -579,7 +527,7 @@
                 text-overflow: ellipsis;
                 white-space: nowrap;
             }
-            span{
+            span {
                 color: #888;
                 font-size: 12px;
                 margin-top: 5px;
