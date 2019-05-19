@@ -10,8 +10,8 @@
                     <el-radio v-for="(item, index) in typeList" :key="index" :label="item.id">{{ item.name }}</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item prop="trade" label="所属行业">
-                <el-select v-model="publishForm.trade" placeholder="请选择所属行业" size="mini">
+            <el-form-item prop="sectionId" label="所属行业">
+                <el-select v-model="publishForm.sectionId" placeholder="请选择所属行业" size="mini">
                     <el-option v-for="(item, index) in tradeList" :key="index" :label="item.name"
                                :value="item.id"></el-option>
                 </el-select>
@@ -22,46 +22,46 @@
             <el-form-item prop="name" label="名称">
                 <el-input v-model="publishForm.name" placeholer="请输入名称" size="mini"></el-input>
             </el-form-item>
-            <el-form-item prop="introduce" label="介绍">
-                <el-input v-model="publishForm.introduce" placeholder="请输入介绍" size="mini"></el-input>
+            <el-form-item prop="description" label="介绍">
+                <el-input v-model="publishForm.description" placeholder="请输入介绍" size="mini"></el-input>
             </el-form-item>
-            <el-form-item prop="cover" label="展示图片">
+            <el-form-item prop="url" label="展示图片">
                 <el-upload action="/"
                            :on-change="changeCover"
                            class="avatar-uploader"
                            :show-file-list="false"
                            :auto-upload="false"
                            :before-upload="beforeCoverUpload">
-                    <img v-if="publishForm.cover && publishForm.cover !== ''" :src="publishForm.cover" class="avatar">
+                    <img v-if="publishForm.url && publishForm.url !== ''" :src="publishForm.url" class="avatar">
                     <i class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
-            <el-form-item prop="groupCode" label="群二维码">
+            <el-form-item prop="imgUrl1" label="群二维码">
                 <el-upload action="/"
                            :on-success="changeGroupCode"
                            class="avatar-uploader"
                            :show-file-list="false"
                            :auto-upload="false"
                            :before-upload="beforeGroupCodeUpload">
-                    <img v-if="publishForm.groupCode && publishForm.groupCode !== ''" :src="publishForm.groupCode"
+                    <img v-if="publishForm.imgUrl1 && publishForm.imgUrl1 !== ''" :src="publishForm.imgUrl1"
                          class="avatar">
                     <i class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
-            <el-form-item prop="ownerCode" label="群主二维码" v-if="publishForm.type === 'wxq'">
+            <el-form-item prop="imgUrl2" label="群主二维码" v-if="publishForm.type === 'wxq'">
                 <el-upload action="/"
                            :on-success="changeOwnerCode"
                            class="avatar-uploader"
                            :show-file-list="false"
                            :auto-upload="false"
                            :before-upload="beforeOwnerCodeUpload">
-                    <img v-if="publishForm.ownerCode && publishForm.ownerCode !== ''" :src="publishForm.ownerCode"
+                    <img v-if="publishForm.imgUrl2 && publishForm.imgUrl2 !== ''" :src="publishForm.imgUrl2"
                          class="avatar">
                     <i class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
-            <el-form-item prop="wechat" label="群主微信号" v-if="publishForm.type === 'wxh'">
-                <el-input v-model="publishForm.wechat" placeholer="请输入群主微信号" size="mini"></el-input>
+            <el-form-item prop="ownerWechat" label="群主微信号" v-if="publishForm.type === 'wxq'">
+                <el-input v-model="publishForm.ownerWechat" placeholer="请输入群主微信号" size="mini"></el-input>
             </el-form-item>
             <el-form-item>
                 发布或修改需要消费: <span style="color: red; font-weight: bold;">10</span>金币，剩余<span style="color: red; font-weight: bold;">{{ userInfo.money }}</span>金币
@@ -76,6 +76,8 @@
 </template>
 
 <script>
+    import areaList from '@/utils/city'
+
     export default {
         name: "edit",
         props: {
@@ -85,6 +87,27 @@
             }
         },
         data() {
+            let validUrl = (rule, value, callback) => {
+                if (this.publishForm.url === '') {
+                    callback(new Error('请上传展示图片'))
+                } else {
+                    callback()
+                }
+            }
+            let validImgUrl = (rule, value, callback) => {
+                if (this.publishForm.imgUrl1 === '') {
+                    callback(new Error('请上传二维码'))
+                } else {
+                    callback()
+                }
+            }
+            let validImgUrl2 = (rule, value, callback) => {
+                if (this.publishForm.imgUrl2 === '') {
+                    callback(new Error('请上传群主二维码'))
+                } else {
+                    callback()
+                }
+            }
             return {
                 publishTab: '',
                 publishTabList: [
@@ -93,15 +116,28 @@
                 ],
                 publishForm: {
                     type: this.types,
-                    trade: '',
+                    sectionId: '',
                     area: [],
                     name: '',
-                    introduce: '',
-                    cover: '',
-                    groupCode: '',
-                    ownerCode: '',
+                    description: '',
+                    url: '',
+                    imgUrl1: '',
+                    imgUrl2: '',
+                    position1: '',
+                    position2: '',
+                    position3: '',
+                    ownerWechat: ''
                 },
-                publishRule: {},
+                publishRule: {
+                    sectionId: [{ required: true, message: '请选择行业', trigger: 'change' }],
+                    area: [{ required: true, message: '请选择地区', trigger: 'change' }],
+                    name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+                    description: [{ required: true, message: '请输入介绍', trigger: 'change' }],
+                    url: [{ required: true, validator: validUrl, trigger: 'change' }],
+                    imgUrl1: [{ required: true, validator: validImgUrl, trigger: 'change' }],
+                    imgUrl2: [{ required: true, validator: validImgUrl2, trigger: 'change' }],
+                    ownerWechat: [{ required: true, message: '请输入群主微信号', trigger: 'change' }]
+                },
                 typeList: [
                     { name: '微信群', id: 'wxq' },
                     { name: '公众号', id: 'gzh' },
@@ -109,7 +145,7 @@
                     { name: '其他', id: 'qt' }
                 ],
                 tradeList: [],
-                areaList: [],
+                areaList: areaList,
                 imageUrl: '',
                 userInfo: {
                     money: 200
@@ -118,11 +154,15 @@
             }
         },
         mounted() {
+            this.fetchTrade()
             if (this.$route.query && this.$route.query.title) {
                 return this.$route.query.title.includes('发布') ? this.title = '发布' : this.title = '编辑'
             }
             if (this.$route.query && this.$route.query.type) {
                 this.publishForm.type = this.$route.query.type
+            }
+            if (this.$route.query.id) {
+                this.fetchData()
             }
         },
         watch: {
@@ -131,6 +171,23 @@
             }
         },
         methods: {
+            fetchData() {
+                this.$api.getArticle({
+                    id: this.$route.query.id ? this.$route.query.id : ''
+                }).then((res) => {
+                    if (res) {
+                        this.publishForm = res.data
+                    }
+                })
+            },
+            // 获取行业列表
+            fetchTrade() {
+                this.$api.getTrade().then((res) => {
+                    if (res) {
+                        this.tradeList = res.data
+                    }
+                })
+            },
             // 切换tabs
             changeTabs(val) {
                 console.log(val)
@@ -163,9 +220,28 @@
             },
             // 发布/编辑
             toPublish(formName) {
+                if (this.publishForm.area.length > 0) {
+                    this.publishForm.position1 = this.publishForm.area[0]
+                }
+                if (this.publishForm.area.length > 1) {
+                    this.publishForm.position1 = this.publishForm.area[0]
+                    this.publishForm.position2 = this.publishForm.area[1]
+                }
+                if (this.publishForm.area.length > 2) {
+                    this.publishForm.position1 = this.publishForm.area[0]
+                    this.publishForm.position2 = this.publishForm.area[1]
+                    this.publishForm.position3 = this.publishForm.area[2]
+                }
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.$message.success(`${this.title}成功`)
+                        this.$api.addStaticQRCode(this.publishForm).then((res) => {
+                            if (res) {
+                                this.$message.success(`${this.title}成功`)
+                                setTimeout(() => {
+                                    this.$router.push('/person')
+                                }, 500)
+                            }
+                        })
                     }
                 })
             },

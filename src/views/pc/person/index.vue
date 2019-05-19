@@ -210,7 +210,7 @@
 //                })
             },
             fetchTabs() {
-                this.$api.getTradeList().then((res) => {
+                this.$api.getTrade().then((res) => {
                     this.listNameList = res.data
                 })
             },

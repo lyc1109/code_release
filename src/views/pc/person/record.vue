@@ -56,7 +56,15 @@
         methods: {
             // 初始化数据
             fetchData() {
-                console.log('初始化数据')
+                this.$api.getBillDetail({
+                    pageNum: this.page.current,
+                    pageSize: this.page.size
+                }).then((res) => {
+                    if (res) {
+                        this.page.total = res.info.total
+                        this.recordData = res.info.list
+                    }
+                })
             },
              // 跳转到某一页
             changeCurrent(val) {
