@@ -20,6 +20,11 @@ require('@/../public/fonts/iconfont/iconfont.css')
 import Vant, {Toast, Dialog} from 'vant'
 import 'vant/lib/index.css'
 
+import moment from 'moment'
+Vue.use(require('vue-moment'), {
+    moment
+})
+Vue.prototype.moment = moment
 Vue.use(Vant)
 let reg = /Android|webOS|iPhone|iPod|iPad|BlackBerry/i
 router.beforeEach((to, from, next) => {

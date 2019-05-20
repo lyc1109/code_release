@@ -1,28 +1,28 @@
 <template>
     <el-form :model="article" ref="article" :rules="articleRule" label-width="100px">
-        <el-form-item prop="trade" label="所属行业">
-            <el-select v-model="article.trade" placeholder="请选择所属行业" size="mini">
+        <el-form-item prop="sectionId" label="所属行业">
+            <el-select v-model="article.sectionId" placeholder="请选择所属行业" size="mini">
                 <el-option v-for="(item, index) in tradeList" :key="index" :label="item.name" :value="item.id"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item prop="name" label="名称">
             <el-input v-model="article.name" placeholder="请填写名称" size="mini"></el-input>
         </el-form-item>
-        <el-form-item prop="summary" label="摘要">
-            <el-input v-model="article.summary" placeholder="请填写摘要" type="textarea" size="mini"></el-input>
+        <el-form-item prop="description" label="摘要">
+            <el-input v-model="article.description" placeholder="请填写摘要" type="textarea" rows="4" size="mini"></el-input>
         </el-form-item>
         <el-form-item prop="content" label="内容">
-            <el-input v-model="article.content" placeholer="请填写内容"></el-input>
+            <el-input v-model="article.content" placeholer="请填写内容" rows="6" type="textarea"></el-input>
         </el-form-item>
-        <el-form-item prop="cover" label="封面">
-            <el-upload action="/"
-                       :auto-upload="false"
+        <el-form-item prop="coverUrl" label="封面">
+            <el-upload action="/api/file/add"
                        :show-file-list="false"
                        :on-success="changeCover"
                        class="avatar-uploader"
-                       :before-upload="beforeCoverUpload">
-                <img v-if="article.cover && article.cover !== ''" :src="article.cover" class="avatar">
-                <i class="el-icon-plus avatar-uploader-icon"></i>
+                       :before-upload="beforeCoverUpload"
+                       accept=".jpg,.jpeg,.png,.gif,.JPG,.JPEG,.PBG,.GIF">
+                <img v-if="article.coverUrl && article.coverUrl !== ''" :src="article.coverUrl" class="avatar">
+                <i class="el-icon-plus avatar-uploader-icon" v-else></i>
             </el-upload>
         </el-form-item>
         <el-form-item>
@@ -31,24 +31,38 @@
             <el-button type="success" size="mini" @click="getGold">赚金币</el-button>
         </el-form-item>
         <el-form-item style="text-align: right;">
-            <el-button type="primary" @click="toPublish('publish')" size="mini">{{ title }}</el-button>
+            <el-button type="primary" @click="toPublish('article')" size="mini">{{ title }}</el-button>
         </el-form-item>
     </el-form>
+
 </template>
 
 <script>
     export default {
         name: "publishArticle",
         data() {
+            // let validUrl = (rule, value, callback) => {
+            //     if (this.article.coverUrl === '') {
+            //         callback(new Error('请上传封面图'))
+            //     } else {
+            //         callback()
+            //     }
+            // }
             return {
                 article: {
-                    trade: '',
+                    sectionId: '',
                     name: '',
-                    summary: '',
+                    description: '',
                     content: '',
-                    cover: ''
+                    coverUrl: ''
                 },
-                articleRule: {},
+                articleRule: {
+                    sectionId: [{ required: true, message: '请选择行业', trigger: 'change' }],
+                    name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+                    description: [{ required: true, message: '请输入介绍', trigger: 'change' }],
+                    content: [{ required: true, message: '请输入内容', trigger: 'change' }],
+                    // coverUrl: [{ required: true, validator: validUrl, trigger: 'change' }],
+                },
                 tradeList: [],
                 userInfo: {
                     money: 200
@@ -57,26 +71,70 @@
             }
         },
         mounted() {
+            this.fetchTrade()
+            this.fetchCount()
             if (this.$route.query && this.$route.query.title) {
                 return this.$route.query.title.includes('发布文章') ? this.title = '发布文章' : this.title = '编辑文章'
             }
+            if (this.$route.query && this.$route.query.id) {
+                this.fetchData()
+            }
         },
         methods: {
-            // 展示图片上传成功
+            // 编辑时初始化数据
+            fetchData() {
+                this.$api.getArticle({
+                    id: this.$route.query.id ? this.$route.query.id : ''
+                }).then((res) => {
+                    if (res) {
+                        this.article = res.data
+                    }
+                })
+            },
+            fetchCount() {
+                if (sessionStorage && sessionStorage.getItem('user')) {
+                    console.log(JSON.parse(sessionStorage.getItem('user')))
+                    this.userInfo.money = JSON.parse(sessionStorage.getItem('user')).count
+                }
+            },
+            // 获取行业列表
+            fetchTrade() {
+                this.$api.getTrade().then((res) => {
+                    if (res) {
+                        this.tradeList = res.data
+                    }
+                })
+            },
+            // 封面图上传成功
             changeCover(file) {
-                // this.publishForm.cover = URL.createObjectURL(file.raw);
-                this.publishForm.cover = file.url
+                // this.article.cover = URL.createObjectURL(file.raw);
+                this.article.coverUrl = file.data.url
                 // console.log(file)
             },
-            // 展示图片上传到服务器前
+            // 封面图上传到服务器前
             beforeCoverUpload(file) {
-                console.log(file)
+                const isLt2M = file.size / 1024 / 1024 <= 5
+                if (!isLt2M) {
+                    this.$message.error('上传文件大小不能超过5M')
+                }
             },
             // 发布/编辑
             toPublish(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.$message.success(`${this.title}成功`)
+                        if (!this.article.coverUrl || this.article.coverUrl === '') {
+                            this.$message.error('请上传封面')
+                            return false
+                        }
+                        this.$api.addArticle(this.article).then((res) => {
+                            if (res) {
+                                this.$message.success(`${this.title}成功`)
+                                setTimeout(() => {
+                                    this.$router.push('/person')
+                                    this.$router.go(0)
+                                }, 500)
+                            }
+                        })
                     }
                 })
             },

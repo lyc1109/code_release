@@ -56,7 +56,7 @@
                                 </h3>
                                 <p>{{ item.description }}</p>
                                 <div class="article_info_detail">
-                                    <span>{{ item.sectionId }}</span>
+                                    <span>{{ item.section }}</span>
                                     <span>发布时间：{{ item.createTime }}</span>
                                     <i class="iconai-eye iconfont"></i>
                                     <span style="margin-left: 5px;">{{ item.popOriginalId }}</span>
@@ -75,7 +75,7 @@
                                        @size-change="changeSize"
                                        @current-change="changePage" style="float: right;margin-top: 10px;"
                                        v-if="articleList.length"></el-pagination>
-                        <p class="text-center" style="font-size: 20px;" v-if="!articleList.length || !ewmList.length">
+                        <p class="text-center" style="font-size: 20px;" v-if="!articleList.length">
                             暂无数据</p>
                     </div>
                     <!--推广-->
@@ -109,7 +109,7 @@
                 <!--发布编辑-->
                 <publish-box
                         v-if="defaultVal === 'wxq' || defaultVal === 'gzh' || defaultVal === 'gr' || defaultVal === 'qt'"
-                        :types="defaultVal" @jump="getVal">
+                        :types="defaultVal" @jump="getVal" :coin="coin">
                 </publish-box>
                 <!--发布文章-->
                 <publish-article v-if="defaultVal === 'wz'"></publish-article>
@@ -137,6 +137,7 @@
     import recordBox from '@/views/pc/person/record'
     import ruleBox from '@/views/pc/person/rule'
     import avatar from '@/assets/images/avatar.jpg'
+    import moment from 'vue-moment'
 
     export default {
         name: "person",
@@ -183,7 +184,8 @@
                 user: {
                     user: '',
                     coverUrl: ''
-                }
+                },
+                coin: 0
             }
         },
         created() {
@@ -203,11 +205,14 @@
                     }
                 })
                 // 获取个人中心信息
-//                this.$api.getBuzzInfo().then((res) => {
-//                    if (res) {
-//                        this.userInfo = res.data
-//                    }
-//                })
+               this.$api.getBuzzInfo().then((res) => {
+                   if (res) {
+                       this.userInfo[0].num = res.coin
+                       this.userInfo[1].num = res.publish
+                       this.userInfo[2].num = res.popularize
+                       this.userInfo[3].num = res.article
+                   }
+               })
             },
             fetchTabs() {
                 this.$api.getTrade().then((res) => {
@@ -224,6 +229,13 @@
                     if (res) {
                         this.page.total = res.info.total
                         this.articleList = res.info.list
+                        this.articleList.forEach((value, index, arr) => {
+                            this.listNameList.forEach((data) => {
+                                if (value.sectionId === data.id) {
+                                    arr[index].section = data.name
+                                }
+                            })
+                        })
                     }
                 })
             },
@@ -262,8 +274,14 @@
             delArticle(data) {
                 this.$confirm('确定删除此推广文章？')
                     .then(() => {
-                        this.$message.success('删除成功')
-                        this.fetchData()
+                        this.$api.deleteArticle({
+                            id: data.id
+                        }).then((res) => {
+                            if (res) {
+                                this.$message.success('删除成功')
+                                this.fetchData()
+                            }
+                        })
                     })
             },
             // 修改文章每页展示的条数
@@ -285,6 +303,7 @@
                 const obj1 = this.personList.filter((value) => {
                     return this.defaultVal === value.value
                 })
+                this.coin = this.userInfo[0].num
                 this.$router.push({
                     path: this.$route.path,
                     query: {
@@ -298,13 +317,14 @@
             },
             // 编辑
             edit(data) {
+                console.log(data)
                 const obj = this.contentList.filter((value) => {
-                    return value.name.includes(data.type)
+                    return value.name.includes(data.section)
                 })
                 this.$router.push({
                     path: this.$route.path,
                     query: {
-                        title: `发布${data.type}`,
+                        title: `编辑${data.section}`,
                         type: obj.length > 0 ? obj[0].value : '',
                         id: data.id
                     }
@@ -315,7 +335,14 @@
             del(id) {
                 this.$confirm('确定删除？')
                     .then(() => {
-                        this.$message.success('删除成功')
+                        this.$api.deleteArticle({
+                            id: id
+                        }).then((res) => {
+                            if (res) {
+                                this.$message.success('删除成功')
+                                this.fetchData()
+                            }
+                        })
                     })
             },
             // 修改栏目
@@ -357,6 +384,13 @@
                     if (res) {
                         this.page.total = res.info.total
                         this.articleList = res.info.list
+                        this.articleList.forEach((value, index, arr) => {
+                            this.listNameList.forEach((data) => {
+                                if (value.sectionId === data.id) {
+                                    arr[index].section = data.name
+                                }
+                            })
+                        })
                     }
                 })
             }
@@ -443,6 +477,7 @@
                 margin-left: 10px;
                 /*width: 300px;*/
                 position: relative;
+                width: 80%;
 
                 h3 {
                     .el-button {
@@ -455,6 +490,11 @@
                         padding: 0;
                         text-align: left;
                     }
+                }
+                p{
+                    display: inline-block;
+                    margin-bottom: 20px;
+                    line-height: 30px;
                 }
                 .article_info_detail {
                     font-size: 12px;

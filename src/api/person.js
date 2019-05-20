@@ -64,7 +64,7 @@ const api = {
         return http.get(`${base}/refreshCode`, params)
     },
     /**
-     * 刷新二维码, 置顶
+     * 保存一篇文章
      * @param params
      */
     addArticle(params = {}) {

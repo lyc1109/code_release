@@ -23,48 +23,45 @@
                 <el-input v-model="publishForm.name" placeholer="请输入名称" size="mini"></el-input>
             </el-form-item>
             <el-form-item prop="description" label="介绍">
-                <el-input v-model="publishForm.description" placeholder="请输入介绍" size="mini"></el-input>
+                <el-input v-model="publishForm.description" placeholder="请输入介绍" size="mini" type="textarea" rows="4"></el-input>
             </el-form-item>
             <el-form-item prop="url" label="展示图片">
-                <el-upload action="/"
-                           :on-change="changeCover"
+                <el-upload action="/api/file/add"
+                           :on-success="changeCover"
                            class="avatar-uploader"
                            :show-file-list="false"
-                           :auto-upload="false"
                            :before-upload="beforeCoverUpload">
                     <img v-if="publishForm.url && publishForm.url !== ''" :src="publishForm.url" class="avatar">
-                    <i class="el-icon-plus avatar-uploader-icon"></i>
+                    <i class="el-icon-plus avatar-uploader-icon" v-else></i>
                 </el-upload>
             </el-form-item>
             <el-form-item prop="imgUrl1" label="群二维码">
-                <el-upload action="/"
+                <el-upload action="/api/file/add"
                            :on-success="changeGroupCode"
                            class="avatar-uploader"
                            :show-file-list="false"
-                           :auto-upload="false"
                            :before-upload="beforeGroupCodeUpload">
                     <img v-if="publishForm.imgUrl1 && publishForm.imgUrl1 !== ''" :src="publishForm.imgUrl1"
                          class="avatar">
-                    <i class="el-icon-plus avatar-uploader-icon"></i>
+                    <i class="el-icon-plus avatar-uploader-icon" v-else></i>
                 </el-upload>
             </el-form-item>
             <el-form-item prop="imgUrl2" label="群主二维码" v-if="publishForm.type === 'wxq'">
-                <el-upload action="/"
+                <el-upload action="/api/file/add"
                            :on-success="changeOwnerCode"
                            class="avatar-uploader"
                            :show-file-list="false"
-                           :auto-upload="false"
                            :before-upload="beforeOwnerCodeUpload">
                     <img v-if="publishForm.imgUrl2 && publishForm.imgUrl2 !== ''" :src="publishForm.imgUrl2"
                          class="avatar">
-                    <i class="el-icon-plus avatar-uploader-icon"></i>
+                    <i class="el-icon-plus avatar-uploader-icon" v-else></i>
                 </el-upload>
             </el-form-item>
             <el-form-item prop="ownerWechat" label="群主微信号" v-if="publishForm.type === 'wxq'">
                 <el-input v-model="publishForm.ownerWechat" placeholer="请输入群主微信号" size="mini"></el-input>
             </el-form-item>
             <el-form-item>
-                发布或修改需要消费: <span style="color: red; font-weight: bold;">10</span>金币，剩余<span style="color: red; font-weight: bold;">{{ userInfo.money }}</span>金币
+                发布或修改需要消费: <span style="color: red; font-weight: bold;">10</span>金币，剩余<span style="color: red; font-weight: bold;">{{ coin }}</span>金币
                 <el-button type="success" size="mini" @click="recharge" style="margin-left: 5px;">充值</el-button>
                 <el-button type="success" size="mini" @click="getGold">赚金币</el-button>
             </el-form-item>
@@ -84,30 +81,34 @@
             types: {
                 type: String,
                 default: 'wxq'
+            },
+            coin: {
+                type: Number,
+                default: 0
             }
         },
         data() {
-            let validUrl = (rule, value, callback) => {
-                if (this.publishForm.url === '') {
-                    callback(new Error('请上传展示图片'))
-                } else {
-                    callback()
-                }
-            }
-            let validImgUrl = (rule, value, callback) => {
-                if (this.publishForm.imgUrl1 === '') {
-                    callback(new Error('请上传二维码'))
-                } else {
-                    callback()
-                }
-            }
-            let validImgUrl2 = (rule, value, callback) => {
-                if (this.publishForm.imgUrl2 === '') {
-                    callback(new Error('请上传群主二维码'))
-                } else {
-                    callback()
-                }
-            }
+            // let validUrl = (rule, value, callback) => {
+            //     if (this.publishForm.url === '') {
+            //         callback(new Error('请上传展示图片'))
+            //     } else {
+            //         callback()
+            //     }
+            // }
+            // let validImgUrl = (rule, value, callback) => {
+            //     if (this.publishForm.imgUrl1 === '') {
+            //         callback(new Error('请上传二维码'))
+            //     } else {
+            //         callback()
+            //     }
+            // }
+            // let validImgUrl2 = (rule, value, callback) => {
+            //     if (this.publishForm.imgUrl2 === '') {
+            //         callback(new Error('请上传群主二维码'))
+            //     } else {
+            //         callback()
+            //     }
+            // }
             return {
                 publishTab: '',
                 publishTabList: [
@@ -133,9 +134,9 @@
                     area: [{ required: true, message: '请选择地区', trigger: 'change' }],
                     name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
                     description: [{ required: true, message: '请输入介绍', trigger: 'change' }],
-                    url: [{ required: true, validator: validUrl, trigger: 'change' }],
-                    imgUrl1: [{ required: true, validator: validImgUrl, trigger: 'change' }],
-                    imgUrl2: [{ required: true, validator: validImgUrl2, trigger: 'change' }],
+                    // url: [{ required: true, validator: validUrl, trigger: 'change' }],
+                    // imgUrl1: [{ required: true, validator: validImgUrl, trigger: 'change' }],
+                    // imgUrl2: [{ required: true, validator: validImgUrl2, trigger: 'change' }],
                     ownerWechat: [{ required: true, message: '请输入群主微信号', trigger: 'change' }]
                 },
                 typeList: [
@@ -153,6 +154,11 @@
                 title: '发布'
             }
         },
+        created() {
+            if (this.$route.query.id) {
+                this.fetchData()
+            }
+        },
         mounted() {
             this.fetchTrade()
             if (this.$route.query && this.$route.query.title) {
@@ -160,9 +166,6 @@
             }
             if (this.$route.query && this.$route.query.type) {
                 this.publishForm.type = this.$route.query.type
-            }
-            if (this.$route.query.id) {
-                this.fetchData()
             }
         },
         watch: {
@@ -176,7 +179,9 @@
                     id: this.$route.query.id ? this.$route.query.id : ''
                 }).then((res) => {
                     if (res) {
-                        this.publishForm = res.data
+                        this.publishForm = res.info
+                        this.publishForm.area = [this.publishForm.position1, this.publishForm.position2, this.publishForm.position3]
+                        this.publishForm.type = this.$route.query.type
                     }
                 })
             },
@@ -193,9 +198,9 @@
                 console.log(val)
             },
             // 展示图片上传成功
-            changeCover(file) {
+            changeCover(res) {
                 // this.publishForm.cover = URL.createObjectURL(file.raw);
-                this.publishForm.cover = file.url
+                this.publishForm.url = res.data.url
                 // console.log(file)
             },
             // 展示图片上传到服务器前
@@ -203,16 +208,16 @@
                 console.log(file)
             },
             // 群二维码上传成功
-            changeGroupCode(res, file) {
-                this.publishForm.groupCode = URL.createObjectURL(file.raw);
+            changeGroupCode(res) {
+                this.publishForm.imgUrl1 = res.data.url
             },
             // 群二维码上传到服务器前
             beforeGroupCodeUpload(file) {
                 console.log(file)
             },
             // 群主二维码上传成功
-            changeOwnerCode(res, file) {
-                this.publishForm.ownerCode = URL.createObjectURL(file.raw);
+            changeOwnerCode(res) {
+                this.publishForm.imgUrl2 = res.data.url
             },
             // 群主二维码上传到服务器前
             beforeOwnerCodeUpload(file) {
@@ -220,6 +225,7 @@
             },
             // 发布/编辑
             toPublish(formName) {
+                let form = {}
                 if (this.publishForm.area.length > 0) {
                     this.publishForm.position1 = this.publishForm.area[0]
                 }
@@ -232,13 +238,35 @@
                     this.publishForm.position2 = this.publishForm.area[1]
                     this.publishForm.position3 = this.publishForm.area[2]
                 }
+                form = this.publishForm
+                if (this.type === 'gzh' || this.type == 'gr' || this.type === 'qt') {
+                    delete form.ownerWechat
+                    delete form.imgUrl2
+                } else if (this.type === 'wxq') {
+                    form['ownerWechat'] = this.publishForm.ownerWechat
+                    form['imgUrl2'] = this.publishForm.imgUrl2
+                }
+                console.log(form)
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        if (!this.publishForm.url || this.publishForm.url === '') {
+                            this.$message.error('请上传展示图片')
+                            return false
+                        }
+                        if (!this.publishForm.imgUrl1 || this.publishForm.imgUrl1 === '') {
+                            this.$message.error('请上传群二维码')
+                            return false
+                        }
+                        if (this.publishForm.type === 'wxq' && (!this.publishForm.imgUrl2 || this.publishForm.imgUrl2 === '')) {
+                            this.$message.error('请上传群主二维码')
+                            return false
+                        }
                         this.$api.addStaticQRCode(this.publishForm).then((res) => {
                             if (res) {
                                 this.$message.success(`${this.title}成功`)
                                 setTimeout(() => {
                                     this.$router.push('/person')
+                                    this.$router.go(0)
                                 }, 500)
                             }
                         })

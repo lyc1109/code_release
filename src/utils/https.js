@@ -56,12 +56,13 @@ axios.interceptors.response.use(
         // }
 
         // 状态码为200表示请求成功，否则失败
-        if(response.status === 200) {
+        if(response.status === 200 && respData.status) {
             if(respData.data !== null) {
                 return respData.data
             }
             return respData
         } else {
+            Element.Message.error(respData.msg)
             // 未授权登录
             const httpStatusCode = respData.httpStatusCode
             if(httpStatusCode === 401 || respData.code === 1200) {
