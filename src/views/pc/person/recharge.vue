@@ -1,19 +1,22 @@
 <template>
-    <div class="home">
+    <div>
         <el-form :model="recharge" ref="recharge" :rules="rechargeRule" label-width="100px">
             <el-form-item prop="count" label="金额">
 <!--                <el-select v-model="recharge.count" placeholder="请选择充值金额">-->
 <!--                    <el-option v-for="(item, index) in countList" :key="index" :label="item.name" :value="item.id"></el-option>-->
 <!--                </el-select>-->
                 <el-radio-group v-model="recharge.count" @change="changeCount" size="mini">
-                    <el-radio v-for="(item, index) in countList" :key="index" :label="item.id">{{ item.name }}</el-radio>
+                    <el-radio v-for="(item, index) in countList" :key="index" :label="item.id">{{ item.money }}元</el-radio>
                 </el-radio-group>
                 <div class="recharge_code">
                     <img :src="recharge.url" alt="">
                 </div>
             </el-form-item>
+            <el-form-item prop="rules" label="金币规则">
+                <span>{{ rules }}</span>
+            </el-form-item>
             <el-form-item prop="gold" label="您将入账金币">
-                <span><b style="color: red;">{{ recharge.gold }}</b>金币</span>
+                <span><b style="color: red;">{{ gold }}</b>金币</span>
             </el-form-item>
             <el-form-item prop="serial" label="转账流水号">
                 <el-input v-model="recharge.serial" placeholder="请输入转账流水号" size="mini"></el-input>
@@ -32,29 +35,40 @@
             return {
                 recharge: {
                     count: 10,
-                    url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                    gold: 200,
+                    url: '',
                     serial: ''
                 },
                 rechargeRule: {
                     count: [{ required: true, message: '请输入充值金额', trigger: 'blur' }],
                     serial: [{ required: true, message: '请输入转账流水号', trigger: 'blur' }]
                 },
-                countList: [
-                    { name: '10元', id: 10 },
-                    { name: '50元', id: 50 },
-                    { name: '100元', id: 100 }
-                ]
+                countList: [],
+                gold: 0,
+                rules: ''
             }
+        },
+        created() {
+            this.fetchData()
         },
         methods: {
             // 初始化数据
             fetchData() {
-                console.log('初始化数据')
+                this.$api.getRechargeSetting().then((res) => {
+                    if (res) {
+                        this.recharge.url = res.rechargeQRCodeUrl
+                        this.countList = res.rechargeSelect
+                        this.recharge.count = this.countList[0].id
+                        this.gold = this.countList[0].coin
+                        this.rules = res.msg
+                    }
+                })
             },
             // 修改金额
             changeCount(val) {
-                console.log(val)
+                let obj = this.countList.filter((data) => {
+                    return data.id === val
+                })
+                this.gold = obj[0].coin
             },
             // 确定充值
             toRecharge(formName) {

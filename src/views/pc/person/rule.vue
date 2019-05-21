@@ -19,7 +19,11 @@
         methods: {
             // 初始化数据
             fetchData() {
-                console.log('初始化数据')
+                this.$api.getRechargeSetting().then((res) => {
+                    if (res) {
+                        this.goldRule = res.msg
+                    }
+                })
             }
         }
     }

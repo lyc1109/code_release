@@ -2,9 +2,9 @@
     <div>
         <div class="person_m">
             <div class="avatar_m">
-                <img src="../../../assets/images/avatar.jpg" alt="">
+                <img :src="user && user.coverUrl ? user.coverUrl : avatar" alt="">
             </div>
-            <p class="user_name">最帅的仔</p>
+            <p class="user_name">{{ user.user }}</p>
             <div class="user_info_num_list flex">
                 <div class="user_info_num" v-for="(item, index) in userInfo" :key="index" @click="toDetail(item)">
                     <span class="info_num">{{ item.num }}</span>
@@ -36,16 +36,21 @@
 <script>
     import ruleBox from '@/views/mobile/person/rule'
     import { Dialog, Toast } from 'vant'
+    import avatar from '@/assets/images/avatar.jpg'
 
     export default {
         name: "person",
         data() {
             return {
+                avatar: avatar,
+                user: {
+                    user: ''
+                },
                 userInfo: [
-                    {title: '金币', num: 500},
-                    {title: '发布', num: 5, url: '/my_publish'},
-                    {title: '推广', num: 3, url: '/my_spread'},
-                    {title: '文章', num: 8, url: '/my_publish'}
+                    {title: '金币', num: 0},
+                    {title: '发布', num: 0, url: '/my_publish?type=fb'},
+                    {title: '推广', num: 0, url: '/my_spread'},
+                    {title: '文章', num: 0, url: '/my_publish?type=wz'}
                 ],
                 operateList: [
                     {title: '发布微信群', value: '', url: '/publish', id: 'wxq'},
@@ -64,7 +69,26 @@
                 rule: false
             }
         },
+        created() {
+            this.fetchData()
+        },
         methods: {
+            fetchData() {
+                this.$api.getUserInfo().then((res) => {
+                    if (res) {
+                        this.user = res.user
+                    }
+                })
+                // 获取个人中心信息
+                this.$api.getBuzzInfo().then((res) => {
+                    if (res) {
+                        this.userInfo[0].num = res.coin
+                        this.userInfo[1].num = res.publish
+                        this.userInfo[2].num = res.popularize
+                        this.userInfo[3].num = res.article
+                    }
+                })
+            },
             toDetail(data) {
                 if (data.title === '金币规则')
                     this.rule = true

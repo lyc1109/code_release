@@ -8,7 +8,7 @@
                 </div>
                 <p class="user_name">{{ user.user }}</p>
                 <div class="user_info_num_list flex">
-                    <div class="user_info_num" v-for="(item, index) in userInfo" :key="index">
+                    <div class="user_info_num" v-for="(item, index) in userInfo" :key="index" @click="selectIndexTab(item)">
                         <span class="info_num">{{ item.num }}</span>
                         <p>{{ item.title }}</p>
                     </div>
@@ -41,14 +41,14 @@
 
                     <!--发布/文章-->
                     <div class="publish_list" v-if="personTab === 'fb' || personTab === 'wz'">
-                        <el-select v-model="listName" placeholder="请选择栏目" @change="changeList">
+                        <el-select v-model="listName" placeholder="请选择栏目" @change="changeList" size="mini">
                             <el-option v-for="(item, index) in listNameList" :key="index" :label="item.name"
                                        :value="item.id"></el-option>
                         </el-select>
                         <div class="article_list" v-for="(item, index) in articleList" :key="index"
-                             @click="articleDetail(item.id)" v-if="articleList.length">
+                             @click="articleDetail(item)" v-if="articleList.length">
                             <div class="article_img">
-                                <img :src="item.imgUrl1" alt="">
+                                <img :src="item.url" alt="">
                             </div>
                             <div class="article_info">
                                 <h3>
@@ -56,14 +56,16 @@
                                 </h3>
                                 <p>{{ item.description }}</p>
                                 <div class="article_info_detail">
-                                    <span>{{ item.section }}</span>
-                                    <span>发布时间：{{ item.createTime }}</span>
-                                    <i class="iconai-eye iconfont"></i>
-                                    <span style="margin-left: 5px;">{{ item.popOriginalId }}</span>
+                                    <el-tag size="mini">{{ item.section }}</el-tag>
+                                    <el-tag size="mini" v-if="personTab === 'fb'" type="danger">剩余{{ item.popularizePrice }}元，{{ item.popularizeCount }}次可邀请推广</el-tag>
+                                    <span>{{ item.createTime }}</span>
+<!--                                    <i class="iconai-eye iconfont"></i>-->
+<!--                                    <span style="margin-left: 5px;">{{ item.popOriginalId }}</span>-->
                                 </div>
                             </div>
                             <div class="share">
-                                <el-button type="text" @click.stop="edit(item)">编辑</el-button>
+                                <el-button type="text" @click.stop="edit(item)" v-if="personTab === 'wz'">编辑</el-button>
+                                <el-button type="text" @click.stop="inviteSpread(item)" v-if="personTab === 'fb'">邀请推广</el-button>
                                 <el-button type="text" style="color: red;" @click.stop="del(item.id)">删除</el-button>
                             </div>
                         </div>
@@ -80,7 +82,7 @@
                     </div>
                     <!--推广-->
                     <div class="article_list" v-if="personTab === 'tg'">
-                        <el-select v-model="listName" placeholder="请选择栏目" @change="changeList">
+                        <el-select v-model="listName" placeholder="请选择栏目" @change="changeList" size="mini">
                             <el-option v-for="(item, index) in listNameList" :key="index" :label="item.name"
                                        :value="item.id"></el-option>
                         </el-select>
@@ -88,7 +90,7 @@
                             <div class="wxq_box" v-for="(item, index) in ewmList" :key="index"
                                  @click="groupDetail(item.id)">
                                 <div>
-                                    <img :src="item.imgUrl1">
+                                    <img :src="item.url">
                                 </div>
                                 <h5>{{ item.name }}</h5>
                                 <span>推广{{ item.typ }}次, 赚取{{ item.popularizePrice }}金币</span>
@@ -103,6 +105,8 @@
                                        @size-change="changeArticleSize"
                                        @current-change="changeArticleCurrent"
                                        style="float: right;margin-top: 10px;margin-bottom: 10px;" v-if="ewmList.length"></el-pagination>
+                        <p class="text-center" style="font-size: 20px;" v-else>
+                            暂无数据</p>
                     </div>
                 </div>
 
@@ -112,7 +116,7 @@
                         :types="defaultVal" @jump="getVal" :coin="coin">
                 </publish-box>
                 <!--发布文章-->
-                <publish-article v-if="defaultVal === 'wz'"></publish-article>
+                <publish-article v-if="defaultVal === 'wz'" :coin="coin"></publish-article>
                 <!--资料-->
                 <profile-box v-if="defaultVal === 'zl'"></profile-box>
                 <!--充值-->
@@ -121,6 +125,8 @@
                 <record-box v-if="defaultVal === 'mx'"></record-box>
                 <!--规则-->
                 <rule-box v-if="defaultVal === 'gz'"></rule-box>
+                <!--邀请推广-->
+                <invite-box :is-show="invite" @toggle="toggleInvite" :codeId="codeId"></invite-box>
             </el-col>
         </el-row>
         <footer-box></footer-box>
@@ -137,7 +143,8 @@
     import recordBox from '@/views/pc/person/record'
     import ruleBox from '@/views/pc/person/rule'
     import avatar from '@/assets/images/avatar.jpg'
-    import moment from 'vue-moment'
+    // import moment from 'vue-moment'
+    import inviteBox from '@/views/pc/person/invite'
 
     export default {
         name: "person",
@@ -145,10 +152,10 @@
             return {
                 avatar: avatar,
                 userInfo: [
-                    {title: '金币', num: 500},
-                    {title: '发布', num: 5},
-                    {title: '推广', num: 3},
-                    {title: '文章', num: 8}
+                    {title: '金币', num: 0},
+                    {title: '发布', num: 0},
+                    {title: '推广', num: 0},
+                    {title: '文章', num: 0}
                 ],
                 defaultVal: '',
                 contentList: [
@@ -185,16 +192,63 @@
                     user: '',
                     coverUrl: ''
                 },
-                coin: 0
+                coin: 0,
+                invite: false,
+                codeId: 0
             }
         },
         created() {
             if (this.$route.query && this.$route.query.type) {
                 this.defaultVal = this.$route.query.type
             }
+            if (this.$route.query.tab) {
+                switch (this.$route.query.tab) {
+                    case '发布':
+                        this.personTab = 'fb'
+                        this.fetchPublish()
+                        break
+                    case '推广':
+                        this.personTab = 'tg'
+                        this.fetchSpread()
+                        break
+                    case '文章':
+                        this.personTab = 'wz'
+                        this.fetchArticle()
+                        break
+                    // no default
+                }
+            }
             this.fetchData()
             this.fetchTabs()
             this.fetchPublish()
+        },
+        mounted() {
+            this.$nextTick(() => {
+                window.addEventListener('popstate', () => {
+                    if (this.$route.query.type) {
+                        this.defaultVal = this.$route.query.type
+                    } else {
+                        this.defaultVal = ''
+                    }
+                    if (this.$route.query.tab) {
+                        switch (this.$route.query.tab) {
+                            case '发布':
+                                this.personTab = 'fb'
+                                this.fetchPublish()
+                                break
+                            case '推广':
+                                this.personTab = 'tg'
+                                this.fetchSpread()
+                                break
+                            case '文章':
+                                this.personTab = 'wz'
+                                this.fetchArticle()
+                                break
+                            // no default
+                        }
+                    }
+                })
+            })
         },
         methods: {
             // 初始化数据
@@ -246,19 +300,49 @@
                 switch (val) {
                     case 'fb':
                         this.fetchPublish()
+                        this.$router.replace({
+                            path: this.$route.path,
+                            query: {
+                                tab: '发布'
+                            }
+                        })
                         break
                     case 'tg':
                         this.fetchSpread()
+                        this.$router.replace({
+                            path: this.$route.path,
+                            query: {
+                                tab: '推广'
+                            }
+                        })
                         break
                     case 'wz':
                         this.fetchArticle()
+                        this.$router.replace({
+                            path: this.$route.path,
+                            query: {
+                                tab: '文章'
+                            }
+                        })
                         break
                     // no default
                 }
             },
             // 文章详情
-            articleDetail(id) {
-                this.$router.push(`/article/${id}`)
+            articleDetail(data) {
+                switch (this.personTab) {
+                    case 'fb':
+                        this.$router.push(`/group/${data.id}`)
+                        break
+                    case 'tg':
+                        this.$router.push(`/group/${data.popOriginalId}`)
+                        break
+                    case 'wz':
+                        this.$router.push(`/article/${data.id}`)
+                        break
+                    // no default
+                }
+
             },
             // 修改文章每页展示的条数
             changeSize(val) {
@@ -279,7 +363,7 @@
                         }).then((res) => {
                             if (res) {
                                 this.$message.success('删除成功')
-                                this.fetchData()
+                                this.fetchSpread()
                             }
                         })
                     })
@@ -317,19 +401,26 @@
             },
             // 编辑
             edit(data) {
-                console.log(data)
-                const obj = this.contentList.filter((value) => {
-                    return value.name.includes(data.section)
-                })
+                // const obj = this.contentList.filter((value) => {
+                //     return value.name.includes(data.section)
+                // })
+                // console.log(obj)
                 this.$router.push({
                     path: this.$route.path,
                     query: {
-                        title: `编辑${data.section}`,
-                        type: obj.length > 0 ? obj[0].value : '',
+                        // title: this.personTab === 'fb' ? `编辑${data.section}` : '编辑文章',
+                        // type: obj.length > 0 ? obj[0].value : 'wz',
+                        title: '编辑文章',
+                        type: 'wz',
                         id: data.id
                     }
                 })
-                this.defaultVal = obj[0].value
+                this.defaultVal = 'wz'
+                // if (obj.length) {
+                //     this.defaultVal = obj[0].value
+                // } else {
+                //     this.defaultVal = 'wz'
+                // }
             },
             // 删除
             del(id) {
@@ -340,7 +431,10 @@
                         }).then((res) => {
                             if (res) {
                                 this.$message.success('删除成功')
-                                this.fetchData()
+                                if (this.personTab === 'fb')
+                                    this.fetchPublish()
+                                else
+                                    this.fetchArticle()
                             }
                         })
                     })
@@ -393,6 +487,40 @@
                         })
                     }
                 })
+            },
+            // 邀请推广
+            inviteSpread(data) {
+                this.invite = true
+                this.codeId = data.id
+            },
+            toggleInvite(val) {
+                return val ? this.invite = true : this.invite = false
+            },
+            selectIndexTab(data) {
+                if (data.title !== '金币') {
+                    this.$router.push({
+                        path: this.$route.path,
+                        query: {
+                            tab: data.title
+                        }
+                    })
+                    this.defaultVal = ''
+                    switch (data.title) {
+                        case '发布':
+                            this.personTab = 'fb'
+                            this.fetchPublish()
+                            break
+                        case '推广':
+                            this.personTab = 'tg'
+                            this.fetchSpread()
+                            break
+                        case '文章':
+                            this.personTab = 'wz'
+                            this.fetchArticle()
+                            break
+                        // no default
+                    }
+                }
             }
         },
         components: {
@@ -403,7 +531,8 @@
             profileBox,
             rechargeBox,
             recordBox,
-            ruleBox
+            ruleBox,
+            inviteBox
         }
     }
 </script>
@@ -433,6 +562,7 @@
             line-height: 40px;
             text-align: center;
             flex: 1;
+            cursor: pointer;
 
             span {
                 font-size: 24px;
@@ -440,6 +570,9 @@
             }
             p {
                 font-size: 16px;
+            }
+            &:hover{
+                color: #fb6969;
             }
         }
     }
@@ -467,10 +600,10 @@
             /*}*/
 
             .article_img {
-                flex: 0 0 180px;
+                flex: 0 0 100px;
 
                 img {
-                    width: 180px;
+                    width: 100px;
                 }
             }
             .article_info {
@@ -497,7 +630,7 @@
                     line-height: 30px;
                 }
                 .article_info_detail {
-                    font-size: 12px;
+                    font-size: 13px;
                     position: absolute;
                     bottom: 0;
 

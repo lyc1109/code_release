@@ -2,11 +2,11 @@
     <div>
         <div class="home">
             <header-box actived="/area"></header-box>
-            <el-carousel direction="vertical" height="30px" class="notice" v-if="noticeList.length">
-                <el-carousel-item v-for="(item,index) in noticeList" :key="index">
-                    <p>{{ item.title }}</p>
-                </el-carousel-item>
-            </el-carousel>
+<!--            <el-carousel direction="vertical" height="30px" class="notice" v-if="noticeList.length">-->
+<!--                <el-carousel-item v-for="(item,index) in noticeList" :key="index">-->
+<!--                    <p>{{ item.title }}</p>-->
+<!--                </el-carousel-item>-->
+<!--            </el-carousel>-->
             <div style="position: relative;margin-top: 20px;">
                 <!--微信群-->
                 <div class="wxq" v-if="ewmList.length">
@@ -56,6 +56,13 @@
         },
         created() {
             this.fetchData()
+        },
+        watch: {
+            $route(to, from) {
+                if (to.query.id) {
+                    this.fetchData()
+                }
+            }
         },
         methods: {
             // 初始化数据

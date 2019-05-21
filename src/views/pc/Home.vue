@@ -33,10 +33,10 @@
                                         <span style="margin-left: 5px;">{{ item.watchNum }}</span>
                                     </div>
                                 </div>
-                                <div class="share">
-                                    <i class="iconpengyouquan iconfont"></i>
-                                    <span>分享</span>
-                                </div>
+<!--                                <div class="share">-->
+<!--                                    <i class="iconpengyouquan iconfont"></i>-->
+<!--                                    <span>分享</span>-->
+<!--                                </div>-->
                             </div>
                             <el-pagination :current-page.sync="page.current"
                                            :page-size="page.size"

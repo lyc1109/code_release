@@ -46,13 +46,13 @@
         </div>
 
         <van-popup v-model="type" position="bottom">
-            <van-picker :columns="typeList" @confirm="changeType" @cancel="cancelType" show-toolbar></van-picker>
+            <van-picker :columns="typeList" @confirm="changeType" @cancel="cancelType" show-toolbar ref="type"></van-picker>
         </van-popup>
         <van-popup v-model="trade" position="bottom">
-            <van-picker :columns="tradeList" @confirm="changeTrade" @cancel="cancelTrade" show-toolbar></van-picker>
+            <van-picker :columns="tradeList" @confirm="changeTrade" @cancel="cancelTrade" show-toolbar ref="trade"></van-picker>
         </van-popup>
         <van-popup v-model="area" position="bottom">
-            <van-area :area-list="areaList" @confirm="changeArea" @cancel="cancelArea"></van-area>
+            <van-area :area-list="areaList" @confirm="changeArea" @cancel="cancelArea" ref="area"></van-area>
         </van-popup>
     </div>
 </template>

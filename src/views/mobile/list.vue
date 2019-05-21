@@ -4,11 +4,11 @@
         <div style="position: relative;margin-top: 20px;">
             <!--微信群-->
             <div class="wxq">
-                <div class="wxq_box" v-for="(item, index) in ewmList" :key="index">
+                <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)">
                     <div>
-                        <img :src="item.url">
+                        <img :src="item.imgUrl1">
                     </div>
-                    <span>{{ item.title }}</span>
+                    <span>{{ item.name }}</span>
                 </div>
             </div>
             <van-pagination
@@ -30,88 +30,7 @@
         name: "list",
         data() {
             return {
-                ewmList: [
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    }
-                ],
+                ewmList: [],
                 page: {
                     current: 1,
                     size: 5,
@@ -122,16 +41,34 @@
         created() {
             this.fetchData()
         },
+        watch: {
+            $route(to, from) {
+                if (to.query.id) {
+                    this.fetchData()
+                }
+            }
+        },
         methods: {
             // 初始化数据
             fetchData() {
-                console.log('初始化数据')
+                this.$api.getTradeDetail({
+                    sectionId: this.$route.query.id && this.$route.query.id !== '' ? this.$route.query.id : '',
+                    pageNum: this.page.current,
+                    pageSize: this.page.size
+                }).then((res) => {
+                    this.page.total = res.info.total
+                    this.ewmList = res.info.list
+                })
             },
             // 改变页码
             changeSize(val) {
                 console.log(val)
                 this.page.current = val
                 this.fetchData()
+            },
+            // 跳转到二维码详情页
+            groupDetail(id) {
+                this.$router.push(`/group/${id}`)
             }
         },
         components: {

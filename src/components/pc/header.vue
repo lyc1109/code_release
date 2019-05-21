@@ -21,7 +21,7 @@
                          active-text-color="#ffd04b"
                          @select="selectNav" router>
                     <el-menu-item v-for="(item, index) in tabList" :key="index"
-                                  :index="`list?id=${item.id}`">{{ item.name }}
+                                  :index="`/list?id=${item.id}`">{{ item.name }}
                     </el-menu-item>
                 </el-menu>
             </nav>
@@ -102,10 +102,6 @@
             fetchTabs() {
                 this.$api.getTradeList().then((res) => {
                     this.tabList = res.data
-//                    this.tabList.unshift({
-//                        name: '首页',
-//                        id: ''
-//                    })
                 })
             },
             // 搜索

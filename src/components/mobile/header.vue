@@ -45,68 +45,45 @@
                 isLogin: false,
             }
         },
+        created() {
+            this.fetchTabs()
+        },
         mounted() {
             if (sessionStorage.getItem('user') && sessionStorage.getItem('user') !== null && sessionStorage.getItem('user') !== '') {
                 this.isLogin = true
             }
         },
         methods: {
+            fetchTabs() {
+                this.$api.getTradeList().then((res) => {
+                    this.tabList = res.data
+                    this.tabList.forEach((value, index, array) => {
+                        if(array.length > 0) array[0].icon = 'group'
+                        if(array.length > 1) array[1].icon = 'area'
+                        if(array.length > 2) array[2].icon = 'wechat'
+                        if(array.length > 3) array[3].icon = 'publicNum'
+                        if(array.length > 4) array[4].icon = 'wenzhang'
+
+                        if(array.length > 0) array[0].color = '#87cb4f'
+                        if(array.length > 1) array[1].color = '#8962bd'
+                        if(array.length > 2) array[2].color = '#f84f9c'
+                        if(array.length > 3) array[3].color = '#e77638'
+                        if(array.length > 4) [4].color = '#f94e4a'
+                    })
+                })
+            },
             showNav() {
                 this.isShowNav = !this.isShowNav
             },
             // 列表页
             toList(data) {
-                let url = null
-                switch (data.name) {
-                    case '首页':
-                        url = '/'
-                        break
-                    case '微信群':
-                        url = {
-                            path: '/list',
-                            query: {
-                                type: '微信群'
-                            }
-                        }
-                        break;
-                    case '地区微信':
-                        url = {
-                            path: '/list',
-                            query: {
-                                type: '地区微信'
-                            }
-                        }
-                        break;
-                    case '个人微信':
-                        url = {
-                            path: '/list',
-                            query: {
-                                type: '个人微信'
-                            }
-                        }
-                        break;
-                    case '微信公众号':
-                        url = {
-                            path: '/list',
-                            query: {
-                                type: '微信公众号'
-                            }
-                        }
-                        break;
-                    case '微信文章':
-                        url = {
-                            path: '/list',
-                            query: {
-                                type: '微信文章'
-                            }
-                        }
-                        break;
-                    case '个人中心':
-                        url = '/person'
-                        break
-                    // no default
-                }
-                this.$router.push(url)
+                // let url = null
+                this.$router.push({
+                    path: '/list',
+                    query: {
+                        id: data.id
+                    }
+                })
             },
             // 搜索页
             search() {

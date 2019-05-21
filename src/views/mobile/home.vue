@@ -3,9 +3,9 @@
         <header-box></header-box>
         <!--        微信群-->
         <div class="article_index flex">
-            <div class="article_index_list" v-for="(item, index) in ewmList" :key="index">
-                <img :src="item.url" alt="">
-                <p>{{ item.title }}</p>
+            <div class="article_index_list" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)">
+                <img :src="item.imgUrl1" alt="">
+                <p>{{ item.name }}</p>
             </div>
         </div>
         <!--微信文章-->
@@ -13,7 +13,7 @@
         <van-tabs v-model="articleTabIndex" @change="changeTabs">
             <van-tab v-for="(item, index) in articleTabList" :key="index" :title="item.name"></van-tab>
         </van-tabs>
-        <div class="article_index_main" v-for="(item, index) in articleData" :key="index">
+        <div class="article_index_main" v-for="(item, index) in articleData" :key="index" @click="articleDetail(item.id)">
             <div class="article_index_img" v-if="item.cover && item.cover !== ''">
                 <img :src="item.cover" alt="">
             </div>
@@ -45,56 +45,7 @@
         name: "home",
         data() {
             return {
-                ewmList: [
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    }
-                ],
+                ewmList: [],
                 articleData: [
                     { name: '微信文章1', cover: 'https://img8.souweixin.com/20190515/38/5ba488457bbc57bcc05d69a7f75e9bb5.jpeg', created: '2019-05-15', watched: 200 },
                     { name: '微信文章1', cover: 'https://img8.souweixin.com/20190515/38/5ba488457bbc57bcc05d69a7f75e9bb5.jpeg', created: '2019-05-15', watched: 200 }
@@ -119,7 +70,13 @@
         methods: {
             // 初始化数据
             fetchData() {
-                console.log('初始化数据')
+                const page = {
+                    pageNum: 1,
+                    pageSize: 15
+                }
+                this.$api.getTradeDetail(page).then((res) => {
+                    this.ewmList = res.info.list
+                })
             },
             // 修改tabs
             changeTabs(index, title) {
@@ -133,6 +90,14 @@
                 console.log(val)
                 this.page.current = val
                 this.fetchData()
+            },
+            // 微信群详情
+            groupDetail(id) {
+                this.$router.push(`/group/${id}`)
+            },
+            // 文章详情
+            articleDetail(id) {
+                this.$router.push(`/article/${id}`)
             }
         },
         components: {

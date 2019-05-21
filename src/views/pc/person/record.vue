@@ -20,18 +20,14 @@
         name: "record",
         data() {
             return {
-                recordData: [
-                    { id: '1', gold: 200, origin: '充值', created: '2019-05-11 13:47:59' },
-                    { id: '2', gold: 200, origin: '签到', created: '2019-05-11 13:47:59' },
-                    { id: '3', gold: 200, origin: '发布文章', created: '2019-05-11 13:47:59' }
-                ],
+                recordData: [],
                 recordList: [
                     {
                         prop: 'id',
                         label: '消费ID'
                     },
                     {
-                        prop: 'gold',
+                        prop: 'cost',
                         label: '金币数'
                     },
                     {
@@ -39,7 +35,7 @@
                         label: '来源'
                     },
                     {
-                        prop: 'created',
+                        prop: 'modifyTime',
                         label: '时间'
                     }
                 ],
@@ -63,6 +59,35 @@
                     if (res) {
                         this.page.total = res.info.total
                         this.recordData = res.info.list
+                        this.recordData.forEach((value, index, array) => {
+                            switch (value.type){
+                                case 0:
+                                    array[index].origin = "一般消费"
+                                    break
+                                case 1:
+                                    array[index].origin = "充值"
+                                    break
+                                case 2:
+                                    array[index].origin = "扫码推广"
+                                    break
+                                case 3:
+                                    array[index].origin = "点赞"
+                                    break
+                                case 4:
+                                    array[index].origin = "创建推广"
+                                    break
+                                case 5:
+                                    array[index].origin = "邀请推广"
+                                    break
+                                case 6:
+                                    array[index].origin = "刷新置顶"
+                                    break
+                                default:
+                                    array[index].origin = "未知"
+                                    break
+                                // no default
+                            }
+                        })
                     }
                 })
             },

@@ -1,18 +1,18 @@
 <template>
     <div class="record_m">
         <van-col v-for="(item, index) in recordHeaderList" span="6" :key="index" class="text-center record_header">{{ item }}</van-col>
-        <van-row v-for="(item, index) in recordList" :key="index" class="text-center record_body_m">
+        <van-row v-for="item in recordList" :key="item.id" class="text-center record_body_m">
             <van-col span="6">
                 <span>{{ item.id }}</span>
             </van-col>
             <van-col span="6">
-                <span>{{ item.gold }}</span>
+                <span>{{ item.cost }}</span>
             </van-col>
             <van-col span="6">
                 <span>{{ item.origin }}</span>
             </van-col>
             <van-col span="6">
-                <span>{{ item.created }}</span>
+                <span>{{ item.modifyTime }}</span>
             </van-col>
         </van-row>
         <van-pagination v-model="page.current"
@@ -28,15 +28,11 @@
         name: "record",
         data() {
             return {
-                recordList: [
-                    { id: 1, gold: '+20', origin: '充值', created: '2019-05-17 10:14:20' },
-                    { id: 2, gold: '+10', origin: '签到', created: '2019-05-17' },
-                    { id: 3, gold: '-20', origin: '发布文章', created: '2019-05-17' }
-                ],
+                recordList: [],
                 page: {
                     current: 1,
                     size: 10,
-                    total: 20
+                    total: 0
                 },
                 recordHeaderList: ['消费ID', '金币数', '来源', '时间']
             }
@@ -47,7 +43,44 @@
         methods: {
             // 初始化数据
             fetchData() {
-                console.log('初始化数据')
+                this.$api.getBillDetail({
+                    pageNum: this.page.current,
+                    pageSize: this.page.size
+                }).then((res) => {
+                    if (res) {
+                        this.page.total = res.info.total
+                        this.recordList = res.info.list
+                        this.recordList.forEach((value, index, array) => {
+                            switch (value.type){
+                                case 0:
+                                    array[index].origin = "一般消费"
+                                    break
+                                case 1:
+                                    array[index].origin = "充值"
+                                    break
+                                case 2:
+                                    array[index].origin = "扫码推广"
+                                    break
+                                case 3:
+                                    array[index].origin = "点赞"
+                                    break
+                                case 4:
+                                    array[index].origin = "创建推广"
+                                    break
+                                case 5:
+                                    array[index].origin = "邀请推广"
+                                    break
+                                case 6:
+                                    array[index].origin = "刷新置顶"
+                                    break
+                                default:
+                                    array[index].origin = "未知"
+                                    break
+                                // no default
+                            }
+                        })
+                    }
+                })
             },
             // 跳页数
             changePage(val) {

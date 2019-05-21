@@ -19,7 +19,8 @@
                     left-icon="lock"></van-field>
         </van-cell-group>
         <div style="margin-top: 1rem;">
-            没有账号？点击 <router-link to="/register" style="color: #fff;">注册</router-link>
+            没有账号？点击
+            <router-link to="/register" style="color: #fff;">注册</router-link>
             <router-link to="/forget" style="float: right;color: #fff;">忘记密码？</router-link>
         </div>
         <van-button type="info" @click="success" style="width: 100%;margin-top: 4rem;">登录</van-button>
@@ -43,7 +44,7 @@
         mounted() {
             this.$nextTick(() => {
                 document.body.style.background = `url(${bg}) no-repeat`
-                document.body.style.backgroundSize =  'cover'
+                document.body.style.backgroundSize = 'cover'
             })
         },
         beforeDestroy() {
@@ -57,7 +58,8 @@
                     this.emailError = '请输入正确的邮箱'
                 } else {
                     this.emailError = ''
-                        this.$api.login(this.loginForm)
+                    this.loginForm['rememberMe'] = true
+                    this.$api.login(this.loginForm)
                         .then((res) => {
                             if (res) {
                                 sessionStorage.setItem('user', JSON.stringify(res.user))
@@ -86,37 +88,40 @@
 </script>
 
 <style scoped lang="scss" type="text/scss">
-    .login_bg{
+    .login_bg {
         padding: 40% 5%;
 
-        /deep/.van-cell-group{
+        /deep/ .van-cell-group {
             background: none;
 
-            &:after{
+            &:after {
                 border: 0 none;
             }
 
-            .van-cell{
+            .van-cell {
                 background: none;
                 border-bottom: 1px solid rgba(#ebedf0, .5);
 
-                &:after{
+                &:after {
                     border: 0 none;
                 }
-                /deep/.van-field__control{
+
+                /deep/ .van-field__control {
                     &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
                         color: #fff;
                         padding-left: .5rem;
                     }
                 }
-                .van-field__left-icon{
-                    .van-icon{
+
+                .van-field__left-icon {
+                    .van-icon {
                         color: #fff;
                     }
                 }
             }
         }
     }
+
     .search_img {
         text-align: center;
         margin: 3% 0;

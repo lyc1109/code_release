@@ -1,17 +1,17 @@
 <template>
     <div>
         <van-cell-group>
-            <van-field v-model="profileForm.nickName" required clearable label="昵称" placeholder="请输入昵称"
-                       @input="changeNickname(profileForm.nickName)" :error-message="nameError"></van-field>
+            <van-field v-model="profileForm.nickname" required clearable label="昵称" placeholder="请输入昵称"
+                       @input="changenickname(profileForm.nickname)" :error-message="nameError"></van-field>
             <van-cell title="头像">
                 <div slot="label">
                     <van-uploader :after-read="changeAvatar" style="display: inline-block;">
                         <van-icon name="plus" class="upload_control"></van-icon>
                     </van-uploader>
-                    <img :src="imgUrl" alt="" v-if="imgUrl && imgUrl !== ''" class="upload_avatar">
+                    <img :src="profileForm.url" alt="" v-if="profileForm.url && profileForm.url !== ''" class="upload_avatar">
                 </div>
             </van-cell>
-            <van-cell title="生日" is-link @click="changeBirthday" :value="profileForm.birthday"></van-cell>
+            <van-cell title="生日" is-link @click="changeBirthday" :value="profileForm.birth"></van-cell>
             <van-cell title="地区" is-link @click="changeArea" :value="profileForm.area"></van-cell>
             <div style="padding: 2rem;">
                 <van-button type="info" size="large" @click="success">保存</van-button>
@@ -19,7 +19,7 @@
         </van-cell-group>
 
         <van-popup v-model="showDate" position="bottom">
-            <van-datetime-picker v-model="profileForm.birthday" type="date" @cancel="cancelBirthday" @confirm="selectBirthday"></van-datetime-picker>
+            <van-datetime-picker v-model="profileForm.birth" type="date" @cancel="cancelBirthday" @confirm="selectBirthday"></van-datetime-picker>
         </van-popup>
         <van-popup v-model="showArea" position="bottom">
             <van-area :area-list="areaData" :value="profileForm.area" ref="area" @cancel="cancelArea" @confirm="selectArea"></van-area>
@@ -37,6 +37,7 @@
             return {
                 profileForm: {
                     nickname: '',
+                    url: '',
                     avatar: '',
                     birthday: new Date(),
                     area: ''
@@ -53,7 +54,7 @@
             changeAvatar(file) {
                 this.imgUrl = file.content
             },
-            changeNickname(val) {
+            changenickname(val) {
                 if (val.length === 0) {
                     this.nameError = '请输入昵称'
                 } else {

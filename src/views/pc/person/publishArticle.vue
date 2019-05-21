@@ -26,7 +26,7 @@
             </el-upload>
         </el-form-item>
         <el-form-item>
-            发布或修改需要消费: <span style="color: red; font-weight: bold;">5</span>金币，剩余<span style="color: red; font-weight: bold;">{{ userInfo.money }}</span>金币
+            发布或修改需要消费: <span style="color: red; font-weight: bold;">5</span>金币，剩余<span style="color: red; font-weight: bold;">{{ coin }}</span>金币
             <el-button type="success" size="mini" @click="recharge" style="margin-left: 5px;">充值</el-button>
             <el-button type="success" size="mini" @click="getGold">赚金币</el-button>
         </el-form-item>
@@ -40,6 +40,12 @@
 <script>
     export default {
         name: "publishArticle",
+        props: {
+            coin: {
+                type: Number,
+                default: 0
+            }
+        },
         data() {
             // let validUrl = (rule, value, callback) => {
             //     if (this.article.coverUrl === '') {
@@ -70,14 +76,16 @@
                 title: '发布文章'
             }
         },
+        created() {
+            if (this.$route.query && this.$route.query.id) {
+                this.fetchData()
+            }
+        },
         mounted() {
             this.fetchTrade()
             this.fetchCount()
             if (this.$route.query && this.$route.query.title) {
                 return this.$route.query.title.includes('发布文章') ? this.title = '发布文章' : this.title = '编辑文章'
-            }
-            if (this.$route.query && this.$route.query.id) {
-                this.fetchData()
             }
         },
         methods: {
@@ -87,7 +95,8 @@
                     id: this.$route.query.id ? this.$route.query.id : ''
                 }).then((res) => {
                     if (res) {
-                        this.article = res.data
+                        this.article = res.info
+                        this.article.coverUrl = this.article.url
                     }
                 })
             },

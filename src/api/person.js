@@ -105,6 +105,13 @@ const api = {
     updatePersonalInfo(params = {}) {
         return http.post(`${base}/updatePersonalInfo`, params)
     },
+    /**
+     * 获取充值选项
+     * @returns {*}
+     */
+    getRechargeSetting() {
+        return http.get(`${base}/getRechargeSetting`)
+    }
 }
 
 export default api

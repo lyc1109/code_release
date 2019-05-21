@@ -3,14 +3,15 @@
         <header-box></header-box>
         <div>
             <div class="search_img">
-                <span>微信群</span>
+                <span>微群发布</span>
                 <!--<img src="" alt="">-->
             </div>
             <van-search
                     v-model="search"
                     placeholder="请输入搜索关键词"
                     shape="round"
-                    @search="searchs"
+                    @search="searchs(search)"
+                    @clear="cancelSearch(search)"
             >
             </van-search>
             <van-tabs v-model="result" class="result_tab" v-if="resultData.length > 0">
@@ -19,9 +20,9 @@
                     <div class="wxq">
                         <div class="wxq_box" v-for="(item, index) in resultData" :key="index" @click="groupDetail(item.id)">
                             <div>
-                                <img :src="item.url">
+                                <img :src="item.imgUrl1">
                             </div>
-                            <span>{{ item.title }}</span>
+                            <span>{{ item.name }}</span>
                         </div>
                     </div>
                     <van-pagination
@@ -48,108 +49,61 @@
             return {
                 result: 'result',
                 search: '',
-                resultData: [
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20180930/1254434/84b86118f5223639ed26e8d394d1a559.png',
-                        title: '手机端进入可快速扫码>>>'
-                    },
-                    {
-                        url: 'https://img8.souweixin.com/20190216/981651/248d562f53ec2dc04a011a6841692a70.jpeg?h=116&w=116',
-                        title: '手机端进入可快速扫码>>>'
-                    }
-                ],
+                resultData: [],
                 page: {
                     current: 1,
                     size: 5,
                     total: 0
+                },
+                params: {
+                    name: this.$route.query.result ? this.$route.query.result : '',
+                    pageNum: 1,
+                    pageSize: 15
                 }
             }
         },
+        created() {
+            if (this.$route.query.result) {
+                this.fetchData()
+            }
+        },
         methods: {
-            fetchData() {},
+            fetchData() {
+                this.search = this.$route.query.result ? this.$route.query.result : ''
+                this.params.name = this.search
+                this.$api.getSearchResult(this.params).then((res) => {
+                    if (res) {
+                        this.page.total = res.info.total
+                        this.resultData = res.info.list
+                    }
+                })
+            },
             // 微信群详情
             groupDetail(id) {
                 this.$router.push(`/group/${id}`)
             },
+            // 搜索
             searchs(search) {
-                console.log(`搜索结果是：${search}`)
+                this.params.name = search
+                this.search = search
+                this.fetchData()
+                this.$router.replace({
+                    path: this.$route.path,
+                    query: {
+                        result: search
+                    }
+                })
             },
             // 改变页码
             changeSize(val) {
                 console.log(val)
                 this.page.current = val
+                this.fetchData()
+            },
+            // 清除搜索
+            cancelSearch() {
+                this.search = ''
+                this.params.name = ''
                 this.fetchData()
             }
         },

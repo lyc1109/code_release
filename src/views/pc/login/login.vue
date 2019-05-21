@@ -108,6 +108,7 @@
             success(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        this.loginForm['rememberMe'] = true
                         this.$api.login(this.loginForm)
                             .then((res) => {
                                 if (res) {
