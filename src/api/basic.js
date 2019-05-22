@@ -76,6 +76,14 @@ const api = {
      */
     verificationImg() {
         return http.get('/api/img/verification')
+    },
+    /**
+     * 上传文件
+     * @param data
+     * @returns {*|AxiosPromise}
+     */
+    uploadFile(data) {
+        return http.postJson('/api/file/add', data)
     }
 }
 

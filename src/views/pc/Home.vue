@@ -17,20 +17,20 @@
             <article style="margin-top: 20px;">
                 <el-tabs v-model="article" type="border-card" @tab-click="changeArticle(article)">
                     <el-tab-pane v-for="(item, index) in articleData" :key="index" :label="item.name"
-                                 :name="item.value">
+                                 :name="item.id">
                         <!--文章-->
                         <div class="index_article">
                             <div class="article_list" v-for="(item, index) in articleList" :key="index" @click="articleDetail(item.id)">
                                 <div class="article_img">
-                                    <img :src="item.imgUrl" alt="">
+                                    <img :src="item.url" alt="">
                                 </div>
                                 <div class="article_info">
-                                    <h3><el-button type="text">{{ item.title }}</el-button></h3>
-                                    <p>{{ item.desc }}</p>
+                                    <h3><el-button type="text">{{ item.name }}</el-button></h3>
+                                    <p>{{ item.description }}</p>
                                     <div class="article_info_detail">
-                                        <span>发布时间：{{ item.created }}</span>
-                                        <i class="iconai-eye iconfont"></i>
-                                        <span style="margin-left: 5px;">{{ item.watchNum }}</span>
+                                        <span>发布时间：{{ item.createTime }}</span>
+<!--                                        <i class="iconai-eye iconfont"></i>-->
+<!--                                        <span style="margin-left: 5px;">{{ item.watchNum }}</span>-->
                                     </div>
                                 </div>
 <!--                                <div class="share">-->
@@ -62,46 +62,9 @@
         data() {
             return {
                 ewmList: [],
-                article: 'tj',
-                articleData: [
-                    {name: '阅读推荐', value: 'tj'},
-                    {name: '微商杂谈', value: 'zt'},
-                    {name: '养生之道', value: 'ys'}
-                ],
-                articleList: [
-                    {
-                        id: '1',
-                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
-                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
-                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
-                        created: '2019-05-06',
-                        watchNum: 700
-                    },
-                    {
-                        id: '2',
-                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
-                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
-                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
-                        created: '2019-05-06',
-                        watchNum: 700
-                    },
-                    {
-                        id: '3',
-                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
-                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
-                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
-                        created: '2019-05-06',
-                        watchNum: 700
-                    },
-                    {
-                        id: '4',
-                        imgUrl: 'https://img8.souweixin.com/20190506/38/caac93e3dfe93e9c0d6ab4a38c2fe0be.jpeg',
-                        title: '当孩子被批评了，请告诉孩子：不怕老师批评你，就怕老师不管你！',
-                        desc: '孩子，当你再读一些书，再阅一些人，再经历一些事，你就会明白，一位眼中有光、灵魂有爱的老师会对你产生怎',
-                        created: '2019-05-06',
-                        watchNum: 700
-                    }
-                ],
+                article: '',
+                articleData: [],
+                articleList: [],
                 page: {
                     current: 1,
                     size: 5,
@@ -111,6 +74,7 @@
         },
         created() {
             this.fetchData()
+            this.fetchArticle()
         },
         methods: {
             // 初始化数据
@@ -121,6 +85,28 @@
                 }
                 this.$api.getTradeDetail(page).then((res) => {
                     this.ewmList = res.info.list
+                })
+
+
+                this.$api.getTradeList().then((res) => {
+                    this.articleData = res.data
+                    this.articleData.unshift({
+                        name: '全部',
+                        id: ''
+                    })
+                })
+            },
+            fetchArticle() {
+                // 获取文章
+                this.$api.getArticleList({
+                    sectionId: this.article,
+                    pageNum: this.page.current,
+                    pageSize: this.page.size
+                }).then((res) => {
+                    if (res) {
+                        this.articleList = res.info.list
+                        console.log(this.articleList)
+                    }
                 })
             },
             // 切换正文tabs
@@ -138,12 +124,12 @@
             // 修改文章每页展示的条数
             changeSize(val) {
                 this.page.size = val
-                this.fetchData()
+                this.fetchArticle()
             },
             // 修改文章页数
             changePage(val) {
                 this.page.current = val
-                this.fetchData()
+                this.fetchArticle()
             },
             // 微信群详情
             groupDetail(id) {
@@ -245,7 +231,7 @@
             }
             .article_info{
                 margin-left: 10px;
-                /*width: 300px;*/
+                width: 300px;
                 position: relative;
 
                 h3{

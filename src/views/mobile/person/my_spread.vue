@@ -1,18 +1,18 @@
 <template>
     <div>
-        <van-tabs v-model="articleTabIndex" @change="changeTabs">
+        <van-tabs v-model="articleTabIndex" @click="changeTabs">
             <van-tab v-for="(item, index) in articleTabList" :key="index" :title="item.name"></van-tab>
         </van-tabs>
 
-        <div class="article_index_main" v-for="(item, index) in articleData" :key="index">
-            <div class="article_index_img" v-if="item.cover && item.cover !== ''">
-                <img :src="item.cover" alt="">
+        <div class="article_index_main" v-for="(item, index) in articleData" :key="index" v-if="articleData.length">
+            <div class="article_index_img" v-if="item.url && item.url !== ''">
+                <img :src="item.url" alt="">
             </div>
             <div class="article_index_main_info">
                 <h2>{{ item.name }}</h2>
                 <div class="article_index_info">
-                    <span>推广 <b>{{ item.spread }}</b>次，赚取<b>{{ item.gold }}</b>金币</span>
-                    <van-icon name="delete" style="float: right;" @click="del(item)"></van-icon>
+                    <span>推广 <b>{{ item.typ }}</b>次，赚取<b>{{ item.popularizePrice }}</b>金币</span>
+                    <van-icon name="delete" style="float: right;" @click.stop="del(item)"></van-icon>
                 </div>
             </div>
         </div>
@@ -22,7 +22,9 @@
                 mode="simple"
                 :items-per-page="page.size"
                 @change="changeSize(page.current)"
-        />
+                v-if="articleData.length"
+        ></van-pagination>
+        <p class="text-center" style="margin-top: 60%; font-size: 1.8rem;">暂无数据</p>
     </div>
 </template>
 
@@ -34,16 +36,9 @@
         data() {
             return {
                 articleTabIndex: 0,
-                articleTabList: [
-                    {name: '阅读推荐', value: 'tj'},
-                    {name: '微商杂谈', value: 'zt'},
-                    {name: '养生之道', value: 'ys'}
-                ],
+                articleTabList: [],
                 articleTab: '',
-                articleData: [
-                    { name: '微信文章1', cover: 'https://img8.souweixin.com/20190515/38/5ba488457bbc57bcc05d69a7f75e9bb5.jpeg', created: '2019-05-15', spread: 20, gold: 120 },
-                    { name: '微信文章2', cover: 'https://img8.souweixin.com/20190515/38/5ba488457bbc57bcc05d69a7f75e9bb5.jpeg', created: '2019-05-15', spread: 10, gold: 250  }
-                ],
+                articleData: [],
                 page: {
                     current: 1,
                     size: 5,
@@ -52,23 +47,44 @@
             }
         },
         created() {
+            this.fetchTabs()
             this.fetchData()
         },
         methods: {
             // 初始化数据
             fetchData() {
-                console.log('初始化数据')
+                this.$api.getPopularizeBySectionId({
+                    sectionId: this.articleTab,
+                    pageNum: this.page.current,
+                    pageSize: this.page.size
+                }).then((res) => {
+                    if (res) {
+                        this.page.total = res.info.total
+                        this.articleData = res.info.list
+                    }
+                })
+            },
+            // 初始化tabs
+            fetchTabs() {
+                this.$api.getTrade().then((res) => {
+                    this.articleTabList = res.data
+                    this.articleTabList.unshift({
+                        name: '全部',
+                        id: ''
+                    })
+                })
             },
             // 修改tabs
             changeTabs(index, title) {
+                // console.log(title)
                 const obj = this.articleTabList.filter((value) => {
                     return title === value.name
                 })
-                this.articleTab = obj[0].value.value
+                this.articleTab = obj[0].id
+                this.fetchData()
             },
             // 改变页码
             changeSize(val) {
-                console.log(val)
                 this.page.current = val
                 this.fetchData()
             },
@@ -76,7 +92,14 @@
             del(data) {
                 Dialog.confirm({message: '确定删除？'})
                     .then(() => {
-                        Toast.success('删除成功')
+                        this.$api.deleteArticle({
+                            id: data.id
+                        }).then((res) => {
+                            if (res) {
+                                Toast.success('删除成功')
+                                this.fetchData()
+                            }
+                        })
                     })
             }
         }

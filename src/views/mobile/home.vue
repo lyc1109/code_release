@@ -3,7 +3,7 @@
         <header-box></header-box>
         <!--        微信群-->
         <div class="article_index flex">
-            <div class="article_index_list" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)">
+            <div class="article_index_list" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" v-if="ewmList.length">
                 <img :src="item.imgUrl1" alt="">
                 <p>{{ item.name }}</p>
             </div>
@@ -13,7 +13,7 @@
         <van-tabs v-model="articleTabIndex" @change="changeTabs">
             <van-tab v-for="(item, index) in articleTabList" :key="index" :title="item.name"></van-tab>
         </van-tabs>
-        <div class="article_index_main" v-for="(item, index) in articleData" :key="index" @click="articleDetail(item.id)">
+        <div class="article_index_main" v-for="(item, index) in articleData" :key="index" @click="articleDetail(item.id)" v-if="articleData.length">
             <div class="article_index_img" v-if="item.cover && item.cover !== ''">
                 <img :src="item.cover" alt="">
             </div>
@@ -32,6 +32,7 @@
                 mode="simple"
                 :items-per-page="page.size"
                 @change="changeSize(page.current)"
+                v-if="articleData.length"
         />
         <footer-box></footer-box>
     </div>

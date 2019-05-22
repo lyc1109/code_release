@@ -49,6 +49,22 @@ const api = {
      */
     popularize(params = {}) {
         return http.post(`${base}/popularize`, params)
+    },
+    /**
+     * 获取指定行业的文章信息
+     * @param params
+     * @returns {*}
+     */
+    getArticleList(params = {}) {
+        return http.get(`${base}/getArticleBySectionId`, params)
+    },
+    /**
+     * 获取指定行业的文章详情
+     * @param params
+     * @returns {*}
+     */
+    getArticleDetail(params = {}) {
+        return http.get(`${base}/getDetail`, params)
     }
 }
 

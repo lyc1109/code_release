@@ -8,6 +8,9 @@
 <!--                       placeholder="请输入充值金额"-->
 <!--                       :error-message="amountError" @input="changeAmount(rechargeForm.count)"></van-field>-->
             <van-cell required is-link :value="rechargeForm.money" @click="count = true" title="充值金额"></van-cell>
+            <van-cell title="付款二维码">
+                <img :src="rechargeForm.url" style="width: 10rem;" alt="">
+            </van-cell>
             <van-cell title="金币规则" :value="rules"></van-cell>
             <van-cell title="您将入账金币" :value="gold"></van-cell>
             <van-field v-model="rechargeForm.serial"

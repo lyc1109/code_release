@@ -2,13 +2,13 @@
     <div>
         <van-cell-group>
             <van-field v-model="profileForm.nickname" required clearable label="昵称" placeholder="请输入昵称"
-                       @input="changenickname(profileForm.nickname)" :error-message="nameError"></van-field>
+                       @input="changeNickname(profileForm.nickname)" :error-message="nameError"></van-field>
             <van-cell title="头像">
                 <div slot="label">
-                    <van-uploader :after-read="changeAvatar" style="display: inline-block;">
+                    <van-uploader :after-read="changeAvatar" style="display: inline-block;" :max-size="maxSize">
                         <van-icon name="plus" class="upload_control"></van-icon>
                     </van-uploader>
-                    <img :src="profileForm.url" alt="" v-if="profileForm.url && profileForm.url !== ''" class="upload_avatar">
+                    <img :src="profileForm.url" alt="" v-if="profileForm.url" class="upload_avatar">
                 </div>
             </van-cell>
             <van-cell title="生日" is-link @click="changeBirthday" :value="profileForm.birth"></van-cell>
@@ -19,10 +19,11 @@
         </van-cell-group>
 
         <van-popup v-model="showDate" position="bottom">
-            <van-datetime-picker v-model="profileForm.birth" type="date" @cancel="cancelBirthday" @confirm="selectBirthday"></van-datetime-picker>
+            <van-datetime-picker v-model="birth" type="date" @cancel="cancelBirthday"
+                                 @confirm="selectBirthday"></van-datetime-picker>
         </van-popup>
         <van-popup v-model="showArea" position="bottom">
-            <van-area :area-list="areaData" :value="profileForm.area" ref="area" @cancel="cancelArea" @confirm="selectArea"></van-area>
+            <van-area :area-list="areaData" ref="area" @cancel="cancelArea" @confirm="selectArea"></van-area>
         </van-popup>
     </div>
 </template>
@@ -39,22 +40,48 @@
                     nickname: '',
                     url: '',
                     avatar: '',
-                    birthday: new Date(),
+                    birth: '',
                     area: ''
                 },
                 imgUrl: '',
                 areaData: areaData,
                 nameError: '',
                 showDate: false,
-                showArea: false
+                showArea: false,
+                birth: new Date()
+            }
+        },
+        created() {
+            this.fetchData()
+        },
+        computed: {
+            maxSize() {
+                return 1024 * 1024 * 5
             }
         },
         methods: {
+            fetchData() {
+                this.$api.getUserInfo().then((res) => {
+                    if (res) {
+                        this.profileForm = res.user
+                        if (!this.profileForm.birth) this.profileForm.birth = this.moment(new Date()).format('YYYY-MM-DD')
+                        if (res.user.position1 && res.user.position2 && res.user.position3)
+                            this.profileForm.area = res.user.position1 + res.user.position2 + res.user.position3
+                    }
+                })
+            },
             // 上传头像
             changeAvatar(file) {
-                this.imgUrl = file.content
+                let form = new FormData()
+                form.append('file', file.file)
+                this.$api.uploadFile(form).then((res) => {
+                    if (res) {
+                        this.profileForm.url = res.url
+                        this.$forceUpdate()
+                    }
+                })
             },
-            changenickname(val) {
+            changeNickname(val) {
                 if (val.length === 0) {
                     this.nameError = '请输入昵称'
                 } else {
@@ -74,10 +101,19 @@
             },
             // 选择地区
             selectArea(val) {
-                val.forEach((data) => {
+                this.profileForm.area = ''
+                val.forEach((data, index) => {
                     this.profileForm.area += data.name
+                    if (index === 0) {
+                        this.profileForm['position1'] = data.name
+                    }
+                    if (index === 1) {
+                        this.profileForm['position2'] = data.name
+                    }
+                    if (index === 2) {
+                        this.profileForm['position3'] = data.name
+                    }
                 })
-                console.log(this.profileForm.area)
                 this.showArea = false
             },
             // 取消选择生日
@@ -87,15 +123,31 @@
             },
             // 选择生日
             selectBirthday(val) {
-                this.profileForm.birthday = val
+                this.profileForm.birth = this.moment(val).format('YYYY-MM-DD')
                 this.showDate = false
             },
+            // 保存
             success() {
-                if (this.nameError === '' && this.imgUrl !== '') {
-                    Toast.success('修改成功')
+                if (this.nameError === '' && this.profileForm.url !== '') {
+                    let profile = {
+                        nickname: this.profileForm.nickname,
+                        url: this.profileForm.url,
+                        birth: this.profileForm.birth,
+                        position1: this.profileForm.position1,
+                        position2: this.profileForm.position2,
+                        position3: this.profileForm.position3
+                    }
+                    this.$api.updatePersonalInfo(profile).then((res) => {
+                        if (res) {
+                            Toast.success('修改成功')
+                            setTimeout(() => {
+                                this.$router.go(-1)
+                            }, 500)
+                        }
+                    })
                 } else {
                     if (this.profileForm.nickname === '') this.nameError = '请输入昵称'
-                    if (this.imgUrl === '') Toast.fail('请上传头像')
+                    if (this.profileForm.url === '') Toast.fail('请上传头像')
                 }
             }
         }
@@ -103,12 +155,13 @@
 </script>
 
 <style scoped lang="scss" type="text/scss">
-    .upload_control{
+    .upload_control {
         border: 1px solid #eee;
         padding: 20px;
         border-radius: 5px;
     }
-    .upload_avatar{
+
+    .upload_avatar {
         width: 4.334rem;
         height: 4.334rem;
         margin-left: .8rem;

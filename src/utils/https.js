@@ -22,10 +22,10 @@ axios.interceptors.request.use(
     (config) => {
         config.headers['x-requested-from'] = "apiHttpRequest"
 
-        const token = sessionStorage.getItem('user')
-        if (token !== null && token !== "") {
-            config.headers['x-auth-token'] = token
-        }
+        // const token = sessionStorage.getItem('user')
+        // if (token !== null && token !== "") {
+        //     config.headers['x-auth-token'] = token
+        // }
         config.headers.apiRequest = true
         return config
     },
@@ -82,8 +82,6 @@ axios.interceptors.response.use(
         }
     },
     (error) => {
-        // hideLoading()
-
         const response = error.response
         let errMsg = ""
 

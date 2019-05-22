@@ -1,15 +1,15 @@
 <template>
     <div class="publish_m">
         <van-cell-group>
-            <van-cell title="所属行业" :value="publishForm.trade" is-link required @click="trade = true"></van-cell>
-            <van-field v-model="publishForm.title"
+            <van-cell title="所属行业" :value="section" is-link required @click="trade = true"></van-cell>
+            <van-field v-model="publishForm.name"
                        placeholder="请输入名称"
                        required
                        clearable
                        label="名称"
                        :error-message="titleError"
-                       @input="changeTit(publishForm.title)"></van-field>
-            <van-field v-model="publishForm.summary"
+                       @input="changeTit(publishForm.name)"></van-field>
+            <van-field v-model="publishForm.description"
                        placeholder="请输入摘要"
                        clearable
                        label="摘要"
@@ -24,10 +24,10 @@
                        type="textarea" rows="6"></van-field>
             <van-cell title="封面图">
                 <div slot="label">
-                    <van-uploader :after-read="changeCover">
+                    <van-uploader :after-read="changeCover" :max-size="maxSize">
                         <van-icon name="plus" class="upload_control"></van-icon>
                     </van-uploader>
-                    <img :src="publishForm.cover" v-if="publishForm.cover && publishForm.cover !== ''"
+                    <img :src="publishForm.coverUrl" v-if="publishForm.coverUrl && publishForm.coverUrl !== ''"
                          class="upload_avatar">
                 </div>
             </van-cell>
@@ -38,7 +38,7 @@
         </van-cell-group>
 
         <van-popup v-model="trade" position="bottom">
-            <van-picker :columns="tradeList" @confirm="changeTrade" @cancel="cancelTrade" ref="trade"
+            <van-picker :columns="tradeList" @confirm="changeTrade" @cancel="cancelTrade" ref="trade" value-key="name"
                         show-toolbar></van-picker>
         </van-popup>
     </div>
@@ -52,25 +52,70 @@
         data() {
             return {
                 publishForm: {
-                    trade: '',
-                    title: '',
-                    summary: '',
+                    sectionId: '',
+                    name: '',
+                    description: '',
                     content: '',
-                    cover: ''
+                    coverUrl: ''
                 },
                 userData: {
-                    gold: 200
+                    gold: 0
                 },
                 titleError: '',
                 contentError: '',
                 trade: false,
-                tradeList: [
-                    {text: '互粉群', value: 'hf'},
-                    {text: '妈妈群', value: 'mm'}
-                ]
+                tradeList: [],
+                section: ''
             }
         },
+        computed: {
+            maxSize() {
+                return 1024 * 1024 * 5
+            }
+        },
+        created() {
+            this.fetchTrade()
+            if (this.$route.query && this.$route.query.id) {
+                this.fetchData()
+            }
+            this.fetchCount()
+        },
         methods: {
+            // 编辑时初始化数据
+            fetchData() {
+                this.$api.getArticle({
+                    id: this.$route.query.id ? this.$route.query.id : ''
+                }).then((res) => {
+                    if (res) {
+                        this.publishForm = res.info
+                        this.publishForm.coverUrl = res.info.url
+                        if (this.tradeList.length) {
+                            this.tradeList.forEach((value) => {
+                                if (value.id === this.publishForm.sectionId) {
+                                    this.section = value.name
+                                }
+                            })
+                        }
+                    }
+                })
+            },
+            // 获取行业列表
+            fetchTrade() {
+                this.$api.getTrade().then((res) => {
+                    if (res) {
+                        this.tradeList = res.data
+                    }
+                })
+            },
+            // 金币初始化
+            fetchCount() {
+                // 获取个人中心信息
+                this.$api.getBuzzInfo().then((res) => {
+                    if (res) {
+                        this.userData.gold = res.coin
+                    }
+                })
+            },
             // 验证名称
             changeTit(val) {
                 if (val.length === 0)
@@ -87,24 +132,44 @@
             },
             // 上传封面图图
             changeCover(file) {
-                this.publishForm.cover = file.content
+                let form = new FormData()
+                form.append('file', file.file)
+                this.$api.uploadFile(form).then((res) => {
+                    if (res) {
+                        this.publishForm.coverUrl = res.url
+                        this.$forceUpdate()
+                    }
+                })
             },
-            changeTrade(value) {
+            changeTrade(data) {
+                let obj = this.tradeList.filter((value) => {
+                    return data.id === value.id
+                })
                 this.trade = false
-                this.publishForm.trade = value
+                if (obj.length) {
+                    this.publishForm.sectionId = obj[0].id
+                    this.section = obj[0].name
+                }
             },
             cancelTrade() {
                 this.trade = false
                 this.$refs.trade.reset()
             },
             save() {
-                if (this.publishForm.trade !== '' && this.titleError === '' && this.contentError === '' && this.publishForm.cover !== '') {
-                    Toast.success('保存成功')
+                if (this.publishForm.sectionId !== '' && this.titleError === '' && this.contentError === '' && this.publishForm.coverUrl !== '') {
+                    this.$api.addArticle(this.publishForm).then((res) => {
+                        if (res) {
+                            Toast.success('保存成功')
+                            setTimeout(() => {
+                                this.$router.push('/person')
+                            }, 500)
+                        }
+                    })
                 } else {
-                    if (this.publishForm.trade === '') Toast.fail('请选择所属行业')
-                    if (this.publishForm.title === '') this.titleError = '请输入名称'
+                    if (this.publishForm.sectionId === '') Toast.fail('请选择所属行业')
+                    if (this.publishForm.name === '') this.titleError = '请输入名称'
                     if (this.publishForm.content === '') this.contentError = '请输入文章内容'
-                    if (this.publishForm.cover === '') Toast.fail('请上传封面图')
+                    if (this.publishForm.coverUrl === '') Toast.fail('请上传封面图')
                 }
             }
         }

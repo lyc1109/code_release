@@ -239,14 +239,14 @@
                     this.publishForm.position3 = this.publishForm.area[2]
                 }
                 form = this.publishForm
-                if (this.type === 'gzh' || this.type == 'gr' || this.type === 'qt') {
+                if (this.type === 'gzh' || this.type === 'gr' || this.type === 'qt') {
                     delete form.ownerWechat
                     delete form.imgUrl2
                 } else if (this.type === 'wxq') {
                     form['ownerWechat'] = this.publishForm.ownerWechat
                     form['imgUrl2'] = this.publishForm.imgUrl2
                 }
-                console.log(form)
+                // console.log(form)
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         if (!this.publishForm.url || this.publishForm.url === '') {

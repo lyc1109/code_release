@@ -72,6 +72,7 @@ let pcRouter = [
 let mobileRouter = [
   {
     path: '/',
+    name: 'home',
     redirect: '/home'
   },
   {
@@ -209,14 +210,33 @@ let mobileRouter = [
       title: '明细记录',
       requireAuth: true
     }
+  },
+  {
+    path: '/invite/:id',
+    name: 'record',
+    component: () => import('./views/mobile/person/invite'),
+    meta: {
+      title: '邀请推广',
+      requireAuth: true
+    }
+  }
+]
+const logout = [
+  {
+    path: '/logout',
+    name: 'logout',
+    component: () => import('./views/logout'),
+    meta: {
+      title: '退出登录'
+    }
   }
 ]
 let routes
 let reg = /Android|webOS|iPhone|iPod|iPad|BlackBerry/i
 if (reg.test(navigator.userAgent)) {
-  routes = [...mobileRouter]
+  routes = [...mobileRouter, ...logout]
 } else {
-  routes = [...pcRouter]
+  routes = [...pcRouter, ...logout]
 }
 export default new Router({
   mode: 'history',

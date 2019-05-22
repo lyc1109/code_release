@@ -2,41 +2,41 @@
     <div class="publish_m">
         <van-cell-group>
             <van-cell title="类型" is-link :value="publishForm.type" @click="type = true" required></van-cell>
-            <van-cell title="所属行业" is-link :value="publishForm.trade" @click="trade = true" required></van-cell>
+            <van-cell title="所属行业" is-link :value="section" @click="trade = true" required></van-cell>
             <van-cell title="地区" is-link :value="publishForm.area" @click="area = true" required></van-cell>
-            <van-field v-model="publishForm.title" required clearable placeholder="请填写名称" label="名称"
-                       :error-message="titleError" @input="changeTit(publishForm.title)"></van-field>
-            <van-field v-model="publishForm.desc" type="textarea" clearable placeholder="请填写介绍" label="介绍"></van-field>
+            <van-field v-model="publishForm.name" required clearable placeholder="请填写名称" label="名称"
+                       :error-message="titleError" @input="changeTit(publishForm.name)"></van-field>
+            <van-field v-model="publishForm.description" type="textarea" clearable placeholder="请填写介绍" label="介绍"></van-field>
             <van-cell title="展示图片" required>
                 <div slot="label">
-                    <van-uploader :after-read="changeShowCover">
+                    <van-uploader :after-read="changeShowCover" :max-size="maxSize">
                         <van-icon name="plus" class="upload_control"></van-icon>
                     </van-uploader>
-                    <img :src="publishForm.cover" alt="" class="upload_avatar"
-                         v-if="publishForm.cover && publishForm.cover !== ''">
+                    <img :src="publishForm.url" alt="" class="upload_avatar"
+                         v-if="publishForm.url && publishForm.url !== ''">
                 </div>
             </van-cell>
             <van-cell title="群二维码" required>
                 <div slot="label">
-                    <van-uploader :after-read="changeShowGroup">
+                    <van-uploader :after-read="changeShowGroup" :max-size="maxSize">
                         <van-icon name="plus" class="upload_control"></van-icon>
                     </van-uploader>
-                    <img :src="publishForm.groupCode" alt="" class="upload_avatar"
-                         v-if="publishForm.groupCode && publishForm.groupCode !== ''">
+                    <img :src="publishForm.imgUrl1" alt="" class="upload_avatar"
+                         v-if="publishForm.imgUrl1 && publishForm.imgUrl1 !== ''">
                 </div>
             </van-cell>
             <van-cell title="群主二维码" v-if="publishForm.type === '微信群'" required>
                 <div slot="label">
-                    <van-uploader :after-read="changeShowOwner">
+                    <van-uploader :after-read="changeShowOwner" :max-size="maxSize">
                         <van-icon name="plus" class="upload_control"></van-icon>
                     </van-uploader>
-                    <img :src="publishForm.ownerCode" alt="" class="upload_avatar"
-                         v-if="publishForm.ownerCode && publishForm.ownerCode !== ''">
+                    <img :src="publishForm.imgUrl2" alt="" class="upload_avatar"
+                         v-if="publishForm.imgUrl2 && publishForm.imgUrl2 !== ''">
                 </div>
             </van-cell>
-            <van-field v-model="publishForm.wechat" required clearable placeholder="请填写群主微信号" label="群主微信号"
+            <van-field v-model="publishForm.ownerWechat" required clearable placeholder="请填写群主微信号" label="群主微信号"
                        :error-message="wechatError" v-if="publishForm.type === '微信群'"
-                       @input="changeWechat(publishForm.wechat)"></van-field>
+                       @input="changeWechat(publishForm.ownerWechat)"></van-field>
             <p class="tips">提示：发布或修改需要消费<b>10</b>金币，剩余<b>{{ userData.gold }}</b>金币</p>
         </van-cell-group>
         <div class="operate_btn flex">
@@ -49,7 +49,7 @@
             <van-picker :columns="typeList" @confirm="changeType" @cancel="cancelType" show-toolbar ref="type"></van-picker>
         </van-popup>
         <van-popup v-model="trade" position="bottom">
-            <van-picker :columns="tradeList" @confirm="changeTrade" @cancel="cancelTrade" show-toolbar ref="trade"></van-picker>
+            <van-picker :columns="tradeList" @confirm="changeTrade" @cancel="cancelTrade" show-toolbar ref="trade" value-key="name"></van-picker>
         </van-popup>
         <van-popup v-model="area" position="bottom">
             <van-area :area-list="areaList" @confirm="changeArea" @cancel="cancelArea" ref="area"></van-area>
@@ -68,34 +68,33 @@
                 areaList: areaList,
                 publishForm: {
                     type: '微信群',
-                    trade: '',
+                    sectionId: '',
                     area: '',
-                    title: '',
-                    desc: '',
-                    cover: '',
-                    groupCode: '',
-                    ownerCode: '',
-                    wechat: ''
+                    name: '',
+                    description: '',
+                    url: '',
+                    imgUrl1: '',
+                    imgUrl2: '',
+                    ownerWechat: ''
                 },
                 titleError: '',
                 wechatError: '',
                 userData: {
-                    gold: 200
+                    gold: 0
                 },
                 typeList: ['微信群', '公众号', '个人微信号', '其他'],
-                tradeList: [
-                    {text: '互粉群', value: 'hf'},
-                    {text: '妈妈群', value: 'mm'}
-                ],
+                tradeList: [],
                 type: false,
                 trade: false,
-                area: false
+                area: false,
+                section: ''
             }
         },
         created() {
-            if (this.$route.query && this.$route.query.title && this.$route.query.title.includes('发布')) {
-                this.fetchData()
-            }
+            // if (this.$route.query && this.$route.query.title && this.$route.query.title.includes('编辑')) {
+            //     this.fetchData()
+            // }
+            this.fetchTrade()
             if (this.$route.query && this.$route.query.type) {
                 switch (this.$route.query.type) {
                     case 'wxq':
@@ -125,37 +124,96 @@
                     // no default
                 }
             }
+            this.fetchCount()
+        },
+        computed: {
+            maxSize() {
+                return 1024 * 1024 * 5
+            }
         },
         methods: {
             // 初始化数据
-            fetchData() {
-                console.log('初始化数据')
+            // fetchData() {
+            //     this.$api.getArticle({
+            //         id: this.$route.query.id ? this.$route.query.id : ''
+            //     }).then((res) => {
+            //         if (res) {
+            //             this.publishForm = res.info
+            //             this.publishForm.area = this.publishForm.position1 + this.publishForm.position2 + this.publishForm.position3
+            //             // this.publishForm.type = this.$route.query.type
+            //         }
+            //     })
+            // },
+            // 获取行业列表
+            fetchTrade() {
+                this.$api.getTrade().then((res) => {
+                    if (res) {
+                        this.tradeList = res.data
+                    }
+                })
+            },
+            // 金币初始化
+            fetchCount() {
+                // 获取个人中心信息
+                this.$api.getBuzzInfo().then((res) => {
+                    if (res) {
+                        this.userData.gold = res.coin
+                    }
+                })
             },
             // 上传展示图片
             changeShowCover(file) {
-                this.publishForm.cover = file.content
+                let form = new FormData()
+                form.append('file', file.file)
+                this.$api.uploadFile(form).then((res) => {
+                    if (res) {
+                        this.publishForm.url = res.url
+                        this.$forceUpdate()
+                    }
+                })
             },
             // 上传群二维码
             changeShowGroup(file) {
-                this.publishForm.groupCode = file.content
+                let form = new FormData()
+                form.append('file', file.file)
+                this.$api.uploadFile(form).then((res) => {
+                    if (res) {
+                        this.publishForm.imgUrl1 = res.url
+                        this.$forceUpdate()
+                    }
+                })
             },
             // 上传群主二维码
             changeShowOwner(file) {
-                this.publishForm.ownerCode = file.content
+                let form = new FormData()
+                form.append('file', file.file)
+                this.$api.uploadFile(form).then((res) => {
+                    if (res) {
+                        this.publishForm.imgUrl2 = res.url
+                        this.$forceUpdate()
+                    }
+                })
             },
             // 修改类型
             changeType(val) {
                 this.type = false
-                console.log(val)
+                // console.log(val)
                 this.publishForm.type = val
             },
             // 修改行业
             changeTrade(val) {
+                let obj = this.tradeList.filter((value) => {
+                    return val.id === value.id
+                })
                 this.trade = false
-                this.publishForm.trade = val
+                if (obj.length) {
+                    this.publishForm.sectionId = obj[0].id
+                    this.section = obj[0].name
+                }
             },
             // 修改地区
             changeArea(data) {
+                this.publishForm.area = ''
                 this.area = false
                 data.forEach((value) => {
                     this.publishForm.area += value.name
@@ -187,6 +245,7 @@
                 })
             },
             changeTit(val) {
+                console.log(val)
                 if (val.length === 0)
                     this.titleError = '请输入名称'
                 else
@@ -208,10 +267,37 @@
                         this.publishForm.groupCode !== '' &&
                         this.publishForm.trade !== '' &&
                         this.publishForm.area !== '') {
-                        Toast.success('发布成功')
-                        setTimeout(() => {
-                            this.$router.push('/person')
-                        }, 500)
+
+                        let form = {}
+                        if (this.publishForm.area.length > 0) {
+                            this.publishForm.position1 = this.publishForm.area[0]
+                        }
+                        if (this.publishForm.area.length > 1) {
+                            this.publishForm.position1 = this.publishForm.area[0]
+                            this.publishForm.position2 = this.publishForm.area[1]
+                        }
+                        if (this.publishForm.area.length > 2) {
+                            this.publishForm.position1 = this.publishForm.area[0]
+                            this.publishForm.position2 = this.publishForm.area[1]
+                            this.publishForm.position3 = this.publishForm.area[2]
+                        }
+                        form = this.publishForm
+                        if (this.type === 'gzh' || this.type === 'gr' || this.type === 'qt') {
+                            delete form.ownerWechat
+                            delete form.imgUrl2
+                        } else if (this.type === 'wxq') {
+                            form['ownerWechat'] = this.publishForm.ownerWechat
+                            form['imgUrl2'] = this.publishForm.imgUrl2
+                        }
+
+                        this.$api.addStaticQRCode(this.publishForm).then((res) => {
+                            if (res) {
+                                Toast.success('发布成功')
+                                setTimeout(() => {
+                                    this.$router.push('/person')
+                                }, 500)
+                            }
+                        })
                     } else {
                         if (this.publishForm.trade === '') Toast.fail('请选择所属行业')
                         if (this.publishForm.area === '') Toast.fail('请选择地区')

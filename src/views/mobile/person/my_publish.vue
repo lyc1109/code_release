@@ -3,18 +3,20 @@
         <van-tabs v-model="articleTabIndex" @change="changeTabs">
             <van-tab v-for="(item, index) in articleTabList" :key="index" :title="item.name"></van-tab>
         </van-tabs>
-        <div class="article_index_main" v-for="(item, index) in articleData" :key="index">
-            <div class="article_index_img" v-if="item.cover && item.cover !== ''">
-                <img :src="item.cover" alt="">
+        <div class="article_index_main" v-for="(item, index) in articleData" :key="index" v-if="articleData.length" @click="toDetail(item)">
+            <div class="article_index_img" v-if="item.url && item.url !== ''">
+                <img :src="item.url" alt="">
             </div>
             <div class="article_index_main_info">
                 <h2>{{ item.name }}</h2>
-                <p>{{ item.desc }}</p>
+                <p>{{ item.description }}</p>
                 <div class="article_index_info">
-                    <span>{{ item.trade }}</span>
-                    <span style="margin-left: .4rem;">{{ item.created }}</span>
-                    <van-icon name="delete" @click="del(item)"></van-icon>
-                    <van-icon name="edit" @click="edit(item)"></van-icon>
+                    <p>剩余可邀请推广{{ item.popularizePrice }}次,{{ item.popularizeCount }}元</p>
+                    <span>{{ item.section }}</span>
+                    <span style="margin-left: .4rem;">{{ item.createTime }}</span>
+                    <van-icon name="delete" @click.stop="del(item)"></van-icon>
+                    <van-icon name="add" @click.stop="toInvite(item)" v-if="$route.query.type === 'fb'"></van-icon>
+                    <van-icon name="edit" @click.stop="edit(item)" v-if="$route.query.type === 'wz'"></van-icon>
                 </div>
             </div>
         </div>
@@ -23,28 +25,22 @@
                 :total-items="page.total"
                 mode="simple"
                 :items-per-page="page.size"
-                @change="changeSize(page.current)">
+                @change="changeSize(page.current)"
+                v-if="articleData.length">
         </van-pagination>
     </div>
 </template>
 
 <script>
-    import { Dialog, Toast } from 'vant'
+    import {Dialog, Toast} from 'vant'
 
     export default {
         name: "my_publish",
         data() {
             return {
-                articleData: [
-                    { name: '微信文章1', cover: 'https://img8.souweixin.com/20190515/38/5ba488457bbc57bcc05d69a7f75e9bb5.jpeg', created: '2019-05-15', trade: '微信群', desc: '诚信做微商，信誉第一.影视圈' },
-                    { name: '微信文章1', cover: 'https://img8.souweixin.com/20190515/38/5ba488457bbc57bcc05d69a7f75e9bb5.jpeg', created: '2019-05-15', trade: '公众号', desc: '诚信做微商，信誉第一.影视圈'  }
-                ],
+                articleData: [],
                 articleTabIndex: 0,
-                articleTabList: [
-                    {name: '阅读推荐', value: 'tj'},
-                    {name: '微商杂谈', value: 'zt'},
-                    {name: '养生之道', value: 'ys'}
-                ],
+                articleTabList: [],
                 articleTab: '',
                 page: {
                     current: 1,
@@ -54,33 +50,89 @@
             }
         },
         created() {
+            this.fetchTabs()
             this.fetchData()
         },
         methods: {
             // 初始化数据
             fetchData() {
-                console.log('初始化数据')
+                if (this.$route.query.type) {
+                    if (this.$route.query.type === 'fb')
+                        this.fetchPublish()
+                    else
+                        this.fetchArticle()
+                }
+            },
+            // 获取发布列表
+            fetchPublish() {
+                this.$api.getPublishBySectionId({
+                    sectionId: this.articleTab,
+                    pageNum: this.page.current,
+                    pageSize: this.page.size
+                }).then((res) => {
+                    if (res) {
+                        this.page.total = res.info.total
+                        this.articleData = res.info.list
+                        this.articleData.forEach((value, index, arr) => {
+                            this.articleTabList.forEach((data) => {
+                                if (value.sectionId === data.id) {
+                                    arr[index].section = data.name
+                                }
+                            })
+                        })
+                    }
+                })
+            },
+            // 文章列表
+            fetchArticle() {
+                this.$api.getArticleDetail({
+                    sectionId: this.articleTab,
+                    pageNum: this.page.current,
+                    pageSize: this.page.size
+                }).then((res) => {
+                    if (res) {
+                        this.page.total = res.info.total
+                        this.articleData = res.info.list
+                        this.articleData.forEach((value, index, arr) => {
+                            this.articleTabList.forEach((data) => {
+                                if (value.sectionId === data.id) {
+                                    arr[index].section = data.name
+                                }
+                            })
+                        })
+                    }
+                })
+            },
+            // 初始化tabs
+            fetchTabs() {
+                this.$api.getTrade().then((res) => {
+                    this.articleTabList = res.data
+                    this.articleTabList.unshift({
+                        name: '全部',
+                        id: ''
+                    })
+                })
             },
             // 修改tabs
             changeTabs(index, title) {
                 const obj = this.articleTabList.filter((value) => {
                     return title === value.name
                 })
-                this.articleTab = obj[0].value.value
+                this.articleTab = obj[0].id
+                this.fetchData()
             },
             // 改变页码
             changeSize(val) {
-                console.log(val)
+                // console.log(val)
                 this.page.current = val
                 this.fetchData()
             },
             // 编辑
             edit(data) {
                 this.$router.push({
-                    path: '/publish',
+                    path: '/publish_article',
                     query: {
-                        title: `编辑${data.trade}`,
-                        type: data.trade
+                        id: data.id
                     }
                 })
             },
@@ -88,8 +140,29 @@
             del(data) {
                 Dialog.confirm({message: '确定删除？'})
                     .then(() => {
-                        Toast.success('删除成功')
+                        this.$api.deleteArticle({
+                            id: data.id
+                        }).then((res) => {
+                            if (res) {
+                                Toast.success('删除成功')
+                                if (this.$route.query.type === 'fb')
+                                    this.fetchPublish()
+                                else
+                                    this.fetchArticle()
+                            }
+                        })
                     })
+            },
+            // 详情页
+            toDetail(data) {
+                if (this.$route.query.type === 'fb')
+                    this.$router.push(`/group/${data.id}`)
+                else
+                    this.$router.push(`/article/${data.id}`)
+            },
+            // 邀请推广
+            toInvite(data) {
+                this.$router.push(`/invite/${data.id}`)
             }
         }
     }
@@ -123,24 +196,29 @@
             height: 24px;
         }
 
-        .article_index_info{
+        .article_index_info {
             position: absolute;
             bottom: 0;
             width: 100%;
 
-            .van-icon{
+            .van-icon {
                 float: right;
 
                 &:before {
                     font-size: 1.6rem;
                 }
             }
-            .van-icon-edit{
+
+            .van-icon-edit {
                 color: #1784ef;
                 margin-right: .3rem;
             }
-            .van-icon-delete{
+
+            .van-icon-delete {
                 color: #ef3b3b;
+            }
+            .van-icon-add {
+                color: #4eb4ff;
             }
         }
 

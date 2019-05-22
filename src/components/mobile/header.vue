@@ -34,13 +34,13 @@
         data() {
             return {
                 tabList: [
-                    {name: '首页', icon: 'home', color: '#87cb4f'},
-                    {name: '微信群', icon: 'group', color: '#8962bd'},
-                    {name: '地区微信', icon: 'area', color: '#f84f9c'},
-                    {name: '个人微信', icon: 'wechat', color: '#e77638'},
-                    {name: '微信公众号', icon: 'publicNum', color: '#f94e4a'},
-                    {name: '微信文章', icon: 'wenzhang', color: '#4e9cff'},
-                    {name: '个人中心', icon: 'person', color: '#cf4eff'}
+                    // {name: '首页', icon: 'home', color: '#87cb4f'},
+                    // {name: '微信群', icon: 'group', color: '#8962bd'},
+                    // {name: '地区微信', icon: 'area', color: '#f84f9c'},
+                    // {name: '个人微信', icon: 'wechat', color: '#e77638'},
+                    // {name: '微信公众号', icon: 'publicNum', color: '#f94e4a'},
+                    // {name: '微信文章', icon: 'wenzhang', color: '#4e9cff'},
+                    // {name: '个人中心', icon: 'person', color: '#cf4eff'}
                 ],
                 isLogin: false,
             }

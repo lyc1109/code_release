@@ -103,6 +103,8 @@
                                     sessionStorage.removeItem('user')
                                     Toast.success('已退出登录')
                                 }
+                            }).catch((err) => {
+                                console.log(err)
                             })
                         })
                 } else
