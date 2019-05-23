@@ -63,7 +63,7 @@ const api = {
      * @param params
      * @returns {*}
      */
-    getArticleDetail(params = {}) {
+    getArticleDetailPublic(params = {}) {
         return http.get(`${base}/getDetail`, params)
     }
 }

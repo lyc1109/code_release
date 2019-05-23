@@ -20,6 +20,7 @@
 
 <script>
     import loginBox from '@/views/pc/login/login'
+    import mobileImg from '@/assets/images/mobile.jpg'
 
     export default {
         name: "suspension",
@@ -28,7 +29,7 @@
                 showLogin: false,
                 loginType: '',
                 loginTit: '',
-                mobileImg: 'https://img8.souweixin.com/20190504/1309613/fc9d6cfdbf6c38769d320924235572a7.jpeg',
+                mobileImg: mobileImg,
                 reg: /Android|webOS|iPhone|iPod|iPad|BlackBerry/i,
                 navigator: navigator
             }

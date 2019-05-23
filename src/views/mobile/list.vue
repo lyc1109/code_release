@@ -9,6 +9,11 @@
                         <img :src="item.imgUrl1">
                     </div>
                     <span>{{ item.name }}</span>
+                    <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>
+                    <div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>
+                    <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">
+                        <el-button type="text">点击推广</el-button>
+                    </p>
                 </div>
             </div>
             <van-pagination
@@ -18,6 +23,9 @@
                     :items-per-page="page.size"
                     @change="changeSize(page.current)"></van-pagination>
         </div>
+        <van-dialog v-model="spreadBox" width="25%">
+            <img :src="spreadImg" alt="">
+        </van-dialog>
         <footer-box></footer-box>
     </div>
 </template>
@@ -35,7 +43,9 @@
                     current: 1,
                     size: 5,
                     total: 0
-                }
+                },
+                spreadImg: '',
+                spreadBox: false
             }
         },
         created() {
@@ -46,6 +56,14 @@
                 if (to.query.id) {
                     this.fetchData()
                 }
+            }
+        },
+        computed: {
+            isLogin() {
+                if (sessionStorage.getItem('user')) {
+                    return true
+                }
+                return false
             }
         },
         methods: {
@@ -69,6 +87,19 @@
             // 跳转到二维码详情页
             groupDetail(id) {
                 this.$router.push(`/group/${id}`)
+            },
+            // 推广
+            spread(id) {
+                this.$api.popularize({
+                    codeId: id
+                }).then((res) => {
+                    if (res) {
+                        this.spreadImg = res.url
+                        setTimeout(() => {
+                            this.spreadBox = true
+                        }, 300)
+                    }
+                })
             }
         },
         components: {
@@ -94,6 +125,42 @@
             margin-right: 1%;
             margin-bottom: 10px;
             cursor: pointer;
+            position: relative;
+
+            .spread_img{
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 0;
+                height: 0;
+                border-top: 5rem solid #ff7a4a;
+                border-right: 5rem solid transparent;
+            }
+            .spread_text{
+                position: absolute;
+                top: 8px;
+                left: 5px;
+                color: #fff;
+                text-align: left;
+                border-radius: 8px;
+            }
+            .shadow{
+                position: absolute;
+                bottom: -10px;
+                left: 0;
+                width: 100%;
+                height: 30px;
+                line-height: 30px;
+                background: rgba(#000, .7);
+                /*border-bottom-left-radius: 8px;*/
+                /*border-bottom-right-radius: 8px;*/
+                cursor: pointer;
+
+                .el-button{
+                    color: #fff;
+                    padding: 0;
+                }
+            }
 
             & > last-child {
                 margin-right: 0;
