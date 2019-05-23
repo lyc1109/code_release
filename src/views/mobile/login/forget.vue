@@ -36,9 +36,8 @@
                 <van-field v-model="forgetForm2.code"
                            clearable placeholder="验证码"
                            :error-message="mailCodeError"
-                           left-icon="youzan-shield"
-                           @input="changeMailCode(forgetForm2.code)">
-                    <img :src="codeUrl" slot="button" @click="refreshImg" class="code_img">
+                           left-icon="youzan-shield">
+<!--                    <img :src="codeUrl" slot="button" @click="refreshImg" class="code_img">-->
                 </van-field>
                 <van-field
                         v-model="forgetForm2.pass"

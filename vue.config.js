@@ -8,11 +8,10 @@ module.exports = {
         port: '8080',
         proxy: {
             '/api': {
-                target: 'http://qrcode.gogodjzhu.com/api/v1',
+                target: 'http://qrcode.gogodjzhu.com',
                 changOrigin: true,
-                ws: true,
                 pathRewrite: {
-                    '^/api': ''
+                    '^/api': '/api/v1'
                 }
             }
         }

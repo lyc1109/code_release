@@ -21,6 +21,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 axios.interceptors.request.use(
     (config) => {
         config.headers['x-requested-from'] = "apiHttpRequest"
+        config.headers['Cache-Control'] = 'no-cache'
 
         // const token = sessionStorage.getItem('user')
         // if (token !== null && token !== "") {
@@ -46,7 +47,7 @@ let emitError = (errorMsg) => {
 
 axios.interceptors.response.use(
     (response) => {
-        // console.log(response)
+        console.log(response)
         // hideLoading()
         const respData = response.data
 
@@ -61,25 +62,26 @@ axios.interceptors.response.use(
                 return respData.data
             }
             return respData
-        } else {
-            Element.Message.error(respData.msg)
-            // 未授权登录
-            const httpStatusCode = respData.httpStatusCode
-            if(httpStatusCode === 401 || respData.code === 1200) {
-                Vue.bus.emit("oauth")
-            } else if(httpStatusCode === 404 || httpStatusCode === 500) {
-                sessionStorage.setItem('setErrorCode', httpStatusCode)
-                // store.commit(types.common.setErrorCode, httpStatusCode)
-            } else if(httpStatusCode === 302) {
-                // 后台资源路径重定向，不做处理
-            } else {
-                emitError((respData.returnMsg || respData.msg) + "(" + (respData.returnCode || respData.code) + ")")
-                console.log(respData)
-                Element.Message.error(respData.returnMsg || respData.msg)
-            }
-            //console.log("请求成功：" + JSON.stringify(respData))
-            return Promise.reject(respData)
         }
+        // else {
+        //     Element.Message.error(respData.msg)
+        //     // 未授权登录
+        //     const httpStatusCode = respData.httpStatusCode
+        //     if(httpStatusCode === 401 || respData.code === 1200) {
+        //         Vue.bus.emit("oauth")
+        //     } else if(httpStatusCode === 404 || httpStatusCode === 500) {
+        //         sessionStorage.setItem('setErrorCode', httpStatusCode)
+        //         // store.commit(types.common.setErrorCode, httpStatusCode)
+        //     } else if(httpStatusCode === 302) {
+        //         // 后台资源路径重定向，不做处理
+        //     } else {
+        //         emitError((respData.returnMsg || respData.msg) + "(" + (respData.returnCode || respData.code) + ")")
+        //         console.log(respData)
+        //         Element.Message.error(respData.returnMsg || respData.msg)
+        //     }
+        //     //console.log("请求成功：" + JSON.stringify(respData))
+        //     return Promise.reject(respData)
+        // }
     },
     (error) => {
         const response = error.response
@@ -92,17 +94,17 @@ axios.interceptors.response.use(
 
         //console.log("请求失败：" + JSON.stringify(response))
         if(response && response.data) {
-            const httpStatusCode = response.data.httpStatusCode
+            // const httpStatusCode = response.data.httpStatusCode
 
             // 未授权登录
-            if(httpStatusCode=== 401 || response.data.returnCode === 1200 || response.data.code === 1200) {
-                Vue.bus.emit("oauth")
-            } else if(httpStatusCode === 404 || httpStatusCode === 500) {
-                sessionStorage.setItem('setErrorCode', httpStatusCode)
-                // store.commit(types.common.setErrorCode, httpStatusCode)
-            }  else if(httpStatusCode === 302) {
-                // 后台资源路径重定向，不做处理
-            }  else {
+            // if(httpStatusCode=== 401 || response.data.returnCode === 1200 || response.data.code === 1200) {
+            //     Vue.bus.emit("oauth")
+            // } else if(httpStatusCode === 404 || httpStatusCode === 500) {
+            //     sessionStorage.setItem('setErrorCode', httpStatusCode)
+            //     // store.commit(types.common.setErrorCode, httpStatusCode)
+            // }  else if(httpStatusCode === 302) {
+            //     // 后台资源路径重定向，不做处理
+            // }  else {
                 // 其它错误信息处理
                 if(response.data.returnMsg) {
                     errMsg = response.data.returnMsg + "(" + response.data.returnCode + ")"
@@ -111,9 +113,9 @@ axios.interceptors.response.use(
                 }
                 emitError(errMsg)
                 Element.Message.error(errMsg)
-            }
+            // }
         }
-
+    //
         return Promise.reject(errMsg)
     }
 )
