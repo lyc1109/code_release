@@ -5,8 +5,9 @@ import Element from 'element-ui'
 // 常量配置
 const isProduct = process.env.NODE_ENV === "production"
 const requestTimeOut = 500
+const baseUrl = process.env.VUE_APP_BASE_API
 
-// 设置ContentType
+    // 设置ContentType
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
 // 打印请求参数
@@ -134,7 +135,7 @@ export default {
 
         return axios({
             method: 'POST',
-            url: url,
+            url: baseUrl + url,
             params: params,
             data: data,
             timeout: requestTimeOut
@@ -149,7 +150,7 @@ export default {
     postJson: function (url = "", requestBody = {}) {
         return axios({
             method: 'POST',
-            url: url,
+            url: baseUrl + url,
             data: requestBody,
             timeout: requestTimeOut,
             headers: {'Content-Type': 'application/json'},
@@ -169,7 +170,7 @@ export default {
 
         return axios({
             method: 'GET',
-            url: url,
+            url: baseUrl + url,
             params: params,
             timeout: requestTimeOut
         })
@@ -187,7 +188,7 @@ export default {
 
         return axios({
             method: 'DELETE',
-            url: url,
+            url: baseUrl + url,
             params: params,
             timeout: requestTimeOut
         })
@@ -205,7 +206,7 @@ export default {
 
         return axios({
             method: 'PUT',
-            url: url,
+            url: baseUrl + url,
             params: params,
             timeout: requestTimeOut
         })

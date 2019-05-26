@@ -5,7 +5,7 @@
  */
 
 import http from '@/utils/https'
-const base = '/api/buzz/public'
+const base = '/buzz/public'
 
 const api = {
     /**
