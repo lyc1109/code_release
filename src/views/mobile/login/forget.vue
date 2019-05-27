@@ -67,7 +67,7 @@
         name: "forget",
         data() {
             return {
-                codeUrl: `/api/img/verification?${Math.random()}`,
+                codeUrl: `${process.env.VUE_APP_BASE_API}/img/verification?${Math.random()}`,
                 emailError: '',
                 mailError: '',
                 codeError: '',
@@ -99,7 +99,7 @@
             // 刷新图片验证码
             refreshImg() {
                 const hash = Math.random()
-                this.codeUrl = `/api/img/verification?${hash}`
+                this.codeUrl = `${process.env.VUE_APP_BASE_API}/img/verification?${hash}`
             },
             // 验证邮箱
             changeEmail(val) {
