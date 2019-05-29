@@ -13,7 +13,7 @@ const api = {
      * @returns {*}
      */
     getUserInfo() {
-        return http.get(`/api/sys/userInfo`)
+        return http.get(`/sys/userInfo`)
     },
     /**
      * 注册
@@ -21,7 +21,7 @@ const api = {
      * @returns {*}
      */
     register(params = {}) {
-        return http.post('/api/sys/register', params)
+        return http.post('/sys/register', params)
     },
     /**
      * 登录
@@ -29,7 +29,7 @@ const api = {
      * @returns {*}
      */
     login(params = {}) {
-        return http.post('/api/sys/login', params)
+        return http.post('/sys/login', params)
     },
     /**
      * 提交重置密码
@@ -37,7 +37,7 @@ const api = {
      * @returns {*}
      */
     resetPass(params = {}) {
-        return http.post('/api/sys/resetPass', params)
+        return http.post('/sys/resetPass', params)
     },
     /**
      * 提交重置密码,通过邮件验证码方式
@@ -45,7 +45,7 @@ const api = {
      * @returns {*}
      */
     changePassByMail(params = {}) {
-        return http.post('/api/sys/changePassByMail', params)
+        return http.post('/sys/changePassByMail', params)
     },
     /**
      * 提交修改密码(已登录)
@@ -53,7 +53,7 @@ const api = {
      * @returns {*}
      */
     changePass(params = {}) {
-        return http.post('/api/sys/changePass', params)
+        return http.post('/sys/changePass', params)
     },
     /**
      * 更新用户信息
@@ -61,21 +61,21 @@ const api = {
      * @returns {*}
      */
     updateUser(params ={}) {
-        return http.post('/api/sys/update', params)
+        return http.post('/sys/update', params)
     },
     /**
      * 退出登录
      * @returns {*}
      */
     logout() {
-        return http.get('/api/sys/logout')
+        return http.get('/sys/logout')
     },
     /**
      * 获取图片验证码
      * @returns {*}
      */
     verificationImg() {
-        return http.get('/api/img/verification')
+        return http.get('/img/verification')
     },
     /**
      * 上传文件
@@ -83,7 +83,7 @@ const api = {
      * @returns {*|AxiosPromise}
      */
     uploadFile(data) {
-        return http.postJson('/api/file/add', data)
+        return http.postJson('/file/add', data)
     }
 }
 
