@@ -4,7 +4,7 @@ import Element from 'element-ui'
 
 // 常量配置
 const isProduct = process.env.NODE_ENV === "production"
-const requestTimeOut = 500
+const requestTimeOut = 30000
 
 // 设置ContentType
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
