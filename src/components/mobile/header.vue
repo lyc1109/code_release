@@ -3,7 +3,7 @@
         <van-nav-bar class="m_header">
             <van-icon name="bars" slot="left" @click="showNav"></van-icon>
             <div class="m_logo" slot="title">
-                <span>微信群</span>
+                <span>微群发布</span>
                 <!--<img src="" alt="">-->
             </div>
             <div slot="right">

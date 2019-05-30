@@ -15,17 +15,22 @@
                 <div class="main_group_info">
                     <i class="iconfont iconsuozaixingye"></i>
                     <span>行业：</span>
-                    <van-tag type="primary" size="medium">{{ section }}</van-tag>
+                    <van-tag type="primary" size="medium" v-if="section && section !== ''">{{ section }}</van-tag>
+                    <span v-else>暂无行业</span>
                 </div>
                 <div class="main_group_info">
                     <i class="iconfont icondingwei"></i>
                     <span>地区：</span>
-                    <van-tag type="primary" size="medium">{{ groupData.position1 + groupData.position2 }}</van-tag>
+                    <van-tag type="primary" size="medium" v-if="groupData.position1 && (!groupData.position2 && !groupData.position3)">{{ groupData.position1 }}</van-tag>
+                    <van-tag type="primary" size="medium" v-else-if="(groupData.position1 && groupData.position2) && !groupData.position3">{{ groupData.position1 + groupData.position2 }}</van-tag>
+                    <van-tag type="primary" size="medium" v-else-if="groupData.position1 && groupData.position2 && groupData.position3">{{ groupData.position1 + groupData.position2 + groupData.position3 }}</van-tag>
+                    <span v-else>暂无地区</span>
                 </div>
                 <div class="main_group_info">
                     <i class="iconfont iconshijian"></i>
                     <span>时间：</span>
-                    <span>{{ groupData.createTime }}</span>
+                    <span v-if="groupData.createTime">{{ groupData.createTime }}</span>
+                    <span v-else>暂无时间</span>
                 </div>
             </div>
             <div class="group_detail_operate_m">
@@ -68,17 +73,19 @@
                 ],
                 btnType: 0,
                 groupData: {
-                    name: '积分宝群',
-                    desc: '积分宝项目交流群，分红//群',
-                    trade: '创业群',
-                    area: '广东',
-                    created: '2019-05-08',
-                    tag: '积分宝',
-                    wechat: 'nmd22288',
-                    hot: '3002',
+                    name: '暂无名称',
+                    description: '',
+                    trade: '',
+                    area: '',
+                    created: '',
+                    tag: '',
+                    wechat: '',
+                    hot: '',
                     like: 2,
                     tread: 1,
-                    mobile: 13522223333
+                    mobile: 13522223333,
+                    star: 0,
+                    typ: 0
                 },
                 breadList: [
                     {name: '首页', url: '/'},

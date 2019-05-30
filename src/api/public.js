@@ -26,7 +26,7 @@ const api = {
      * @param params
      */
     getCodeDetail(params = {}) {
-        return http.get(`${base}/getPublishDetail`, params)
+        return http.get(`${base}/getDetail`, params)
     },
     /**
      * 搜索结果
