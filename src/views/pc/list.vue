@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="home">
-            <header-box actived="/area"></header-box>
+            <header-box actived="/area" :isList="true"></header-box>
 <!--            <el-carousel direction="vertical" height="30px" class="notice" v-if="noticeList.length">-->
 <!--                <el-carousel-item v-for="(item,index) in noticeList" :key="index">-->
 <!--                    <p>{{ item.title }}</p>-->

@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <header-box actived="/article"></header-box>
+        <header-box actived="/article" :isList="true"></header-box>
         <el-card shadow="never" class="article_main">
             <h1>{{ article.name }}</h1>
             <div class="article_info">

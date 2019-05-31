@@ -13,7 +13,7 @@
                 </el-input>
             </div>
             <!--栏目-->
-            <nav style="margin: 0 5px;">
+            <nav style="margin: 0 5px;" v-if="!isList">
                 <el-menu :default-active="activeNav"
                          mode="horizontal"
                          background-color="#545c64"
@@ -35,10 +35,25 @@
                 <el-button class="register_btn" @click="quit">退出</el-button>
             </div>
 
+
             <!--        登录-->
             <login :is-show="showLogin" @toggle="toggleLogin" :type="loginType" :title="loginTit"
                    @success="successLogin"></login>
         </header>
+
+        <!--栏目-->
+        <nav style="margin: 20px 5px 0;" v-if="isList">
+            <el-menu :default-active="activeNav"
+                     mode="horizontal"
+                     background-color="#545c64"
+                     text-color="#fff"
+                     active-text-color="#ffd04b"
+                     @select="selectNav" router>
+                <el-menu-item v-for="(item, index) in tabList" :key="index"
+                              :index="`/list?id=${item.id}`">{{ item.name }}
+                </el-menu-item>
+            </el-menu>
+        </nav>
     </div>
 </template>
 
@@ -55,6 +70,10 @@
             type: {
                 type: String,
                 default: 'basic'
+            },
+            isList: {
+                type: Boolean,
+                default: false
             }
         },
         data() {
