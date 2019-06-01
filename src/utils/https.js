@@ -23,11 +23,6 @@ axios.interceptors.request.use(
     (config) => {
         config.headers['x-requested-from'] = "apiHttpRequest"
         config.headers['Cache-Control'] = 'no-cache'
-
-        // const token = sessionStorage.getItem('user')
-        // if (token !== null && token !== "") {
-        //     config.headers['x-auth-token'] = token
-        // }
         config.headers.apiRequest = true
         return config
     },
@@ -51,12 +46,6 @@ axios.interceptors.response.use(
         // console.log(response)
         // hideLoading()
         const respData = response.data
-
-        // if(respData) {
-        //     let _code = respData.returnCode || respData.code || ''
-        //     // store.commit(types.common.setErrorCode, _code)
-        // }
-
         // console.log(respData)
         // 状态码为200表示请求成功，否则失败
         if(response.status === 200 && respData.status) {
