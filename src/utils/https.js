@@ -48,7 +48,7 @@ let emitError = (errorMsg) => {
 
 axios.interceptors.response.use(
     (response) => {
-        console.log(response)
+        // console.log(response)
         // hideLoading()
         const respData = response.data
 
@@ -57,12 +57,15 @@ axios.interceptors.response.use(
         //     // store.commit(types.common.setErrorCode, _code)
         // }
 
+        // console.log(respData)
         // 状态码为200表示请求成功，否则失败
         if(response.status === 200 && respData.status) {
             if(respData.data !== null) {
                 return respData.data
             }
             return respData
+        } else if (!respData.status) {
+            Element.Message.error(respData.msg)
         }
         // else {
         //     Element.Message.error(respData.msg)

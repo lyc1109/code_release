@@ -1,20 +1,23 @@
 <template>
     <div style="padding-right: 20px;">
         <el-form :model="changePwdForm" ref="changePwd" :rules="changePwdRule" label-width="100px" v-if="!isOnStep">
-            <el-form-item prop="email" label="邮箱">
-                <el-input v-model="changePwdForm.email" placeholder="请输入邮箱" size="small"></el-input>
+            <el-form-item prop="mail" label="邮箱">
+                <el-input v-model="changePwdForm.mail" placeholder="请输入邮箱" size="small"></el-input>
             </el-form-item>
 <!--            <el-form-item prop="code" label="验证码" class="code_form">-->
 <!--                <el-input v-model="changePwdForm.code" placeholder="请输入验证码" size="small" class="code_input"-->
 <!--                          type="number"></el-input>-->
 <!--                <img :src="codeUrl" alt="" @click="refreshImg" class="code_img">-->
 <!--            </el-form-item>-->
-            <el-form-item prop="pwd" label="更换密码">
-                <el-input v-model="changePwdForm.pwd" type="password" placeholder="请输入密码" size="small"></el-input>
+            <el-form-item prop="pass" label="更换密码">
+                <el-input v-model="changePwdForm.pass" type="password" placeholder="请输入密码" size="small"></el-input>
             </el-form-item>
             <el-form-item prop="confirmPwd" label="确认密码">
                 <el-input v-model="changePwdForm.confirmPwd" type="password" placeholder="请确认密码"
                           size="small"></el-input>
+            </el-form-item>
+            <el-form-item prop="code" label="邮箱验证码">
+                <el-input type="text" v-model="changePwdForm.code" placeholder="请输入邮箱验证码" size="small"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" style="width: 100%;" @click="success('changePwd')">确定</el-button>
@@ -74,12 +77,12 @@
                     confirmPwd: ''
                 },
                 changePwdRule: {
-                    email: [
+                    mail: [
                         {required: true, message: '请输入邮箱', trigger: 'blur'},
                         {type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change']}
                     ],
-                    code: [{required: true, validator: validCode, trigger: 'blur'}],
-                    pwd: [
+                    code: [{required: true, message: '请输入邮箱验证码', trigger: 'blur'}],
+                    pass: [
                         {required: true, validator: validPwd, trigger: 'blur'}
                     ],
                     confirmPwd: [
@@ -109,6 +112,7 @@
                         this.$api.resetPass(this.changePassForm)
                             .then((res) => {
                                 if (res) {
+                                    this.$message.success(res.msg + '请查收邮件')
                                     this.isOnStep = false
                                 }
                             })

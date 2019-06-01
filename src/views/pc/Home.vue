@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <header-box actived="/"></header-box>
+        <header-box actived="/" :isList="true"></header-box>
             <div style="position: relative;margin-top: 20px;">
                 <!--微信群-->
                 <div class="wxq" v-if="ewmList.length">
@@ -109,16 +109,15 @@
 
                 this.$api.getTradeList().then((res) => {
                     this.articleData = res.data
-                    this.articleData.unshift({
-                        name: '全部',
-                        id: ''
-                    })
+                    if (this.articleData.length) {
+                        this.article = String(this.articleData[0].id)
+                    }
                 })
             },
             fetchArticle() {
                 // 获取文章
                 this.$api.getArticleList({
-                    sectionId: this.article == 0 ? '' : this.article,
+                    sectionId: this.article,
                     pageNum: this.page.current,
                     pageSize: this.page.size
                 }).then((res) => {
