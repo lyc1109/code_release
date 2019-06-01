@@ -2,11 +2,11 @@
     <div>
         <div class="home">
             <header-box actived="/area" :isList="true"></header-box>
-<!--            <el-carousel direction="vertical" height="30px" class="notice" v-if="noticeList.length">-->
-<!--                <el-carousel-item v-for="(item,index) in noticeList" :key="index">-->
-<!--                    <p>{{ item.title }}</p>-->
-<!--                </el-carousel-item>-->
-<!--            </el-carousel>-->
+            <el-carousel direction="vertical" height="30px" class="notice" v-if="noticeList.length">
+                <el-carousel-item v-for="(item,index) in noticeList" :key="index">
+                    <p v-html="`<i class='iconfont icongonggao' style='margin-right: 5px;'></i>${item}`"></p>
+                </el-carousel-item>
+            </el-carousel>
             <div style="position: relative;margin-top: 20px;">
                 <!--微信群-->
                 <div class="wxq" v-if="ewmList.length">
@@ -55,11 +55,7 @@
                     size: 15,
                     total: 0
                 },
-                noticeList: [
-                    { title: '我是公告1' },
-                    { title: '我是公告2' },
-                    { title: '我是公告3' }
-                ],
+                noticeList: [],
                 spreadImg: '',
                 spreadBox: false
             }
@@ -95,6 +91,9 @@
                         console.log(res)
                         this.page.total = res.info.total
                         this.ewmList = res.info.list
+                        this.ewmList.forEach((data) => {
+                            this.noticeList.push(data.description)
+                        })
                     }
                 })
             },

@@ -26,7 +26,7 @@
                 <el-input v-model="publishForm.description" placeholder="请输入介绍" size="mini" type="textarea" rows="4"></el-input>
             </el-form-item>
             <el-form-item prop="url" label="展示图片">
-                <el-upload action="/api/file/add"
+                <el-upload :action="fileUploadUrl"
                            :on-success="changeCover"
                            class="avatar-uploader"
                            :show-file-list="false"
@@ -36,7 +36,7 @@
                 </el-upload>
             </el-form-item>
             <el-form-item prop="imgUrl1" label="群二维码">
-                <el-upload action="/api/file/add"
+                <el-upload :action="fileUploadUrl"
                            :on-success="changeGroupCode"
                            class="avatar-uploader"
                            :show-file-list="false"
@@ -47,7 +47,7 @@
                 </el-upload>
             </el-form-item>
             <el-form-item prop="imgUrl2" label="群主二维码" v-if="publishForm.type === 'wxq'">
-                <el-upload action="/api/file/add"
+                <el-upload :action="fileUploadUrl"
                            :on-success="changeOwnerCode"
                            class="avatar-uploader"
                            :show-file-list="false"
@@ -151,7 +151,8 @@
                 userInfo: {
                     money: 200
                 },
-                title: '发布'
+                title: '发布',
+                fileUploadUrl: `${process.env.VUE_APP_BASE_API}/file/add`
             }
         },
         created() {

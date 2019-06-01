@@ -111,6 +111,20 @@ const api = {
      */
     getRechargeSetting() {
         return http.get(`${base}/getRechargeSetting`)
+    },
+    /**
+     * 签到
+     * @returns {*}
+     */
+    checkin() {
+        return http.get(`${base}/checkin`)
+    },
+    /**
+     * 推广单价选项列表
+     * @returns {*}
+     */
+    getPopularizePriceOption(params = {}) {
+        return http.get(`${base}/getPopularizePriceOption`, params)
     }
 }
 

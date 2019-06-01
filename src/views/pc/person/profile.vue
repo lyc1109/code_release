@@ -4,7 +4,7 @@
             <el-input v-model="profile.nickname" placeholer="请输入昵称" size="mini"></el-input>
         </el-form-item>
         <el-form-item prop="url" label="头像" ref="imgUrl">
-            <el-upload action="/api/file/add"
+            <el-upload :action="fileUploadUrl"
                        :show-file-list="false"
                        :on-success="changeAvatar"
                        class="avatar-uploader"
@@ -44,7 +44,8 @@
                     birth: [{required: true, message: '请选择生日', trigger: 'change'}]
                 },
                 areaList: areaList,
-                avatarList: []
+                avatarList: [],
+                fileUploadUrl: `${process.env.VUE_APP_BASE_API}/file/add`
             }
         },
         created() {

@@ -32,12 +32,14 @@ router.beforeEach((to, from, next) => {
         const token = sessionStorage.getItem('user')
         if (!token || token == null || token == '') {
             if (reg.test(navigator.userAgent)) {
-                Dialog.alert({message: '必须登录才可访问此页面'})
+                Dialog.alert({message: '必须登录才可访问此页面', confirmButtonText: '去登录'})
                     .then(() => {
                         router.replace('/login')
                     })
             } else {
-                Element.MessageBox.alert('必须登录才可访问此页面!')
+                Element.MessageBox.alert('必须登录才可访问此页面!', '', {
+                    confirmButtonText: '去登录'
+                })
                     .then(() => {
                         router.replace('/')
                     })

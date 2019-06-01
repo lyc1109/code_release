@@ -57,7 +57,7 @@
                                 <p>{{ item.description }}</p>
                                 <div class="article_info_detail">
                                     <el-tag size="mini">{{ item.section }}</el-tag>
-                                    <el-tag size="mini" v-if="personTab === 'fb'" type="danger">剩余{{ item.popularizePrice }}元，{{ item.popularizeCount }}次可邀请推广</el-tag>
+                                    <el-tag size="mini" v-if="personTab === 'fb'" type="danger">剩余{{ item.popularizeCount }}次({{ item.popularizePrice }}元/次)推广</el-tag>
                                     <span>{{ item.createTime }}</span>
 <!--                                    <i class="iconai-eye iconfont"></i>-->
 <!--                                    <span style="margin-left: 5px;">{{ item.popOriginalId }}</span>-->
@@ -99,12 +99,42 @@
                         </div>
                         <el-pagination :current-page.sync="page.current"
                                        :page-size="page.articleSize"
-                                       :total="page.total"
+                                       :total="page.articleTotal"
                                        background
                                        layout="total, prev, pager, next, jumper"
                                        @size-change="changeArticleSize"
                                        @current-change="changeArticleCurrent"
                                        style="float: right;margin-top: 10px;margin-bottom: 10px;" v-if="ewmList.length"></el-pagination>
+                        <p class="text-center" style="font-size: 20px;" v-else>
+                            暂无数据</p>
+                    </div>
+
+                    <!--赚金币-->
+                    <div class="article_list" v-if="personTab === 'zjb'">
+                        <el-select v-model="listName" placeholder="请选择栏目" @change="changeList" size="mini">
+                            <el-option v-for="(item, index) in listNameList" :key="index" :label="item.name"
+                                       :value="item.id"></el-option>
+                        </el-select>
+                        <div class="wxq">
+                            <div class="wxq_box" v-for="(item, index) in goldList" :key="index"
+                                 @click="groupDetail(item.id)">
+                                <div>
+                                    <img :src="item.url">
+                                </div>
+                                <h5>{{ item.name }}</h5>
+                                <p class="shadow" @click.stop="spread(item.id)">
+                                    <el-button type="text">点击赚金币</el-button>
+                                </p>
+                            </div>
+                        </div>
+                        <el-pagination :current-page.sync="page.current"
+                                       :page-size="page.articleSize"
+                                       :total="page.articleTotal"
+                                       background
+                                       layout="total, prev, pager, next, jumper"
+                                       @size-change="changeArticleSize"
+                                       @current-change="changeArticleCurrent"
+                                       style="float: right;margin-top: 10px;margin-bottom: 10px;" v-if="goldList.length"></el-pagination>
                         <p class="text-center" style="font-size: 20px;" v-else>
                             暂无数据</p>
                     </div>
@@ -126,9 +156,13 @@
                 <!--规则-->
                 <rule-box v-if="defaultVal === 'gz'"></rule-box>
                 <!--邀请推广-->
-                <invite-box :is-show="invite" @toggle="toggleInvite" :codeId="codeId"></invite-box>
+                <invite-box :is-show="invite" @toggle="toggleInvite" :codeId="codeId" :sectionId="sectionId"></invite-box>
             </el-col>
         </el-row>
+
+        <el-dialog :visible.sync="spreadBox" width="25%">
+            <img :src="spreadImg" alt="">
+        </el-dialog>
         <footer-box></footer-box>
     </div>
 </template>
@@ -176,14 +210,16 @@
                 personTabList: [
                     {name: '发布', value: 'fb'},
                     {name: '推广', value: 'tg'},
-                    {name: '文章', value: 'wz'}
+                    {name: '文章', value: 'wz'},
+                    {name: '赚金币', value: 'zjb'}
                 ],
                 articleList: [],
                 page: {
                     current: 1,
                     size: 5,
                     articleSize: 10,
-                    total: 10
+                    total: 0,
+                    articleTotal: 0
                 },
                 listName: '',
                 listNameList: [],
@@ -194,7 +230,11 @@
                 },
                 coin: 0,
                 invite: false,
-                codeId: 0
+                codeId: 0,
+                goldList: [],
+                spreadImg: '',
+                spreadBox: false,
+                sectionId: ''
             }
         },
         created() {
@@ -214,6 +254,10 @@
                     case '文章':
                         this.personTab = 'wz'
                         this.fetchArticle()
+                        break
+                    case '赚金币':
+                        this.personTab = 'zjb'
+                        this.fetchGold()
                         break
                     // no default
                 }
@@ -243,6 +287,10 @@
                             case '文章':
                                 this.personTab = 'wz'
                                 this.fetchArticle()
+                                break
+                            case '赚金币':
+                                this.personTab = 'zjb'
+                                this.fetchGold()
                                 break
                             // no default
                         }
@@ -293,6 +341,27 @@
                     }
                 })
             },
+            // 赚金币
+            fetchGold() {
+                this.$api.getEarnedPublishBySectionId({
+                    sectionId: this.listName,
+                    pageNum: this.page.current,
+                    pageSize: this.page.size
+                }).then((res) => {
+                    if (res) {
+                        this.page.articleTotal = res.info.total
+                        this.goldList = res.info.list
+//                        console.log(this.goldList)
+                        this.goldList.forEach((value, index, arr) => {
+                            this.listNameList.forEach((data) => {
+                                if (value.sectionId === data.id) {
+                                    arr[index].section = data.name
+                                }
+                            })
+                        })
+                    }
+                })
+            },
             // 筛选首页文章
             changePersonTab(val) {
                 this.listName = ''
@@ -325,6 +394,15 @@
                             }
                         })
                         break
+                    case 'zjb':
+                        this.fetchGold()
+                        this.$router.replace({
+                            path: this.$route.path,
+                            query: {
+                                tab: '赚金币'
+                            }
+                        })
+                        break
                     // no default
                 }
             },
@@ -340,6 +418,9 @@
                     case 'wz':
                         this.$router.push(`/article/${data.id}`)
                         break
+                    case 'zjb':
+                        this.$router.push(`/article/${data.id}`)
+                        break
                     // no default
                 }
 
@@ -347,12 +428,42 @@
             // 修改文章每页展示的条数
             changeSize(val) {
                 this.page.size = val
-                this.fetchData()
+                if (this.$route.query.tab) {
+                    switch (this.$route.query.tab) {
+                        case '发布':
+                            this.personTab = 'fb'
+                            this.fetchPublish()
+                            break
+                        case '文章':
+                            this.personTab = 'wz'
+                            this.fetchArticle()
+                            break
+                        // no default
+                    }
+                } else {
+                    this.personTab = 'fb'
+                    this.fetchPublish()
+                }
             },
             // 修改文章页数
             changePage(val) {
                 this.page.current = val
-                this.fetchData()
+                if (this.$route.query.tab) {
+                    switch (this.$route.query.tab) {
+                        case '发布':
+                            this.personTab = 'fb'
+                            this.fetchPublish()
+                            break
+                        case '文章':
+                            this.personTab = 'wz'
+                            this.fetchArticle()
+                            break
+                        // no default
+                    }
+                } else {
+                    this.personTab = 'fb'
+                    this.fetchPublish()
+                }
             },
             // 删除推广文章
             delArticle(data) {
@@ -371,12 +482,36 @@
             // 修改文章每页展示的条数
             changeArticleSize(val) {
                 this.page.articleSize = val
-                this.fetchData()
+                if (this.$route.query.tab) {
+                    switch (this.$route.query.tab) {
+                        case '推广':
+                            this.personTab = 'tg'
+                            this.fetchSpread()
+                            break
+                        case '赚金币':
+                            this.personTab = 'zjb'
+                            this.fetchGold()
+                            break
+                        // no default
+                    }
+                }
             },
             // 修改文章页数
             changeArticleCurrent(val) {
                 this.page.current = val
-                this.fetchData()
+                if (this.$route.query.tab) {
+                    switch (this.$route.query.tab) {
+                        case '推广':
+                            this.personTab = 'tg'
+                            this.fetchSpread()
+                            break
+                        case '赚金币':
+                            this.personTab = 'zjb'
+                            this.fetchGold()
+                            break
+                        // no default
+                    }
+                }
             },
             // 修改menu
             changeMenu(val) {
@@ -463,7 +598,7 @@
                     pageSize: this.page.size
                 }).then((res) => {
                     if (res) {
-                        this.page.total = res.info.total
+                        this.page.articleTotal = res.info.total
                         this.ewmList = res.info.list
                     }
                 })
@@ -476,7 +611,7 @@
                     pageSize: this.page.size
                 }).then((res) => {
                     if (res) {
-                        this.page.total = res.info.total
+                            this.page.total = res.info.total
                         this.articleList = res.info.list
                         this.articleList.forEach((value, index, arr) => {
                             this.listNameList.forEach((data) => {
@@ -492,6 +627,7 @@
             inviteSpread(data) {
                 this.invite = true
                 this.codeId = data.id
+                this.sectionId = String(data.sectionId)
             },
             toggleInvite(val) {
                 return val ? this.invite = true : this.invite = false
@@ -521,6 +657,19 @@
                         // no default
                     }
                 }
+            },
+            // 赚金币
+            spread(id) {
+                this.$api.popularize({
+                    codeId: id
+                }).then((res) => {
+                    if (res) {
+                        this.spreadImg = res.url
+                        setTimeout(() => {
+                            this.spreadBox = true
+                        }, 300)
+                    }
+                })
             }
         },
         components: {
@@ -664,6 +813,7 @@
             margin-right: 3%;
             margin-bottom: 10px;
             cursor: pointer;
+            position: relative;
 
             &:hover {
                 border-color: #3266cc;
@@ -707,6 +857,41 @@
                 display: inline-block;
                 width: 100%;
             }
+        }
+    }
+
+    .spread_img{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 0;
+        border-top: 70px solid #ff7a4a;
+        border-right: 70px solid transparent;
+    }
+    .spread_text{
+        position: absolute;
+        top: 8px;
+        left: 5px;
+        color: #fff;
+        text-align: left;
+        border-radius: 8px;
+    }
+    .shadow{
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 30px;
+        line-height: 30px;
+        background: rgba(#000, .7);
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        cursor: pointer;
+
+        .el-button{
+            color: #fff;
+            padding: 0;
         }
     }
 </style>

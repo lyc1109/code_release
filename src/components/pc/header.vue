@@ -30,7 +30,8 @@
                 <el-button class="register_btn" @click="register">注册</el-button>
             </div>
             <div class="logined_btn" v-else>
-                {{ username }}
+                <!--{{ username }}-->
+                <el-button class="checkin_btn" @click="checkIn">签到</el-button>
                 <el-button class="login_btn" @click="toPerson">个人中心</el-button>
                 <el-button class="register_btn" @click="quit">退出</el-button>
             </div>
@@ -196,6 +197,14 @@
             // 跳转至首页
             toHome() {
                 this.$router.push('/')
+            },
+            // 签到
+            checkIn() {
+                this.$api.checkin().then((res) => {
+                    if (res) {
+                        this.$message.success('签到成功')
+                    }
+                })
             }
         },
         components: {
@@ -224,13 +233,19 @@
             text-align: right;
 
             .login_btn {
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
+                border-radius: 0;
+                margin-left: 0;
+                border-right: 0 none;
             }
 
             .register_btn {
                 border-top-left-radius: 0;
                 border-bottom-left-radius: 0;
+                margin-left: 0;
+            }
+            .checkin_btn{
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
                 margin-left: 0;
             }
         }

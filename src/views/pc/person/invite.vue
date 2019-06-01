@@ -6,7 +6,10 @@
                     <el-input v-model="inviteForm.count" placeholder="请输入推广次数" type="number" size="small"></el-input>
                 </el-form-item>
                 <el-form-item prop="price" label="推广单价">
-                    <el-input v-model="inviteForm.price" placeholder="请输入推广单价" type="number" size="small"></el-input>
+                    <el-select v-model="inviteForm.price" placeholder="请选择推广单价" size="small">
+                        <el-option v-for="(item, index) in priceList" :key="index" :label="item" :value="item"></el-option>
+                    </el-select>
+                    <!--<el-input v-model="inviteForm.price" placeholder="请输入推广单价" type="number" size="small"></el-input>-->
                 </el-form-item>
             </el-form>
             <div slot="footer">
@@ -27,6 +30,10 @@
             },
             codeId: {
                 type: Number,
+                default: 0
+            },
+            sectionId: {
+                type: String,
                 default: ''
             }
         },
@@ -35,22 +42,42 @@
                 isShowBox: this.isShow,
                 inviteForm: {
                     count: 0,
-                    price: 0
+                    price: ''
                 },
                 inviteRule: {
                     count: [{ required: true, message: '请输入推广次数', trigger: 'blur' }],
-                    price: [{ required: true, message: '请输入推广单价', trigger: 'blur' }]
-                }
+                    price: [{ required: true, message: '请输入推广单价', trigger: 'change' }]
+                },
+                priceList: [],
+                codesId: this.codeId
             }
         },
         watch: {
             isShow(val) {
-                return val ? this.isShowBox = true : this.isShowBox = false
+                if (val) {
+                    this.fetchPrice()
+                    this.isShowBox = true
+                }else {
+                    this.isShowBox = false
+                }
+            },
+            codeId(val) {
+                this.codesId = val
             }
         },
         methods: {
             toggle() {
                 this.$emit('toggle', false)
+            },
+            // 获取单价列表
+            fetchPrice() {
+                this.$api.getPopularizePriceOption({
+                    sectionId: this.sectionId
+                }).then((res) => {
+                    if (res) {
+                        this.priceList = res.priceOptions
+                    }
+                })
             },
             success(formName) {
                 this.$refs[formName].validate((valid) => {
@@ -63,6 +90,9 @@
                             if (res) {
                                 this.$message.success('保存成功')
                                 this.isShowBox = false
+                                setTimeout(() => {
+                                    this.$router.go(0)
+                                }, 500)
                             }
                         })
                     }
