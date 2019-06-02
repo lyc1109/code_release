@@ -155,8 +155,8 @@
                 this.$api.getStar({
                     id: this.$route.params.id
                 }).then((res) => {
-                    if (res.data) {
-                        this.groupData.star = res.data
+                    if (res) {
+                        this.groupData.star++
                         this.$message.success('点赞成功')
                     } else {
                         this.$message.error(res.msg)

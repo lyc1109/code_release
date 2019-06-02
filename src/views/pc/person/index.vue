@@ -777,6 +777,11 @@
                     display: inline-block;
                     margin-bottom: 20px;
                     line-height: 30px;
+                    height: 30px;
+                    width: 100%;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
                 .article_info_detail {
                     font-size: 13px;

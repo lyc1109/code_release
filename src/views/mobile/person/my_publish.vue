@@ -11,7 +11,7 @@
                 <h2>{{ item.name }}</h2>
                 <p>{{ item.description }}</p>
                 <div class="article_index_info">
-                    <p>剩余可邀请推广{{ item.popularizePrice }}次,{{ item.popularizeCount }}元</p>
+                    <p>剩余{{ item.popularizeCount }}次({{ item.popularizePrice }}元/次)推广</p>
                     <span>{{ item.section }}</span>
                     <span style="margin-left: .4rem;">{{ item.createTime }}</span>
                     <van-icon name="delete" @click.stop="del(item)"></van-icon>
@@ -162,7 +162,12 @@
             },
             // 邀请推广
             toInvite(data) {
-                this.$router.push(`/invite/${data.id}`)
+                this.$router.push({
+                    path: `/invite/${data.id}`,
+                    query: {
+                        id: data.sectionId
+                    }
+                })
             }
         }
     }
@@ -183,6 +188,16 @@
             flex: 1;
             margin-left: .17rem;
             position: relative;
+
+            &>p{
+                display: inline-block;
+                line-height: 20px;
+                height: 20px;
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
         }
 
         h2 {

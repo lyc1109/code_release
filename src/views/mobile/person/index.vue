@@ -61,6 +61,7 @@
                 ],
                 operateList2: [
                     {title: '修改资料', value: '', url: '/profile'},
+                    {title: '赚金币', value: '', url: '/getGold'},
                     {title: '我要充值', value: '', url: '/recharge'},
                     {title: '明细记录', value: '', url: '/record'},
                     {title: '金币规则', value: '', url: ''},

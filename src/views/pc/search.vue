@@ -4,7 +4,7 @@
         <el-main>
             <div class="search_img">
                 <router-link to="/">
-                    <span>微信群</span>
+                    <span>微群发布</span>
                 </router-link>
                 <!--<img src="" alt="">-->
             </div>
@@ -12,7 +12,7 @@
                 <el-button slot="append" icon="el-icon-search" @click="searchs(search)"></el-button>
             </el-input>
             <el-tabs v-model="result" style="margin-top: 20px;" v-if="resultData.length">
-                <el-tab-pane :label="`已为您找到${resultData.length}条结果`" name="result">
+                <el-tab-pane :label="`已为您找到${page.total}条结果`" name="result">
                     <!--微信群-->
                     <div class="wxq">
                         <div class="wxq_box" v-for="(item, index) in resultData" :key="index"
@@ -55,11 +55,14 @@
                     total: 10
                 },
                 params: {
-                    name: this.$route.query.result ? this.$route.query.result : '',
+                    name: this.$route.query.result ? this.$route.query.result : this.search,
                     pageNum: 1,
                     pageSize: 15
                 }
             }
+        },
+        created() {
+            this.search = this.$route.query.result ? this.$route.query.result : ''
         },
         mounted() {
             this.fetchData()
@@ -67,7 +70,6 @@
         methods: {
             // 初始化数据
             fetchData() {
-                this.search = this.$route.query.result ? this.$route.query.result : ''
                 this.$api.getSearchResult(this.params).then((res) => {
                     if (res) {
                         this.page.total = res.info.total
@@ -82,8 +84,10 @@
             // 搜索
             searchs(search) {
                 this.params.name = search
+                this.search = search
+                this.page.current = 1
                 this.fetchData()
-                this.$router.replace({
+                this.$router.push({
                     path: this.$route.path,
                     query: {
                         result: search

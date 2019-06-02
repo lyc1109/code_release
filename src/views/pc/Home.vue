@@ -302,7 +302,7 @@
             }
             .article_info{
                 margin-left: 10px;
-                width: 300px;
+                width: 80%;
                 position: relative;
 
                 h3{
@@ -316,6 +316,14 @@
                         padding: 0;
                         text-align: left;
                     }
+                }
+                p{
+                    height: 20px;
+                    width: 100%;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    display: inline-block;
                 }
                 .article_info_detail{
                     font-size: 12px;
