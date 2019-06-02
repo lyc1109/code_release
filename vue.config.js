@@ -1,7 +1,7 @@
 const isProduct = process.env.NODE_ENV === 'production'
 
 module.exports = {
-    publicPath: isProduct ? './' : '/',
+    publicPath: isProduct ? '' : '/',
     devServer: {
         open: true,
         host: '0.0.0.0',

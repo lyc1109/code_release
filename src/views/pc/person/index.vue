@@ -65,6 +65,7 @@
                             </div>
                             <div class="share">
                                 <el-button type="text" @click.stop="edit(item)" v-if="personTab === 'wz'">编辑</el-button>
+                                <el-button type="text" @click.stop="toTop(item)" v-if="personTab === 'fb'">置顶</el-button>
                                 <el-button type="text" @click.stop="inviteSpread(item)" v-if="personTab === 'fb'">邀请推广</el-button>
                                 <el-button type="text" style="color: red;" @click.stop="del(item.id)">删除</el-button>
                             </div>
@@ -261,10 +262,13 @@
                         break
                     // no default
                 }
+            } else {
+                this.personTab = 'fb'
+                this.fetchPublish()
             }
             this.fetchData()
             this.fetchTabs()
-            this.fetchPublish()
+//            this.fetchPublish()
         },
         mounted() {
             this.$nextTick(() => {
@@ -294,6 +298,9 @@
                                 break
                             // no default
                         }
+                    } else {
+                        this.personTab = 'fb'
+                        this.fetchPublish()
                     }
                 })
             })
@@ -668,6 +675,17 @@
                         setTimeout(() => {
                             this.spreadBox = true
                         }, 300)
+                    }
+                })
+            },
+            // 置顶
+            toTop(data) {
+                this.$api.refreshCode({
+                    id: data.id
+                }).then((res) => {
+                    if (res) {
+                        this.$message.success('置顶成功')
+                        this.fetchPublish()
                     }
                 })
             }

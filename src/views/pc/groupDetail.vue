@@ -73,6 +73,18 @@
                             <img :src="item.imgUrl1">
                         </div>
                         <span>{{ item.name }}</span>
+                        <p style="text-align: left;padding-left: 5px;"
+                           v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600">
+                            {{ moment().diff(moment(item.lastRefreshTime), 'minute') }}分钟前更新
+                        </p>
+                        <p style="text-align: left;padding-left: 5px;"
+                           v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600*24">
+                            {{ moment().diff(moment(item.lastRefreshTime), 'hour') }}小时前更新
+                        </p>
+                        <p style="text-align: left;padding-left: 5px;"
+                           v-if="(new Date() - new Date(item.lastRefreshTime)) >= 1000*3600*24">
+                            {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
+                        </p>
                     </div>
                 </div>
             </el-tab-pane>
@@ -131,7 +143,7 @@
             fetchHostList() {
                 const page = {
                     pageNum: 1,
-                    pageSize: 15
+                    pageSize: 36
                 }
                 this.$api.getTradeDetail(page).then((res) => {
                     this.ewmList = res.info.list
@@ -312,10 +324,12 @@
                 border: 1px solid #ddd;
 
                 img {
-                    /*width: 100%;*/
-                    /*height: 100%;*/
+                    width: 90%;
+                    height: 90%;
                     /*width: 115px;*/
                     /*height: 115px;*/
+                    position: absolute;
+                    left: 5px;
                 }
             }
 

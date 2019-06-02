@@ -16,6 +16,7 @@
                     <span style="margin-left: .4rem;">{{ item.createTime }}</span>
                     <van-icon name="delete" @click.stop="del(item)"></van-icon>
                     <van-icon name="add" @click.stop="toInvite(item)" v-if="$route.query.type === 'fb'"></van-icon>
+                    <van-icon name="upgrade" @click.stop="toTop(item)" v-if="$route.query.type === 'fb'"></van-icon>
                     <van-icon name="edit" @click.stop="edit(item)" v-if="$route.query.type === 'wz'"></van-icon>
                 </div>
             </div>
@@ -168,6 +169,17 @@
                         id: data.sectionId
                     }
                 })
+            },
+            // 置顶
+            toTop(data) {
+                this.$api.refreshCode({
+                    id: data.id
+                }).then((res) => {
+                    if (res) {
+                        Toast.success('置顶成功')
+                        this.fetchPublish()
+                    }
+                })
             }
         }
     }
@@ -234,6 +246,9 @@
             }
             .van-icon-add {
                 color: #4eb4ff;
+            }
+            .van-icon-upgrade{
+                color: #68d227;
             }
         }
 

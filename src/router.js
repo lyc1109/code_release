@@ -251,5 +251,5 @@ export default new Router({
     mode: 'history',
     // base: '/code',
     base: process.env.BASE_URL,
-    routes: routes
+    routes
 })

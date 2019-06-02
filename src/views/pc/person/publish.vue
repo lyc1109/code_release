@@ -35,7 +35,7 @@
                     <i class="el-icon-plus avatar-uploader-icon" v-else></i>
                 </el-upload>
             </el-form-item>
-            <el-form-item prop="imgUrl1" label="群二维码">
+            <el-form-item prop="imgUrl1" label="二维码">
                 <el-upload :action="fileUploadUrl"
                            :on-success="changeGroupCode"
                            class="avatar-uploader"

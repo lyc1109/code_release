@@ -53,6 +53,18 @@
             <div class="article_index_list" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" style="cursor: pointer;">
                 <img :src="item.imgUrl1" alt="">
                 <p>{{ item.name }}</p>
+                <p style="text-align: left;padding-left: 5px;"
+                   v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600">
+                    {{ moment().diff(moment(item.lastRefreshTime), 'minute') }}分钟前更新
+                </p>
+                <p style="text-align: left;padding-left: 5px;"
+                   v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600*24">
+                    {{ moment().diff(moment(item.lastRefreshTime), 'hour') }}小时前更新
+                </p>
+                <p style="text-align: left;padding-left: 5px;"
+                   v-if="(new Date() - new Date(item.lastRefreshTime)) >= 1000*3600*24">
+                    {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
+                </p>
             </div>
         </div>
         <footer-box></footer-box>
@@ -107,7 +119,7 @@
             fetchHostList() {
                 const page = {
                     pageNum: 1,
-                    pageSize: 15
+                    pageSize: 18
                 }
                 this.$api.getTradeDetail(page).then((res) => {
                     this.ewmList = res.info.list

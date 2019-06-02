@@ -15,6 +15,19 @@
                             <img :src="item.imgUrl1">
                         </div>
                         <span>{{ item.name }}</span>
+                        <p style="text-align: left;padding-left: 5px;"
+                           v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600">
+                            {{ moment().diff(moment(item.lastRefreshTime), 'minute') }}分钟前更新
+                        </p>
+                        <p style="text-align: left;padding-left: 5px;"
+                           v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600*24">
+                            {{ moment().diff(moment(item.lastRefreshTime), 'hour') }}小时前更新
+                        </p>
+                        <p style="text-align: left;padding-left: 5px;"
+                           v-if="(new Date() - new Date(item.lastRefreshTime)) >= 1000*3600*24">
+                            {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
+                        </p>
+
                         <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>
                         <div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>
                         <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">
@@ -52,7 +65,7 @@
                 ewmList: [],
                 page: {
                     current: 1,
-                    size: 15,
+                    size: 30,
                     total: 0
                 },
                 noticeList: [],
@@ -61,6 +74,7 @@
             }
         },
         created() {
+            this.fetchNotice()
             this.fetchData()
         },
         watch: {
@@ -91,7 +105,13 @@
                         console.log(res)
                         this.page.total = res.info.total
                         this.ewmList = res.info.list
-                        this.ewmList.forEach((data) => {
+                    }
+                })
+            },
+            fetchNotice() {
+                this.$api.getTradeList().then((res) => {
+                    if (res) {
+                        res.data.forEach((data) => {
                             this.noticeList.push(data.description)
                         })
                     }

@@ -64,6 +64,7 @@
                 this.$api.getUserInfo().then((res) => {
                     if (res) {
                         this.profileForm = res.user
+                        this.profileForm.url = res.user.coverUrl
                         if (!this.profileForm.birth) this.profileForm.birth = this.moment(new Date()).format('YYYY-MM-DD')
                         if (res.user.position1 && res.user.position2 && res.user.position3)
                             this.profileForm.area = res.user.position1 + res.user.position2 + res.user.position3
