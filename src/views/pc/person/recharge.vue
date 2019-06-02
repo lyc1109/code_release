@@ -5,7 +5,7 @@
 <!--                <el-select v-model="recharge.count" placeholder="请选择充值金额">-->
 <!--                    <el-option v-for="(item, index) in countList" :key="index" :label="item.name" :value="item.id"></el-option>-->
 <!--                </el-select>-->
-                <el-radio-group v-model="recharge.count" @change="changeCount" size="mini">
+                <el-radio-group v-model="recharge.rechargeSelectId" @change="changeCount" size="mini">
                     <el-radio v-for="(item, index) in countList" :key="index" :label="item.id">{{ item.money }}元</el-radio>
                 </el-radio-group>
                 <div class="recharge_code">
@@ -44,12 +44,12 @@
         data() {
             return {
                 recharge: {
-                    count: 10,
+                    rechargeSelectId: 10,
                     url: '',
                     serial: ''
                 },
                 rechargeRule: {
-                    count: [{ required: true, message: '请输入充值金额', trigger: 'blur' }],
+                    rechargeSelectId: [{ required: true, message: '请输入充值金额', trigger: 'blur' }],
                     serial: [{ required: true, message: '请输入转账流水号', trigger: 'blur' }]
                 },
                 countList: [],
@@ -69,7 +69,7 @@
                     if (res) {
                         this.codeUrl = res.rechargeQRCodeUrl
                         this.countList = res.rechargeSelect
-                        this.recharge.count = this.countList[0].id
+                        this.recharge.rechargeSelectId = this.countList[0].id
                         this.gold = this.countList[0].coin
                         this.rules = res.msg
                     }

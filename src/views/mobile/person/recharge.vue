@@ -7,7 +7,7 @@
 <!--                       label="充值金额"-->
 <!--                       placeholder="请输入充值金额"-->
 <!--                       :error-message="amountError" @input="changeAmount(rechargeForm.count)"></van-field>-->
-            <van-cell required is-link :value="rechargeForm.money" @click="count = true" title="充值金额"></van-cell>
+            <van-cell required is-link :value="money" @click="count = true" title="充值金额"></van-cell>
             <van-cell title="付款二维码">
                 <img :src="codeUrl" style="width: 10rem;" alt="">
             </van-cell>
@@ -46,7 +46,7 @@
             return {
                 gold: 0,
                 rechargeForm: {
-                    money: '',
+                    rechargeSelectId: '',
                     serial: '',
                     url: ''
                 },
@@ -56,7 +56,8 @@
                 count: false,
                 countList: [],
                 countData: [],
-                codeUrl: ''
+                codeUrl: '',
+                money: 0
             }
         },
         computed: {
@@ -74,26 +75,27 @@
                     if (res) {
                         this.codeUrl = res.rechargeQRCodeUrl
                         this.countList = res.rechargeSelect
-                        console.log(this.countList)
+//                        console.log(this.countList)
                         res.rechargeSelect.forEach((value) => {
                             this.countList.push(value.money)
                         })
-                        this.rechargeForm.money = res.rechargeSelect[0].money
+                        this.money = res.rechargeSelect[0].money
+                        this.rechargeForm.rechargeSelectId = res.rechargeSelect[0].id
                         this.gold = res.rechargeSelect[0].coin
                         this.rules = res.msg
                     }
                 })
             },
             // 充值金额验证
-            changeAmount(val) {
-                if (val.length === 0) {
-                    this.amountError = '请输入充值金额'
-                } else if (val == 0) {
-                    this.amountError = '请输入大于0的金额'
-                } else {
-                    this.amountError = ''
-                }
-            },
+//            changeAmount(val) {
+//                if (val.length === 0) {
+//                    this.amountError = '请输入充值金额'
+//                } else if (val == 0) {
+//                    this.amountError = '请输入大于0的金额'
+//                } else {
+//                    this.amountError = ''
+//                }
+//            },
             // 流水号验证
             changeNum(val) {
                 if (val.length === 0) {
@@ -118,7 +120,7 @@
                     // if (this.rechargeForm.money == 0) this.amountError = '请输入大于0的金额'
                     if (this.rechargeForm.serial.length === 0) this.numError = '请输入转账流水号'
                     if (this.rechargeForm.url === '') Toast.fail('请上传支付截图')
-                    if (this.rechargeForm.money === '') Toast.fail('请选择充值金额')
+                    if (this.rechargeForm.rechargeSelectId === '') Toast.fail('请选择充值金额')
                 }
             },
             changeCount(val) {
@@ -127,8 +129,8 @@
                     return data.money === val
                 })
                 this.gold = obj[0].coin
-                this.rechargeForm.count = obj[0].id
-                this.rechargeForm.money = obj[0].money
+                this.rechargeForm.rechargeSelectId = obj[0].id
+                this.money = obj[0].money
                 // this.rechargeForm.count = val
             },
             // 取消修改类型

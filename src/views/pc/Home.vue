@@ -14,11 +14,11 @@
                             {{ moment().diff(moment(item.lastRefreshTime), 'minute') }}分钟前更新
                         </p>
                         <p style="text-align: left;padding-left: 5px;"
-                           v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600*24">
+                           v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600*24 && (new Date() - new Date(item.lastRefreshTime)) > 1000*3600">
                             {{ moment().diff(moment(item.lastRefreshTime), 'hour') }}小时前更新
                         </p>
                         <p style="text-align: left;padding-left: 5px;"
-                           v-if="(new Date() - new Date(item.lastRefreshTime)) >= 1000*3600*24">
+                           v-if="(new Date() - new Date(item.lastRefreshTime)) > 1000*3600*24">
                             {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
                         </p>
                         <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>
