@@ -189,7 +189,7 @@
         flex-wrap: wrap;
 
         .wxq_box {
-            width: 18.985%;
+            width: 15.85%;
             border: 1px solid #ddd;
             text-align: center;
             padding: 5px 0;
@@ -239,7 +239,7 @@
                 border-color: #3266cc;
             }
 
-            & > last-child {
+            & > last-child, &:nth-child(6n) {
                 margin-right: 0;
             }
 

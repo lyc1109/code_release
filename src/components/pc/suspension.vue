@@ -58,7 +58,11 @@
             },
             // 联系客服
             contactService() {
-                console.log('联系客服')
+                this.$api.getServiceQQ().then((res) => {
+                    if (res) {
+                        window.location.href = `tencent://message/?uin=${res.qq}&Site=qq&Menu=yes`
+                    }
+                })
             }
         },
         components: {

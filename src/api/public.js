@@ -65,6 +65,14 @@ const api = {
      */
     getArticleDetailPublic(params = {}) {
         return http.get(`${base}/getDetail`, params)
+    },
+    /**
+     * 联系客服QQ
+     * @param params
+     * @returns {*}
+     */
+    getServiceQQ(params = {}) {
+        return http.post(`${base}/getServiceQQ`, params)
     }
 }
 
