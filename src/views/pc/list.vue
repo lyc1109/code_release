@@ -2,11 +2,11 @@
     <div>
         <div class="home">
             <header-box actived="/area" :isList="true"></header-box>
-<!--            <el-carousel direction="vertical" height="30px" class="notice" v-if="noticeList.length">-->
-<!--                <el-carousel-item v-for="(item,index) in noticeList" :key="index">-->
-<!--                    <p>{{ item.title }}</p>-->
-<!--                </el-carousel-item>-->
-<!--            </el-carousel>-->
+            <el-carousel direction="vertical" height="30px" class="notice" v-if="noticeList.length">
+                <el-carousel-item v-for="(item,index) in noticeList" :key="index">
+                    <p v-html="`<i class='iconfont icongonggao' style='margin-right: 5px;'></i>${item}`"></p>
+                </el-carousel-item>
+            </el-carousel>
             <div style="position: relative;margin-top: 20px;">
                 <!--微信群-->
                 <div class="wxq" v-if="ewmList.length">
@@ -15,6 +15,19 @@
                             <img :src="item.imgUrl1">
                         </div>
                         <span>{{ item.name }}</span>
+                        <p style="text-align: left;padding-left: 5px;"
+                           v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600">
+                            {{ moment().diff(moment(item.lastRefreshTime), 'minute') }}分钟前更新
+                        </p>
+                        <p style="text-align: left;padding-left: 5px;"
+                           v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600*24 && (new Date() - new Date(item.lastRefreshTime)) > 1000*3600">
+                            {{ moment().diff(moment(item.lastRefreshTime), 'hour') }}小时前更新
+                        </p>
+                        <p style="text-align: left;padding-left: 5px;"
+                           v-if="(new Date() - new Date(item.lastRefreshTime)) >= 1000*3600*24">
+                            {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
+                        </p>
+
                         <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>
                         <div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>
                         <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">
@@ -52,19 +65,16 @@
                 ewmList: [],
                 page: {
                     current: 1,
-                    size: 15,
+                    size: 30,
                     total: 0
                 },
-                noticeList: [
-                    { title: '我是公告1' },
-                    { title: '我是公告2' },
-                    { title: '我是公告3' }
-                ],
+                noticeList: [],
                 spreadImg: '',
                 spreadBox: false
             }
         },
         created() {
+            this.fetchNotice()
             this.fetchData()
         },
         watch: {
@@ -95,6 +105,15 @@
                         console.log(res)
                         this.page.total = res.info.total
                         this.ewmList = res.info.list
+                    }
+                })
+            },
+            fetchNotice() {
+                this.$api.getTradeList().then((res) => {
+                    if (res) {
+                        res.data.forEach((data) => {
+                            this.noticeList.push(data.description)
+                        })
                     }
                 })
             },

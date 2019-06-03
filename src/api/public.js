@@ -73,6 +73,14 @@ const api = {
      */
     getServiceQQ(params = {}) {
         return http.post(`${base}/getServiceQQ`, params)
+    },
+     /**
+     * 获取赚金币列表页数据
+     * @param params
+     * @returns {*}
+     */
+    getEarnedPublishBySectionId(params = {}) {
+        return http.get(`${base}/getEarnedPublishBySectionId`, params)
     }
 }
 

@@ -13,24 +13,25 @@
                 </el-input>
             </div>
             <!--栏目-->
-            <nav style="margin: 0 5px;" v-if="!isList">
-                <el-menu :default-active="activeNav"
-                         mode="horizontal"
-                         background-color="#545c64"
-                         text-color="#fff"
-                         active-text-color="#ffd04b"
-                         @select="selectNav" router>
-                    <el-menu-item v-for="(item, index) in tabList" :key="index"
-                                  :index="`/list?id=${item.id}`">{{ item.name }}
-                    </el-menu-item>
-                </el-menu>
-            </nav>
+            <!--<nav style="margin: 0 5px;" v-if="!isList">-->
+                <!--<el-menu :default-active="activeNav"-->
+                         <!--mode="horizontal"-->
+                         <!--background-color="#545c64"-->
+                         <!--text-color="#fff"-->
+                         <!--active-text-color="#ffd04b"-->
+                         <!--@select="selectNav" router>-->
+                    <!--<el-menu-item v-for="(item, index) in tabList" :key="index"-->
+                                  <!--:index="`/list?id=${item.id}`">{{ item.name }}-->
+                    <!--</el-menu-item>-->
+                <!--</el-menu>-->
+            <!--</nav>-->
             <div class="login_btn" v-if="isLogin">
                 <el-button class="login_btn" @click="login">登录</el-button>
                 <el-button class="register_btn" @click="register">注册</el-button>
             </div>
             <div class="logined_btn" v-else>
-                {{ username }}
+                <!--{{ username }}-->
+                <el-button class="checkin_btn" @click="checkIn">签到</el-button>
                 <el-button class="login_btn" @click="toPerson">个人中心</el-button>
                 <el-button class="register_btn" @click="quit">退出</el-button>
             </div>
@@ -42,7 +43,7 @@
         </header>
 
         <!--栏目-->
-        <nav style="margin: 20px 5px 0;" v-if="isList">
+        <nav style="margin: 20px 5px 0;">
             <el-menu :default-active="activeNav"
                      mode="horizontal"
                      background-color="#545c64"
@@ -71,9 +72,9 @@
                 type: String,
                 default: 'basic'
             },
-            isList: {
-                type: Boolean,
-                default: false
+            id: {
+                type: String,
+                default: ''
             }
         },
         data() {
@@ -89,17 +90,27 @@
                 showLogin: false,
                 loginType: '',
                 loginTit: '',
-                username: ''
+                username: '',
+                sectionId: this.id
             }
         },
         watch: {
             actived(val) {
                 this.activeNav = val
+            },
+            id(val) {
+                this.sectionId = val
+                if (this.sectionId !== '') {
+                    this.activeNav = `/list?id=${this.id}`
+                }
             }
         },
         mounted() {
             this.fetchData()
             this.fetchTabs()
+            if (this.$route.fullPath.includes('/list?id=')) {
+                this.activeNav = `${this.$route.path}?id=${this.$route.query.id}`
+            }
         },
         methods: {
             fetchData() {
@@ -186,6 +197,14 @@
             // 跳转至首页
             toHome() {
                 this.$router.push('/')
+            },
+            // 签到
+            checkIn() {
+                this.$api.checkin().then((res) => {
+                    if (res) {
+                        this.$message.success('签到成功')
+                    }
+                })
             }
         },
         components: {
@@ -214,13 +233,19 @@
             text-align: right;
 
             .login_btn {
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
+                border-radius: 0;
+                margin-left: 0;
+                border-right: 0 none;
             }
 
             .register_btn {
                 border-top-left-radius: 0;
                 border-bottom-left-radius: 0;
+                margin-left: 0;
+            }
+            .checkin_btn{
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
                 margin-left: 0;
             }
         }

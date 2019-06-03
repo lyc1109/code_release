@@ -8,6 +8,7 @@
             </div>
             <div slot="right">
                 <van-icon name="search" @click="search"/>
+                <van-icon name="notes-o" @click="checkIn"></van-icon>
                 <van-icon name="user-circle-o" @click="loginOrPerson"></van-icon>
             </div>
         </van-nav-bar>
@@ -23,6 +24,8 @@
 </template>
 
 <script>
+    import {Toast} from 'vant'
+
     export default {
         name: "header",
         props: {
@@ -94,6 +97,14 @@
                     this.$router.push('/person')
                 else
                     this.$router.push('/login')
+            },
+            // 签到
+            checkIn() {
+                this.$api.checkin().then((res) => {
+                    if (res) {
+                        Toast.success('签到成功')
+                    }
+                })
             }
         }
     }
@@ -117,7 +128,7 @@
             font-size: 2rem;
             color: #fff;
 
-            &.van-icon-search {
+            &.van-icon-search, &.van-icon-notes-o {
                 margin-right: .5rem;
             }
         }

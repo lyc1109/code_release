@@ -15,7 +15,7 @@
             <el-input v-model="article.content" placeholer="请填写内容" rows="6" type="textarea"></el-input>
         </el-form-item>
         <el-form-item prop="coverUrl" label="封面">
-            <el-upload action="/api/file/add"
+            <el-upload :action="fileUploadUrl"
                        :show-file-list="false"
                        :on-success="changeCover"
                        class="avatar-uploader"
@@ -73,7 +73,8 @@
                 userInfo: {
                     money: 200
                 },
-                title: '发布文章'
+                title: '发布文章',
+                fileUploadUrl: `${process.env.VUE_APP_BASE_API}/file/add`
             }
         },
         created() {

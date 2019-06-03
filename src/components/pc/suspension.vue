@@ -3,7 +3,7 @@
     <!--右侧悬浮-->
     <div class="right_box" :class="{ right_box_mobile: reg.test(navigator.userAgent) }">
         <el-link :underline="false" @click="contactService">联 系<br>客 服</el-link>
-        <el-link :underline="false" v-popover:popover v-if="!reg.test(navigator.userAgent)">手 机 端<br>入 口</el-link>
+        <el-link :underline="false" v-popover:popover>手 机 端<br>入 口</el-link>
         <el-link :underline="false" @click="register">有 奖<br>注 册</el-link>
 
         <el-popover placement="left" width="200" trigger="hover" ref="popover">

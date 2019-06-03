@@ -15,7 +15,7 @@
             >
             </van-search>
             <van-tabs v-model="result" class="result_tab" v-if="resultData.length > 0">
-                <van-tab :title="`已为您找到${resultData.length}条结果`">
+                <van-tab :title="`已为您找到${page.total}条结果`">
                     <!--微信群-->
                     <div class="wxq">
                         <div class="wxq_box" v-for="(item, index) in resultData" :key="index" @click="groupDetail(item.id)">
@@ -63,13 +63,11 @@
             }
         },
         created() {
-            if (this.$route.query.result) {
-                this.fetchData()
-            }
+            this.search = this.$route.query.result ? this.$route.query.result : ''
+            this.fetchData()
         },
         methods: {
             fetchData() {
-                this.search = this.$route.query.result ? this.$route.query.result : ''
                 this.params.name = this.search
                 this.$api.getSearchResult(this.params).then((res) => {
                     if (res) {
@@ -86,6 +84,7 @@
             searchs(search) {
                 this.params.name = search
                 this.search = search
+                this.page.current = 1
                 this.fetchData()
                 this.$router.replace({
                     path: this.$route.path,

@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <header-box actived="/"></header-box>
+        <header-box actived="/" :isList="true"></header-box>
             <div style="position: relative;margin-top: 20px;">
                 <!--微信群-->
                 <div class="wxq" v-if="ewmList.length">
@@ -9,6 +9,18 @@
                             <img :src="item.imgUrl1">
                         </div>
                         <span>{{ item.name }}</span>
+                        <p style="text-align: left;padding-left: 5px;"
+                           v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600">
+                            {{ moment().diff(moment(item.lastRefreshTime), 'minute') }}分钟前更新
+                        </p>
+                        <p style="text-align: left;padding-left: 5px;"
+                           v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600*24 && (new Date() - new Date(item.lastRefreshTime)) > 1000*3600">
+                            {{ moment().diff(moment(item.lastRefreshTime), 'hour') }}小时前更新
+                        </p>
+                        <p style="text-align: left;padding-left: 5px;"
+                           v-if="(new Date() - new Date(item.lastRefreshTime)) > 1000*3600*24">
+                            {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
+                        </p>
                         <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>
                         <div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>
                         <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">
@@ -101,7 +113,7 @@
             fetchData() {
                 const page = {
                     pageNum: 1,
-                    pageSize: 15
+                    pageSize: 30
                 }
                 this.$api.getTradeDetail(page).then((res) => {
                     this.ewmList = res.info.list
@@ -109,16 +121,15 @@
 
                 this.$api.getTradeList().then((res) => {
                     this.articleData = res.data
-                    this.articleData.unshift({
-                        name: '全部',
-                        id: ''
-                    })
+                    if (this.articleData.length) {
+                        this.article = String(this.articleData[0].id)
+                    }
                 })
             },
             fetchArticle() {
                 // 获取文章
                 this.$api.getArticleList({
-                    sectionId: this.article == 0 ? '' : this.article,
+                    sectionId: this.article,
                     pageNum: this.page.current,
                     pageSize: this.page.size
                 }).then((res) => {
@@ -303,7 +314,7 @@
             }
             .article_info{
                 margin-left: 10px;
-                width: 300px;
+                width: 80%;
                 position: relative;
 
                 h3{
@@ -317,6 +328,14 @@
                         padding: 0;
                         text-align: left;
                     }
+                }
+                p{
+                    height: 20px;
+                    width: 97%;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    display: inline-block;
                 }
                 .article_info_detail{
                     font-size: 12px;

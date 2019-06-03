@@ -6,6 +6,18 @@
             <div class="article_index_list" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" v-if="ewmList.length">
                 <img :src="item.imgUrl1" alt="">
                 <p>{{ item.name }}</p>
+                <p style="text-align: left;padding-left: 5px;"
+                   v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600">
+                    {{ moment().diff(moment(item.lastRefreshTime), 'minute') }}分钟前更新
+                </p>
+                <p style="text-align: left;padding-left: 5px;"
+                   v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600*24 && (new Date() - new Date(item.lastRefreshTime)) > 1000*3600">
+                    {{ moment().diff(moment(item.lastRefreshTime), 'hour') }}小时前更新
+                </p>
+                <p style="text-align: left;padding-left: 5px;"
+                   v-if="(new Date() - new Date(item.lastRefreshTime)) >= 1000*3600*24">
+                    {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
+                </p>
                 <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>
                 <div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>
                 <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">
@@ -87,7 +99,7 @@
             fetchData() {
                 const page = {
                     pageNum: 1,
-                    pageSize: 15
+                    pageSize: 18
                 }
                 this.$api.getTradeDetail(page).then((res) => {
                     this.ewmList = res.info.list
@@ -245,6 +257,15 @@
             flex: 1;
             margin-left: .17rem;
             position: relative;
+
+            p{
+                width: 97%;
+                height: 15px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                /*white-space: nowrap;*/
+                display: inline-block;
+            }
         }
 
         h2 {

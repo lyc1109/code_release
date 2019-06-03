@@ -16,7 +16,7 @@
                          v-if="publishForm.url && publishForm.url !== ''">
                 </div>
             </van-cell>
-            <van-cell title="群二维码" required>
+            <van-cell title="二维码" required>
                 <div slot="label">
                     <van-uploader :after-read="changeShowGroup" :max-size="maxSize">
                         <van-icon name="plus" class="upload_control"></van-icon>

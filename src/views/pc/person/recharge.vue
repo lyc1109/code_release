@@ -5,12 +5,22 @@
 <!--                <el-select v-model="recharge.count" placeholder="请选择充值金额">-->
 <!--                    <el-option v-for="(item, index) in countList" :key="index" :label="item.name" :value="item.id"></el-option>-->
 <!--                </el-select>-->
-                <el-radio-group v-model="recharge.count" @change="changeCount" size="mini">
+                <el-radio-group v-model="recharge.rechargeSelectId" @change="changeCount" size="mini">
                     <el-radio v-for="(item, index) in countList" :key="index" :label="item.id">{{ item.money }}元</el-radio>
                 </el-radio-group>
                 <div class="recharge_code">
-                    <img :src="recharge.url" alt="">
+                    <img :src="codeUrl" alt="">
                 </div>
+            </el-form-item>
+            <el-form-item prop="url" label="支付成功截图">
+                <el-upload :action="fileUploadUrl"
+                           :on-success="changeUrl"
+                           class="avatar-uploader"
+                           :show-file-list="false">
+                    <img v-if="recharge.url && recharge.url !== ''" :src="recharge.url"
+                         class="avatar">
+                    <i class="el-icon-plus avatar-uploader-icon" v-else></i>
+                </el-upload>
             </el-form-item>
             <el-form-item prop="rules" label="金币规则">
                 <span>{{ rules }}</span>
@@ -34,17 +44,19 @@
         data() {
             return {
                 recharge: {
-                    count: 10,
+                    rechargeSelectId: 10,
                     url: '',
                     serial: ''
                 },
                 rechargeRule: {
-                    count: [{ required: true, message: '请输入充值金额', trigger: 'blur' }],
+                    rechargeSelectId: [{ required: true, message: '请输入充值金额', trigger: 'blur' }],
                     serial: [{ required: true, message: '请输入转账流水号', trigger: 'blur' }]
                 },
                 countList: [],
                 gold: 0,
-                rules: ''
+                rules: '',
+                fileUploadUrl: process.env.VUE_APP_BASE_API + '/file/add',
+                codeUrl: ''
             }
         },
         created() {
@@ -55,9 +67,9 @@
             fetchData() {
                 this.$api.getRechargeSetting().then((res) => {
                     if (res) {
-                        this.recharge.url = res.rechargeQRCodeUrl
+                        this.codeUrl = res.rechargeQRCodeUrl
                         this.countList = res.rechargeSelect
-                        this.recharge.count = this.countList[0].id
+                        this.recharge.rechargeSelectId = this.countList[0].id
                         this.gold = this.countList[0].coin
                         this.rules = res.msg
                     }
@@ -84,6 +96,9 @@
                         })
                     }
                 })
+            },
+            changeUrl(res) {
+                this.recharge.url = res.data.url
             }
         }
     }
@@ -96,6 +111,34 @@
 
         img{
             width: 120px;
+        }
+    }
+    .avatar-uploader {
+        /deep/.el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /deep/.el-upload:hover {
+            border-color: #409EFF;
+        }
+
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 178px;
+            height: 178px;
+            line-height: 178px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 178px;
+            height: 178px;
+            display: block;
         }
     }
 </style>

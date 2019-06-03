@@ -11,11 +11,12 @@
                 <h2>{{ item.name }}</h2>
                 <p>{{ item.description }}</p>
                 <div class="article_index_info">
-                    <p>剩余可邀请推广{{ item.popularizePrice }}次,{{ item.popularizeCount }}元</p>
+                    <p>剩余{{ item.popularizeCount }}次({{ item.popularizePrice }}元/次)推广</p>
                     <span>{{ item.section }}</span>
                     <span style="margin-left: .4rem;">{{ item.createTime }}</span>
                     <van-icon name="delete" @click.stop="del(item)"></van-icon>
                     <van-icon name="add" @click.stop="toInvite(item)" v-if="$route.query.type === 'fb'"></van-icon>
+                    <van-icon name="upgrade" @click.stop="toTop(item)" v-if="$route.query.type === 'fb'"></van-icon>
                     <van-icon name="edit" @click.stop="edit(item)" v-if="$route.query.type === 'wz'"></van-icon>
                 </div>
             </div>
@@ -162,7 +163,23 @@
             },
             // 邀请推广
             toInvite(data) {
-                this.$router.push(`/invite/${data.id}`)
+                this.$router.push({
+                    path: `/invite/${data.id}`,
+                    query: {
+                        id: data.sectionId
+                    }
+                })
+            },
+            // 置顶
+            toTop(data) {
+                this.$api.refreshCode({
+                    id: data.id
+                }).then((res) => {
+                    if (res) {
+                        Toast.success('置顶成功')
+                        this.fetchPublish()
+                    }
+                })
             }
         }
     }
@@ -183,6 +200,16 @@
             flex: 1;
             margin-left: .17rem;
             position: relative;
+
+            &>p{
+                display: inline-block;
+                line-height: 20px;
+                height: 20px;
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
         }
 
         h2 {
@@ -219,6 +246,9 @@
             }
             .van-icon-add {
                 color: #4eb4ff;
+            }
+            .van-icon-upgrade{
+                color: #68d227;
             }
         }
 
