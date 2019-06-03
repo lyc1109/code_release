@@ -15,10 +15,5 @@ module.exports = {
                 }
             }
         }
-    },
-    configureWebpack: {
-        output: {
-            publicPath: '/public/'
-        }
     }
 }
