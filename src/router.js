@@ -248,7 +248,7 @@ if (reg.test(navigator.userAgent)) {
     routes = [...pcRouter, ...logout]
 }
 export default new Router({
-    mode: 'history',
+    mode: 'hash',
     // base: '/code',
     base: process.env.BASE_URL,
     routes
