@@ -49,9 +49,9 @@
                      background-color="#545c64"
                      text-color="#fff"
                      active-text-color="#ffd04b"
-                     @select="selectNav" router>
+                     @select="selectNav">
                 <el-menu-item v-for="(item, index) in tabList" :key="index"
-                              :index="`/list?id=${item.id}`">{{ item.name }}
+                              :index="String(item.id)">{{ item.name }}
                 </el-menu-item>
             </el-menu>
         </nav>
@@ -101,7 +101,7 @@
             id(val) {
                 this.sectionId = val
                 if (this.sectionId !== '') {
-                    this.activeNav = `/list?id=${this.id}`
+                    this.activeNav = String(this.id)
                 }
             }
         },
@@ -109,7 +109,9 @@
             this.fetchData()
             this.fetchTabs()
             if (this.$route.fullPath.includes('/list?id=')) {
-                this.activeNav = `${this.$route.path}?id=${this.$route.query.id}`
+                this.activeNav = String(this.$route.query.id)
+            } else if (this.$route.path === '/home') {
+                this.activeNav = '/'
             }
         },
         methods: {
@@ -132,6 +134,10 @@
             fetchTabs() {
                 this.$api.getTradeList().then((res) => {
                     this.tabList = res.data
+                    this.tabList.unshift({
+                        name: '首页',
+                        id: '/'
+                    })
                 })
             },
             // 搜索
@@ -149,7 +155,16 @@
             },
             // 修改tab
             selectNav(val) {
-                console.log(val)
+                if (val === '/') {
+                    this.$router.push('/')
+                } else {
+                    this.$router.push({
+                        path: '/list',
+                        query: {
+                            id: val
+                        }
+                    })
+                }
             },
             // 登录
             login() {

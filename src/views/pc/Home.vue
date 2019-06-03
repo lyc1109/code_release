@@ -113,7 +113,7 @@
             fetchData() {
                 const page = {
                     pageNum: 1,
-                    pageSize: 30
+                    pageSize: 48
                 }
                 this.$api.getTradeDetail(page).then((res) => {
                     this.ewmList = res.info.list
@@ -272,13 +272,18 @@
 
             span {
                 color: #555;
-                font-size: 12px;
+                font-size: 14px;
                 margin-top: 8px;
                 display: inline-block;
                 width: 90%;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
+                font-weight: normal;
+            }
+            p{
+                font-size: 12px;
+                color: #aaa;
             }
         }
     }

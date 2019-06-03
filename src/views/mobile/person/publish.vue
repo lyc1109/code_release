@@ -241,7 +241,7 @@
             // 赚金币
             toGetGold() {
                 this.$router.push({
-                    path: '/list'
+                    path: '/getGold'
                 })
             },
             changeTit(val) {

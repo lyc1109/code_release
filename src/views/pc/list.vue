@@ -65,7 +65,7 @@
                 ewmList: [],
                 page: {
                     current: 1,
-                    size: 30,
+                    size: 48,
                     total: 0
                 },
                 noticeList: [],
@@ -162,7 +162,7 @@
         flex-wrap: wrap;
 
         .wxq_box {
-            width: 18.985%;
+            width: 15.85%;
             border: 1px solid #ddd;
             text-align: center;
             padding: 5px 0;
@@ -212,7 +212,7 @@
                 border-color: #3266cc;
             }
 
-            & > last-child {
+            & > last-child, &:nth-child(6n) {
                 margin-right: 0;
             }
 
@@ -234,13 +234,18 @@
 
             span {
                 color: #555;
-                font-size: 12px;
+                font-size: 14px;
                 margin-top: 8px;
                 display: inline-block;
                 width: 90%;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
+                font-weight: normal;
+            }
+            p{
+                font-size: 12px;
+                color: #aaa;
             }
         }
     }

@@ -144,7 +144,7 @@
                 <!--发布编辑-->
                 <publish-box
                         v-if="defaultVal === 'wxq' || defaultVal === 'gzh' || defaultVal === 'gr' || defaultVal === 'qt'"
-                        :types="defaultVal" @jump="getVal" :coin="coin">
+                        :types="defaultVal" @jump="getVal" :coin="coin" @jumpGold="getGoldVal">
                 </publish-box>
                 <!--发布文章-->
                 <publish-article v-if="defaultVal === 'wz'" :coin="coin"></publish-article>
@@ -242,6 +242,7 @@
             if (this.$route.query && this.$route.query.type) {
                 this.defaultVal = this.$route.query.type
             }
+            console.log(this.$route.query.tab)
             if (this.$route.query.tab) {
                 switch (this.$route.query.tab) {
                     case '发布':
@@ -303,6 +304,31 @@
                         this.fetchPublish()
                     }
                 })
+
+                if (this.$route.query.tab) {
+                    switch (this.$route.query.tab) {
+                        case '发布':
+                            this.personTab = 'fb'
+                            this.fetchPublish()
+                            break
+                        case '推广':
+                            this.personTab = 'tg'
+                            this.fetchSpread()
+                            break
+                        case '文章':
+                            this.personTab = 'wz'
+                            this.fetchArticle()
+                            break
+                        case '赚金币':
+                            this.personTab = 'zjb'
+                            this.fetchGold()
+                            break
+                        // no default
+                    }
+                } else {
+                    this.personTab = 'fb'
+                    this.fetchPublish()
+                }
             })
         },
         methods: {
@@ -540,6 +566,11 @@
             },
             getVal(obj) {
                 this.defaultVal = obj.type
+            },
+            getGoldVal(val) {
+                this.defaultVal = ''
+                this.personTab = 'zjb'
+                this.fetchGold()
             },
             // 编辑
             edit(data) {

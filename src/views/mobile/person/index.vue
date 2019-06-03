@@ -12,6 +12,7 @@
                 </div>
             </div>
         </div>
+        <van-cell title="返回首页" is-link to="/"></van-cell>
         <van-cell-group title="内容管理">
             <van-cell v-for="(item, index) in operateList"
                       :key="index"

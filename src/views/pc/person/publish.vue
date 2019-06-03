@@ -288,7 +288,13 @@
             },
             // 赚金币
             getGold() {
-                this.$router.push(`/group/gold`)
+                this.$router.push({
+                    path: '/person',
+                    query: {
+                        tab: '赚金币'
+                    }
+                })
+                this.$emit('jumpGold', 'zjb')
             }
         }
     }
