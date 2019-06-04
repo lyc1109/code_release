@@ -19,14 +19,12 @@
                          @select="changeMenu">
                     <el-submenu index="content">
                         <template slot="title">内容管理</template>
-                        <el-menu-item v-for="(item, index) in contentList" :key="index" :index="item.value">{{ item.name
-                            }}
+                        <el-menu-item v-for="(item, index) in contentList" :key="index" :index="item.id">{{ item.name }}
                         </el-menu-item>
                     </el-submenu>
                     <el-submenu index="person">
                         <template slot="title">个人中心</template>
-                        <el-menu-item v-for="(item, index) in personList" :key="index" :index="item.value">{{ item.name
-                            }}
+                        <el-menu-item v-for="(item, index) in personList" :key="index" :index="item.value">{{ item.name }}
                         </el-menu-item>
                     </el-submenu>
                 </el-menu>
@@ -267,6 +265,7 @@
                 this.personTab = 'fb'
                 this.fetchPublish()
             }
+            this.fetchMenus()
             this.fetchData()
             this.fetchTabs()
 //            this.fetchPublish()
@@ -348,6 +347,17 @@
                        this.userInfo[3].num = res.article
                    }
                })
+            },
+            // 初始化左侧menus
+            fetchMenus() {
+                this.$api.getTradeList().then((res) => {
+                    if (res) {
+                        this.contentList = res.data
+                        this.contentList.forEach((value) => {
+                            value.name = `发布${value.name}`
+                        })
+                    }
+                })
             },
             fetchTabs() {
                 this.$api.getTrade().then((res) => {
@@ -550,7 +560,7 @@
             changeMenu(val) {
                 this.defaultVal = val
                 const obj = this.contentList.filter((value) => {
-                    return this.defaultVal === value.value
+                    return this.defaultVal === value.id
                 })
                 const obj1 = this.personList.filter((value) => {
                     return this.defaultVal === value.value
@@ -560,7 +570,8 @@
                     path: this.$route.path,
                     query: {
                         title: obj.length > 0 ? obj[0].name : obj1[0].name,
-                        type: this.defaultVal
+                        type: this.defaultVal,
+                        modelType: obj[0].modelType
                     }
                 })
             },
