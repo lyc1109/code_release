@@ -1,10 +1,10 @@
 <template>
     <el-form :model="article" ref="article" :rules="articleRule" label-width="100px">
-        <el-form-item prop="sectionId" label="所属行业">
-            <el-select v-model="article.sectionId" placeholder="请选择所属行业" size="mini">
-                <el-option v-for="(item, index) in tradeList" :key="index" :label="item.name" :value="item.id"></el-option>
-            </el-select>
-        </el-form-item>
+        <!--<el-form-item prop="sectionId" label="所属行业">-->
+            <!--<el-select v-model="article.sectionId" placeholder="请选择所属行业" size="mini">-->
+                <!--<el-option v-for="(item, index) in tradeList" :key="index" :label="item.name" :value="item.id"></el-option>-->
+            <!--</el-select>-->
+        <!--</el-form-item>-->
         <el-form-item prop="name" label="名称">
             <el-input v-model="article.name" placeholder="请填写名称" size="mini"></el-input>
         </el-form-item>
@@ -26,7 +26,7 @@
             </el-upload>
         </el-form-item>
         <el-form-item>
-            发布或修改需要消费: <span style="color: red; font-weight: bold;">5</span>金币，剩余<span style="color: red; font-weight: bold;">{{ coin }}</span>金币
+            发布或修改需要消费: <span style="color: red; font-weight: bold;">{{ gold }}</span>金币，剩余<span style="color: red; font-weight: bold;">{{ coin }}</span>金币
             <el-button type="success" size="mini" @click="recharge" style="margin-left: 5px;">充值</el-button>
             <el-button type="success" size="mini" @click="getGold">赚金币</el-button>
         </el-form-item>
@@ -109,11 +109,13 @@
             },
             // 获取行业列表
             fetchTrade() {
-                this.$api.getTrade().then((res) => {
-                    if (res) {
-                        this.tradeList = res.data
-                    }
-                })
+                if (this.$route.query.type) {
+                    this.$api.getTrade().then((res) => {
+                        if (res) {
+                            this.gold = Math.abs(res.sectionId2PriceMap[this.$route.query.type])
+                        }
+                    })
+                }
             },
             // 封面图上传成功
             changeCover(file) {

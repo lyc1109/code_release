@@ -5,17 +5,17 @@
 <!--                         :label="item.label"></el-tab-pane>-->
 <!--        </el-tabs>-->
         <el-form :model="publishForm" ref="publish" :rules="publishRule" label-width="100px">
-            <el-form-item prop="type" label="类型">
-                <el-radio-group v-model="publishForm.type" size="mini">
-                    <el-radio v-for="(item, index) in typeList" :key="index" :label="item.id">{{ item.name }}</el-radio>
-                </el-radio-group>
-            </el-form-item>
-            <el-form-item prop="sectionId" label="所属行业">
-                <el-select v-model="publishForm.sectionId" placeholder="请选择所属行业" size="mini">
-                    <el-option v-for="(item, index) in tradeList" :key="index" :label="item.name"
-                               :value="item.id"></el-option>
-                </el-select>
-            </el-form-item>
+            <!--<el-form-item prop="type" label="类型">-->
+                <!--<el-radio-group v-model="publishForm.type" size="mini">-->
+                    <!--<el-radio v-for="(item, index) in typeList" :key="index" :label="item.id">{{ item.name }}</el-radio>-->
+                <!--</el-radio-group>-->
+            <!--</el-form-item>-->
+            <!--<el-form-item prop="sectionId" label="所属行业">-->
+                <!--<el-select v-model="publishForm.sectionId" placeholder="请选择所属行业" size="mini">-->
+                    <!--<el-option v-for="(item, index) in tradeList" :key="index" :label="item.name"-->
+                               <!--:value="item.id"></el-option>-->
+                <!--</el-select>-->
+            <!--</el-form-item>-->
             <el-form-item prop="area" label="所属地区">
                 <el-cascader v-model="publishForm.area" :options="areaList" size="mini"></el-cascader>
             </el-form-item>
@@ -46,7 +46,7 @@
                     <i class="el-icon-plus avatar-uploader-icon" v-else></i>
                 </el-upload>
             </el-form-item>
-            <el-form-item prop="imgUrl2" label="群主二维码" v-if="publishForm.type === 'wxq'">
+            <el-form-item prop="imgUrl2" label="群主二维码" v-if="modelType">
                 <el-upload :action="fileUploadUrl"
                            :on-success="changeOwnerCode"
                            class="avatar-uploader"
@@ -57,11 +57,11 @@
                     <i class="el-icon-plus avatar-uploader-icon" v-else></i>
                 </el-upload>
             </el-form-item>
-            <el-form-item prop="ownerWechat" label="群主微信号" v-if="publishForm.type === 'wxq'">
+            <el-form-item prop="ownerWechat" label="群主微信号" v-if="modelType">
                 <el-input v-model="publishForm.ownerWechat" placeholer="请输入群主微信号" size="mini"></el-input>
             </el-form-item>
             <el-form-item>
-                发布或修改需要消费: <span style="color: red; font-weight: bold;">10</span>金币，剩余<span style="color: red; font-weight: bold;">{{ coin }}</span>金币
+                发布或修改需要消费: <span style="color: red; font-weight: bold;">{{ gold }}</span>金币，剩余<span style="color: red; font-weight: bold;">{{ coin }}</span>金币
                 <el-button type="success" size="mini" @click="recharge" style="margin-left: 5px;">充值</el-button>
                 <el-button type="success" size="mini" @click="getGold">赚金币</el-button>
             </el-form-item>
@@ -79,8 +79,8 @@
         name: "edit",
         props: {
             types: {
-                type: String,
-                default: 'wxq'
+                type: Number,
+                default: 0
             },
             coin: {
                 type: Number,
@@ -152,7 +152,9 @@
                     money: 200
                 },
                 title: '发布',
-                fileUploadUrl: `${process.env.VUE_APP_BASE_API}/file/add`
+                fileUploadUrl: `${process.env.VUE_APP_BASE_API}/file/add`,
+                modelType: 1,
+                gold: 0
             }
         },
         created() {
@@ -170,8 +172,14 @@
             }
         },
         watch: {
-            types(val) {
-                this.publishForm.type = val
+//            types(val) {
+//                this.editType = val
+//            },
+            $route(to, from) {
+                if (to.query) {
+                    console.log(to.query.modelType == 1)
+                    this.modelType = to.query.modelType == 1 ? true : false
+                }
             }
         },
         methods: {
@@ -188,11 +196,13 @@
             },
             // 获取行业列表
             fetchTrade() {
-                this.$api.getTrade().then((res) => {
-                    if (res) {
-                        this.tradeList = res.data
-                    }
-                })
+                if (this.$route.query.type) {
+                    this.$api.getTrade().then((res) => {
+                        if (res) {
+                            this.gold = Math.abs(res.sectionId2PriceMap[this.$route.query.type])
+                        }
+                    })
+                }
             },
             // 切换tabs
             changeTabs(val) {

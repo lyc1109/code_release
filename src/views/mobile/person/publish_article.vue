@@ -1,7 +1,7 @@
 <template>
     <div class="publish_m">
         <van-cell-group>
-            <van-cell title="所属行业" :value="section" is-link required @click="trade = true"></van-cell>
+            <!--<van-cell title="所属行业" :value="section" is-link required @click="trade = true"></van-cell>-->
             <van-field v-model="publishForm.name"
                        placeholder="请输入名称"
                        required
@@ -31,16 +31,16 @@
                          class="upload_avatar">
                 </div>
             </van-cell>
-            <p class="tips">提示：发布或修改需要消费<b>20</b>金币，剩余<b>{{ userData.gold }}</b>金币</p>
+            <p class="tips">提示：发布或修改需要消费<b>{{ gold }}</b>金币，剩余<b>{{ userData.gold }}</b>金币</p>
             <div class="operate_btn">
                 <van-button type="info" size="large" @click="save">发布</van-button>
             </div>
         </van-cell-group>
 
-        <van-popup v-model="trade" position="bottom">
-            <van-picker :columns="tradeList" @confirm="changeTrade" @cancel="cancelTrade" ref="trade" value-key="name"
-                        show-toolbar></van-picker>
-        </van-popup>
+        <!--<van-popup v-model="trade" position="bottom">-->
+            <!--<van-picker :columns="tradeList" @confirm="changeTrade" @cancel="cancelTrade" ref="trade" value-key="name"-->
+                        <!--show-toolbar></van-picker>-->
+        <!--</van-popup>-->
     </div>
 </template>
 
@@ -65,7 +65,8 @@
                 contentError: '',
                 trade: false,
                 tradeList: [],
-                section: ''
+                section: '',
+                gold: 0
             }
         },
         computed: {
@@ -101,11 +102,13 @@
             },
             // 获取行业列表
             fetchTrade() {
-                this.$api.getTrade().then((res) => {
-                    if (res) {
-                        this.tradeList = res.data
-                    }
-                })
+                if (this.$route.query.type) {
+                    this.$api.getTrade().then((res) => {
+                        if (res) {
+                            this.gold = Math.abs(res.sectionId2PriceMap[this.$route.query.type])
+                        }
+                    })
+                }
             },
             // 金币初始化
             fetchCount() {

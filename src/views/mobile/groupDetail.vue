@@ -50,7 +50,7 @@
         <div class="article_index_title"><span>热门</span></div>
         <!--微信群-->
         <div class="article_index flex">
-            <div class="article_index_list" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" style="cursor: pointer;">
+            <div class="article_index_list" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" style="cursor: pointer;" v-if="item.modelType !== 2">
                 <img :src="item.imgUrl1" alt="">
                 <p>{{ item.name }}</p>
                 <p style="text-align: left;padding-left: 5px;"

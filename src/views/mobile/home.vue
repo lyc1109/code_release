@@ -3,7 +3,7 @@
         <header-box></header-box>
         <!--        微信群-->
         <div class="article_index flex">
-            <div class="article_index_list" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" v-if="ewmList.length">
+            <div class="article_index_list" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" v-if="ewmList.length && item.modelType !== 2">
                 <img :src="item.imgUrl1" alt="">
                 <p>{{ item.name }}</p>
                 <p style="text-align: left;padding-left: 5px;"
@@ -19,7 +19,7 @@
                     {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
                 </p>
                 <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>
-                <div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>
+                <!--<div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>-->
                 <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">
                     <el-button type="text">点击推广</el-button>
                 </p>
@@ -30,7 +30,7 @@
         <van-tabs v-model="articleTabIndex" @change="changeTabs">
             <van-tab v-for="(item, index) in articleTabList" :key="index" :title="item.name"></van-tab>
         </van-tabs>
-        <div class="article_index_main" v-for="(item, index) in articleData" :key="index" @click="articleDetail(item.id)" v-if="articleData.length">
+        <div class="article_index_main" v-for="(item, index) in articleData" :key="index" @click="articleDetail(item.id)" v-if="articleData.length && item.modelType === 2">
             <div class="article_index_img" v-if="item.url && item.url !== ''">
                 <img :src="item.url" alt="">
             </div>

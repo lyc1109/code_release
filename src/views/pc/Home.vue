@@ -4,7 +4,7 @@
             <div style="position: relative;margin-top: 20px;">
                 <!--微信群-->
                 <div class="wxq" v-if="ewmList.length">
-                    <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)">
+                    <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" v-if="item.modelType !== 2">
                         <div>
                             <img :src="item.imgUrl1">
                         </div>
@@ -22,7 +22,7 @@
                             {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
                         </p>
                         <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>
-                        <div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>
+                        <!--<div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>-->
                         <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">
                             <el-button type="text">点击推广</el-button>
                         </p>
@@ -37,7 +37,7 @@
                                  :name="String(item.id)">
                         <!--文章-->
                         <div class="index_article">
-                            <div class="article_list" v-for="(item, index) in articleList" :key="index" @click="articleDetail(item.id)">
+                            <div class="article_list" v-for="(item, index) in articleList" :key="index" @click="articleDetail(item.id)" v-if="item.modelType === 2">
                                 <div class="article_img">
                                     <img :src="item.url" alt="">
                                 </div>

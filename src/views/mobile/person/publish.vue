@@ -1,8 +1,8 @@
 <template>
     <div class="publish_m">
         <van-cell-group>
-            <van-cell title="类型" is-link :value="publishForm.type" @click="type = true" required></van-cell>
-            <van-cell title="所属行业" is-link :value="section" @click="trade = true" required></van-cell>
+            <!--<van-cell title="类型" is-link :value="publishForm.type" @click="type = true" required></van-cell>-->
+            <!--<van-cell title="所属行业" is-link :value="section" @click="trade = true" required></van-cell>-->
             <van-cell title="地区" is-link :value="publishForm.area" @click="area = true" required></van-cell>
             <van-field v-model="publishForm.name" required clearable placeholder="请填写名称" label="名称"
                        :error-message="titleError" @input="changeTit(publishForm.name)"></van-field>
@@ -25,7 +25,7 @@
                          v-if="publishForm.imgUrl1 && publishForm.imgUrl1 !== ''">
                 </div>
             </van-cell>
-            <van-cell title="群主二维码" v-if="publishForm.type === '微信群'" required>
+            <van-cell title="群主二维码" v-if="$route.query.modelType === 1" required>
                 <div slot="label">
                     <van-uploader :after-read="changeShowOwner" :max-size="maxSize">
                         <van-icon name="plus" class="upload_control"></van-icon>
@@ -35,9 +35,9 @@
                 </div>
             </van-cell>
             <van-field v-model="publishForm.ownerWechat" required clearable placeholder="请填写群主微信号" label="群主微信号"
-                       :error-message="wechatError" v-if="publishForm.type === '微信群'"
+                       :error-message="wechatError" v-if="$route.query.modelType === 1"
                        @input="changeWechat(publishForm.ownerWechat)"></van-field>
-            <p class="tips">提示：发布或修改需要消费<b>10</b>金币，剩余<b>{{ userData.gold }}</b>金币</p>
+            <p class="tips">提示：发布或修改需要消费<b>{{ gold }}</b>金币，剩余<b>{{ userData.gold }}</b>金币</p>
         </van-cell-group>
         <div class="operate_btn flex">
             <van-button type="info" @click="save">保存</van-button>
@@ -45,12 +45,12 @@
             <van-button @click="toGetGold">赚金币</van-button>
         </div>
 
-        <van-popup v-model="type" position="bottom">
-            <van-picker :columns="typeList" @confirm="changeType" @cancel="cancelType" show-toolbar ref="type"></van-picker>
-        </van-popup>
-        <van-popup v-model="trade" position="bottom">
-            <van-picker :columns="tradeList" @confirm="changeTrade" @cancel="cancelTrade" show-toolbar ref="trade" value-key="name"></van-picker>
-        </van-popup>
+        <!--<van-popup v-model="type" position="bottom">-->
+            <!--<van-picker :columns="typeList" @confirm="changeType" @cancel="cancelType" show-toolbar ref="type"></van-picker>-->
+        <!--</van-popup>-->
+        <!--<van-popup v-model="trade" position="bottom">-->
+            <!--<van-picker :columns="tradeList" @confirm="changeTrade" @cancel="cancelTrade" show-toolbar ref="trade" value-key="name"></van-picker>-->
+        <!--</van-popup>-->
         <van-popup v-model="area" position="bottom">
             <van-area :area-list="areaList" @confirm="changeArea" @cancel="cancelArea" ref="area"></van-area>
         </van-popup>
@@ -87,7 +87,8 @@
                 type: false,
                 trade: false,
                 area: false,
-                section: ''
+                section: '',
+                gold: 0
             }
         },
         created() {
@@ -95,35 +96,35 @@
             //     this.fetchData()
             // }
             this.fetchTrade()
-            if (this.$route.query && this.$route.query.type) {
-                switch (this.$route.query.type) {
-                    case 'wxq':
-                        this.publishForm.type = '微信群'
-                        break
-                    case 'gzh':
-                        this.publishForm.type = '公众号'
-                        break
-                    case 'gr':
-                        this.publishForm.type = '个人微信号'
-                        break
-                    case 'qt':
-                        this.publishForm.type = '其他'
-                        break
-                    case '微信群':
-                        this.publishForm.type = '微信群'
-                        break
-                    case '公众号':
-                        this.publishForm.type = '公众号'
-                        break
-                    case '个人微信号':
-                        this.publishForm.type = '个人微信号'
-                        break
-                    case '其他':
-                        this.publishForm.type = '其他'
-                        break
-                    // no default
-                }
-            }
+//            if (this.$route.query && this.$route.query.type) {
+//                switch (this.$route.query.type) {
+//                    case 'wxq':
+//                        this.publishForm.type = '微信群'
+//                        break
+//                    case 'gzh':
+//                        this.publishForm.type = '公众号'
+//                        break
+//                    case 'gr':
+//                        this.publishForm.type = '个人微信号'
+//                        break
+//                    case 'qt':
+//                        this.publishForm.type = '其他'
+//                        break
+//                    case '微信群':
+//                        this.publishForm.type = '微信群'
+//                        break
+//                    case '公众号':
+//                        this.publishForm.type = '公众号'
+//                        break
+//                    case '个人微信号':
+//                        this.publishForm.type = '个人微信号'
+//                        break
+//                    case '其他':
+//                        this.publishForm.type = '其他'
+//                        break
+//                    // no default
+//                }
+//            }
             this.fetchCount()
         },
         computed: {
@@ -146,11 +147,13 @@
             // },
             // 获取行业列表
             fetchTrade() {
-                this.$api.getTrade().then((res) => {
-                    if (res) {
-                        this.tradeList = res.data
-                    }
-                })
+                if (this.$route.query.type) {
+                    this.$api.getTrade().then((res) => {
+                        if (res) {
+                            this.gold = Math.abs(res.sectionId2PriceMap[this.$route.query.type])
+                        }
+                    })
+                }
             },
             // 金币初始化
             fetchCount() {

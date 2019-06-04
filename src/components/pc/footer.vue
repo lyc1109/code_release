@@ -1,12 +1,34 @@
 <template>
     <el-footer class="index_foot">
         Copyright © 2019 微群发布
+        <p v-if="reg.test(navigator.userAgent)">投放广告QQ：{{ qq }}</p>
     </el-footer>
 </template>
 
 <script>
     export default {
-        name: "footer"
+        name: "footer",
+        data() {
+            return {
+                qq: '',
+                reg: /Android|webOS|iPhone|iPod|iPad|BlackBerry/i,
+                navigator: navigator
+            }
+        },
+        created() {
+            if (this.reg.test(this.navigator.userAgent))
+                this.contactService()
+        },
+        methods: {
+            // 联系客服
+            contactService() {
+                this.$api.getServiceQQ().then((res) => {
+                    if (res) {
+                        this.qq = res.qq
+                    }
+                })
+            }
+        }
     }
 </script>
 

@@ -16,10 +16,10 @@
         <van-cell-group title="内容管理">
             <van-cell v-for="(item, index) in operateList"
                       :key="index"
-                      :title="item.title"
-                      :value="item.value"
+                      :title="item.name"
+                      value=""
                       is-link
-                      :to="{ path: item.url, query: { title: item.title, type: item.id } }"></van-cell>
+                      @click="toPublish(item)"></van-cell>
         </van-cell-group>
         <van-cell-group title="个人中心">
             <van-cell v-for="(item, index) in operateList2"
@@ -36,7 +36,7 @@
 
 <script>
     import ruleBox from '@/views/mobile/person/rule'
-    import { Dialog, Toast } from 'vant'
+    import {Dialog, Toast} from 'vant'
     import avatar from '@/assets/images/avatar.jpg'
 
     export default {
@@ -53,13 +53,7 @@
                     {title: '推广', num: 0, url: '/my_spread'},
                     {title: '文章', num: 0, url: '/my_publish?type=wz'}
                 ],
-                operateList: [
-                    {title: '发布微信群', value: '', url: '/publish', id: 'wxq'},
-                    {title: '发布公众号', value: '', url: '/publish', id: 'gzh'},
-                    {title: '发布个人微信号', value: '', url: '/publish', id: 'gr'},
-                    {title: '发布文章', value: '', url: '/publish_article', id: 'wz'},
-                    {title: '发布其他', value: '', url: '/publish', id: 'qt'}
-                ],
+                operateList: [],
                 operateList2: [
                     {title: '修改资料', value: '', url: '/profile'},
                     {title: '赚金币', value: '', url: '/getGold'},
@@ -72,6 +66,7 @@
             }
         },
         created() {
+            this.fetchMenus()
             this.fetchData()
         },
         methods: {
@@ -88,6 +83,17 @@
                         this.userInfo[1].num = res.publish
                         this.userInfo[2].num = res.popularize
                         this.userInfo[3].num = res.article
+                    }
+                })
+            },
+            // 初始化左侧menus
+            fetchMenus() {
+                this.$api.getTradeList().then((res) => {
+                    if (res) {
+                        this.operateList = res.data
+                        this.operateList.forEach((value) => {
+                            value.name = `发布${value.name}`
+                        })
                     }
                 })
             },
@@ -114,6 +120,22 @@
             },
             toggleRule(val) {
                 return val ? this.rule = true : this.rule = false
+            },
+            toPublish(data) {
+                let url = ''
+                if (data.modelType === 1 || data.modelType === 0)
+                    url = '/publish'
+                else {
+                    url = '/publish_article'
+                }
+                this.$router.push({
+                    path: url,
+                    query: {
+                        title: data.title,
+                        type: data.id,
+                        modelType: data.modelType
+                    }
+                })
             }
         },
         components: {

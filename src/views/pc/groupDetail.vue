@@ -68,7 +68,7 @@
         <el-tabs v-model="hotGroup">
             <el-tab-pane label="热门" name="hot">
                 <div class="wxq">
-                    <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)">
+                    <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" v-if="item.modelType !== 2">
                         <div>
                             <img :src="item.imgUrl1">
                         </div>

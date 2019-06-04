@@ -1,8 +1,8 @@
 <template>
     <div>
     <!--右侧悬浮-->
-    <div class="right_box" :class="{ right_box_mobile: reg.test(navigator.userAgent) }">
-        <el-link :underline="false" @click="contactService">联 系<br>客 服</el-link>
+    <div class="right_box"  v-if="!reg.test(navigator.userAgent)">
+        <el-link :underline="false">联 系<br>客 服</el-link>
         <el-link :underline="false" v-popover:popover>手 机 端<br>入 口</el-link>
         <el-link :underline="false" @click="register">有 奖<br>注 册</el-link>
 
@@ -10,6 +10,14 @@
             <img :src="mobileImg" alt="">
         </el-popover>
     </div>
+
+        <div class="bottom_box" v-else>
+            <el-link :underline="false" v-popover:popover>手机端入口</el-link>
+
+            <el-popover placement="left" width="200" trigger="hover" ref="popover">
+                <img :src="mobileImg" alt="">
+            </el-popover>
+        </div>
         <login-box  :is-show="showLogin"
                     @toggle="toggleLogin"
                     :type="loginType"
@@ -55,14 +63,6 @@
                     this.$router.go(0)
                 }, 1000)
                 this.showLogin = false
-            },
-            // 联系客服
-            contactService() {
-                this.$api.getServiceQQ().then((res) => {
-                    if (res) {
-                        window.location.href = `tencent://message/?uin=${res.qq}&Site=qq&Menu=yes`
-                    }
-                })
             }
         },
         components: {
@@ -103,5 +103,18 @@
     }
     .right_box_mobile{
         right: 0;
+    }
+    .bottom_box{
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background: #4baf4b;
+        color: #fff;
+        padding: 10px;
+        border-radius: 4px;
+
+        .el-link.el-link--default{
+            color: #fff;
+        }
     }
 </style>

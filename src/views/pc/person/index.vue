@@ -19,7 +19,7 @@
                          @select="changeMenu">
                     <el-submenu index="content">
                         <template slot="title">内容管理</template>
-                        <el-menu-item v-for="(item, index) in contentList" :key="index" :index="item.id">{{ item.name }}
+                        <el-menu-item v-for="(item, index) in contentList" :key="index" :index="String(item.id)">{{ item.name }}
                         </el-menu-item>
                     </el-submenu>
                     <el-submenu index="person">
@@ -141,11 +141,11 @@
 
                 <!--发布编辑-->
                 <publish-box
-                        v-if="defaultVal === 'wxq' || defaultVal === 'gzh' || defaultVal === 'gr' || defaultVal === 'qt'"
-                        :types="defaultVal" @jump="getVal" :coin="coin" @jumpGold="getGoldVal">
+                        v-if="$route.query.modelType == 0 || $route.query.modelType == 1"
+                        @jump="getVal" :coin="coin" @jumpGold="getGoldVal">
                 </publish-box>
                 <!--发布文章-->
-                <publish-article v-if="defaultVal === 'wz'" :coin="coin"></publish-article>
+                <publish-article v-if="$route.query.modelType == 2" :coin="coin"></publish-article>
                 <!--资料-->
                 <profile-box v-if="defaultVal === 'zl'"></profile-box>
                 <!--充值-->
@@ -233,14 +233,15 @@
                 goldList: [],
                 spreadImg: '',
                 spreadBox: false,
-                sectionId: ''
+                sectionId: '',
+                editType: ''
             }
         },
         created() {
             if (this.$route.query && this.$route.query.type) {
-                this.defaultVal = this.$route.query.type
+                this.defaultVal = String(this.$route.query.type)
             }
-            console.log(this.$route.query.tab)
+//            console.log(this.$route.query.tab)
             if (this.$route.query.tab) {
                 switch (this.$route.query.tab) {
                     case '发布':
@@ -560,20 +561,30 @@
             changeMenu(val) {
                 this.defaultVal = val
                 const obj = this.contentList.filter((value) => {
-                    return this.defaultVal === value.id
+                    return this.defaultVal === String(value.id)
                 })
                 const obj1 = this.personList.filter((value) => {
-                    return this.defaultVal === value.value
+                    return val === value.value
                 })
                 this.coin = this.userInfo[0].num
-                this.$router.push({
-                    path: this.$route.path,
-                    query: {
-                        title: obj.length > 0 ? obj[0].name : obj1[0].name,
-                        type: this.defaultVal,
-                        modelType: obj[0].modelType
-                    }
-                })
+                if (obj.length) {
+                    this.$router.push({
+                        path: this.$route.path,
+                        query: {
+                            title: obj.length ? obj[0].name : obj1[0].name,
+                            type: this.defaultVal,
+                            modelType: obj.length ? obj[0].modelType : '0'
+                        }
+                    })
+                } else if (obj1.length) {
+                    this.$router.push({
+                        path: this.$route.path,
+                        query: {
+                            title: obj.length ? obj[0].name : obj1[0].name,
+                            type: this.defaultVal
+                        }
+                    })
+                }
             },
             getVal(obj) {
                 this.defaultVal = obj.type
