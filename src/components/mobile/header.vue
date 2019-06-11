@@ -1,12 +1,14 @@
 <template>
     <div>
+<!--        <van-nav-bar left-text="返回" left-arrow @click-left="back"></van-nav-bar>-->
         <van-nav-bar class="m_header">
-            <van-icon name="bars" slot="left" @click="showNav"></van-icon>
-            <div class="m_logo" slot="title">
+            <van-icon name="arrow-left" slot="left" @click="back"></van-icon>
+            <div class="m_logo" slot="title" @click="backHome">
                 <span>微群发布</span>
                 <!--<img src="" alt="">-->
             </div>
             <div slot="right">
+                <van-icon name="bars" @click="showNav"></van-icon>
                 <van-icon name="search" @click="search"/>
                 <van-icon name="notes-o" @click="checkIn"></van-icon>
                 <van-icon name="user-circle-o" @click="loginOrPerson"></van-icon>
@@ -14,7 +16,7 @@
         </van-nav-bar>
         <!--导航-->
         <div class="index_tab flex" v-if="isShowNav">
-            <div class="index_tab_item" v-for="(item, index) in tabList" :key="index" @click="toList(item)">
+            <div class="index_tab_item" v-for="(item, index) in tabList" :key="index" @click="toList(item)" v-if="item.modelType !== 2">
                 <i class="iconfont" :class="`icon-${item.icon}`"
                    :style="{ color: item.color, borderColor: item.color }"></i>
                 <p>{{ item.name }}</p>
@@ -52,7 +54,7 @@
             this.fetchTabs()
         },
         mounted() {
-            if (sessionStorage.getItem('user') && sessionStorage.getItem('user') !== null && sessionStorage.getItem('user') !== '') {
+            if (sessionStorage.getItem('loginStatus') && sessionStorage.getItem('loginStatus') !== null && sessionStorage.getItem('loginStatus') !== '') {
                 this.isLogin = true
             }
         },
@@ -61,6 +63,8 @@
                 this.$api.getTradeList().then((res) => {
                     this.tabList = res.data
                     this.tabList.forEach((value, index, array) => {
+                        array[index].icon = 'group'
+                        array[index].color = '#87cb4f'
                         if(array.length > 0) array[0].icon = 'group'
                         if(array.length > 1) array[1].icon = 'area'
                         if(array.length > 2) array[2].icon = 'wechat'
@@ -105,6 +109,14 @@
                         Toast.success('签到成功')
                     }
                 })
+            },
+            // 回到首页
+            backHome() {
+                this.$router.push('/home')
+            },
+            // 返回上一页
+            back() {
+                this.$router.go(-1)
             }
         }
     }

@@ -51,7 +51,7 @@
                      active-text-color="#ffd04b"
                      @select="selectNav">
                 <el-menu-item v-for="(item, index) in tabList" :key="index"
-                              :index="String(item.id)">{{ item.name }}
+                              :index="String(item.id)" v-if="item.modelType !== 2">{{ item.name }}
                 </el-menu-item>
             </el-menu>
         </nav>
@@ -116,7 +116,7 @@
         },
         methods: {
             fetchData() {
-                const token = sessionStorage.getItem('user')
+                const token = sessionStorage.getItem('loginStatus')
                 if (token && token != null && token != '') {
                     this.isLogin = false
                 } else {
@@ -184,7 +184,11 @@
             },
             // 个人中心
             toPerson() {
-                this.$router.push(`/person`)
+                // window.location.href = `${window.location.origin}/person`
+                this.$router.push({
+                    path: `/person`
+                })
+                // this.$router.go(0)
             },
             // 退出
             quit() {
@@ -196,7 +200,7 @@
                                 setTimeout(() => {
                                     this.$router.go(0)
                                 }, 1000)
-                                sessionStorage.removeItem('user')
+                                sessionStorage.removeItem('loginStatus')
                                 this.$message.success('已退出登录')
                             }
                         })
@@ -237,6 +241,7 @@
             color: #333;
             font-size: 24px;
             flex: 0.7;
+            cursor: pointer;
         }
 
         .all_search {

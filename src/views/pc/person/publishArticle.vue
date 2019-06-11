@@ -74,12 +74,20 @@
                     money: 200
                 },
                 title: '发布文章',
-                fileUploadUrl: `${process.env.VUE_APP_BASE_API}/file/add`
+                fileUploadUrl: `${process.env.VUE_APP_BASE_API}/file/add`,
+                gold: 0
             }
         },
         created() {
             if (this.$route.query && this.$route.query.id) {
                 this.fetchData()
+            }
+        },
+        watch: {
+            $route(to, from) {
+                if (to.query) {
+                    this.fetchTrade()
+                }
             }
         },
         mounted() {

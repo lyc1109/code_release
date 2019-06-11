@@ -21,11 +21,11 @@
                        v-if="(new Date() - new Date(item.lastRefreshTime)) >= 1000*3600*24">
                         {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
                     </p>
-                    <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>
+<!--                    <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>-->
                     <!--<div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>-->
-                    <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">
-                        <el-button type="text">点击推广</el-button>
-                    </p>
+<!--                    <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">-->
+<!--                        <el-button type="text">点击推广</el-button>-->
+<!--                    </p>-->
                 </div>
             </div>
             <van-pagination

@@ -81,6 +81,13 @@ const api = {
      */
     getEarnedPublishBySectionId(params = {}) {
         return http.get(`${base}/getEarnedPublishBySectionId`, params)
+    },
+    /**
+     * 获取手机端二维码
+     * @returns {*}
+     */
+    getMobileQRCode() {
+        return http.get(`${base}/getMobileQRCode`)
     }
 }
 

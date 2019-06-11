@@ -18,19 +18,19 @@
                    v-if="(new Date() - new Date(item.lastRefreshTime)) >= 1000*3600*24">
                     {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
                 </p>
-                <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>
+<!--                <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>-->
                 <!--<div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>-->
-                <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">
-                    <el-button type="text">点击推广</el-button>
-                </p>
+<!--                <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">-->
+<!--                    <el-button type="text">点击推广</el-button>-->
+<!--                </p>-->
             </div>
         </div>
         <!--微信文章-->
         <div class="article_index_title"><span>热门微信文章</span></div>
         <van-tabs v-model="articleTabIndex" @change="changeTabs">
-            <van-tab v-for="(item, index) in articleTabList" :key="index" :title="item.name"></van-tab>
+            <van-tab v-for="(item, index) in articleTabList" :key="index" :title="item.name" v-if="item.modelType === 2"></van-tab>
         </van-tabs>
-        <div class="article_index_main" v-for="(item, index) in articleData" :key="index" @click="articleDetail(item.id)" v-if="articleData.length && item.modelType === 2">
+        <div class="article_index_main" v-for="(item, index) in articleData" :key="index" @click="articleDetail(item.id)" v-if="articleData.length && item.modalType === 2">
             <div class="article_index_img" v-if="item.url && item.url !== ''">
                 <img :src="item.url" alt="">
             </div>

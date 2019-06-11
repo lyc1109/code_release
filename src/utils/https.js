@@ -1,13 +1,14 @@
 import axios from 'axios'
 import Vue from 'vue'
 import Element from 'element-ui'
+import router from '@/router'
 
 // 常量配置
 const isProduct = process.env.NODE_ENV === "production"
 const requestTimeOut = 30000
 const baseUrl = process.env.VUE_APP_BASE_API
 
-    // 设置ContentType
+// 设置ContentType
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
 // 打印请求参数
@@ -34,7 +35,7 @@ axios.interceptors.request.use(
 // 错误消息广播
 let emitError = (errorMsg) => {
     let msg = "Ops...未知请求异常"
-    if(errorMsg && errorMsg !== null && errorMsg !== "") {
+    if (errorMsg && errorMsg !== null && errorMsg !== "") {
         msg = "系统请求异常：" + JSON.stringify(errorMsg)
         Element.Message.error(msg)
     }
@@ -48,13 +49,22 @@ axios.interceptors.response.use(
         const respData = response.data
         // console.log(respData)
         // 状态码为200表示请求成功，否则失败
-        if(response.status === 200 && respData.status) {
-            if(respData.data !== null) {
+        if (response.status === 200 && respData.status) {
+            if (respData.data !== null) {
                 return respData.data
             }
             return respData
         } else if (!respData.status) {
-            Element.Message.error(respData.msg)
+            // console.log(window.location)
+            // const arr = ['home', 'list', 'group', 'article', 'search', 'login', 'register', 'forget']
+            // const obj = arr.filter((value) => {
+            //     return window.location.hash.includes(value)
+            // })
+            // if (!obj.length)
+            if (respData.msg !== '未登录!') {
+                Element.Message.error(respData.msg)
+            }
+            // return response
         }
         // else {
         //     Element.Message.error(respData.msg)
@@ -80,13 +90,13 @@ axios.interceptors.response.use(
         const response = error.response
         let errMsg = ""
 
-        if(!isProduct) {
+        if (!isProduct) {
             console.log("系统请求异常...")
             console.log(JSON.stringify(error))
         }
 
         //console.log("请求失败：" + JSON.stringify(response))
-        if(response && response.data) {
+        if (response && response.data) {
             // const httpStatusCode = response.data.httpStatusCode
 
             // 未授权登录
@@ -98,17 +108,17 @@ axios.interceptors.response.use(
             // }  else if(httpStatusCode === 302) {
             //     // 后台资源路径重定向，不做处理
             // }  else {
-                // 其它错误信息处理
-                if(response.data.returnMsg) {
-                    errMsg = response.data.returnMsg + "(" + response.data.returnCode + ")"
-                } else if(response.data.errMsg) {
-                    errMsg = response.data.errMsg + "(" + response.data.code + ")"
-                }
-                emitError(errMsg)
-                Element.Message.error(errMsg)
+            // 其它错误信息处理
+            if (response.data.returnMsg) {
+                errMsg = response.data.returnMsg + "(" + response.data.returnCode + ")"
+            } else if (response.data.errMsg) {
+                errMsg = response.data.errMsg + "(" + response.data.code + ")"
+            }
+            emitError(errMsg)
+            Element.Message.error(errMsg)
             // }
         }
-    //
+        //
         return Promise.reject(errMsg)
     }
 )

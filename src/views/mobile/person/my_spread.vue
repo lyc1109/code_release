@@ -11,7 +11,7 @@
             <div class="article_index_main_info">
                 <h2>{{ item.name }}</h2>
                 <div class="article_index_info">
-                    <span>推广 <b>{{ item.typ }}</b>次，赚取<b>{{ item.popularizePrice }}</b>金币</span>
+<!--                    <span>推广 <b>{{ item.typ }}</b>次，赚取<b>{{ item.popularizePrice }}</b>金币</span>-->
                     <van-icon name="delete" style="float: right;" @click.stop="del(item)"></van-icon>
                 </div>
             </div>

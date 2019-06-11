@@ -6,6 +6,7 @@ import Element from 'element-ui'
 // import axios from 'axios'
 // Vue.prototype.$http = axios
 import http from './utils/https'
+import axios from 'axios'
 
 Vue.prototype.$http = http
 import api from './api'
@@ -21,6 +22,7 @@ import Vant, {Toast, Dialog} from 'vant'
 import 'vant/lib/index.css'
 
 import moment from 'moment'
+
 Vue.use(require('vue-moment'), {
     moment
 })
@@ -28,28 +30,43 @@ Vue.prototype.moment = moment
 Vue.use(Vant)
 let reg = /Android|webOS|iPhone|iPod|iPad|BlackBerry/i
 router.beforeEach((to, from, next) => {
-    if (to.matched.some(res => res.meta.requireAuth)) {
-        const token = sessionStorage.getItem('user')
-        if (!token || token == null || token == '') {
-            if (reg.test(navigator.userAgent)) {
-                Dialog.alert({message: '必须登录才可访问此页面', confirmButtonText: '去登录'})
-                    .then(() => {
-                        router.replace('/login')
-                    })
-            } else {
-                Element.MessageBox.alert('必须登录才可访问此页面!', '', {
-                    confirmButtonText: '去登录'
-                })
-                    .then(() => {
-                        router.replace('/')
-                    })
-            }
-        } else {
+    // const token = sessionStorage.getItem('user')
+    axios({
+        url: `${process.env.VUE_APP_BASE_API}/sys/userInfo`,
+        method: 'get'
+    }).then((res) => {
+        // console.log(res)
+        if (res) {
+            sessionStorage.setItem('loginStatus', JSON.stringify(res))
             next()
+        } else {
+            sessionStorage.removeItem('loginStatus')
+            if (to.matched.some(resp => resp.meta.requireAuth)) {
+                if (reg.test(navigator.userAgent)) {
+                    Dialog.alert({message: '必须登录才可访问此页面', confirmButtonText: '去登录'})
+                        .then(() => {
+                            router.replace('/login')
+                        })
+                } else {
+                    Element.MessageBox.alert('必须登录才可访问此页面!', '', {
+                        confirmButtonText: '去登录'
+                    })
+                        .then(() => {
+                            router.replace('/')
+                        })
+                }
+            } else {
+                const arr = ['home', 'list', 'group', 'article', 'search', 'login', 'register', 'forget']
+                const obj = arr.filter((value) => {
+                    return to.path.includes(value)
+                })
+                if (!obj.length)
+                    Element.Message.error('未登录!')
+                else
+                    next()
+            }
         }
-    } else {
-        next()
-    }
+    })
 })
 router.afterEach((route) => {
     if (route.meta.title) {

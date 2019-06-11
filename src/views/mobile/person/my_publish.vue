@@ -11,7 +11,7 @@
                 <h2>{{ item.name }}</h2>
                 <p>{{ item.description }}</p>
                 <div class="article_index_info">
-                    <p>剩余{{ item.popularizeCount }}次({{ item.popularizePrice }}元/次)推广</p>
+                    <p>剩余{{ item.popularizeCount }}次({{ item.popularizePrice }}金币/次)推广</p>
                     <span>{{ item.section }}</span>
                     <span style="margin-left: .4rem;">{{ item.createTime }}</span>
                     <van-icon name="delete" @click.stop="del(item)"></van-icon>

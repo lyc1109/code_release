@@ -111,7 +111,7 @@
                     description: '积分宝项目交流群，分红//群',
                     sectionId: '',
                     area: '',
-                    createTime: new Date(),
+                    createTime: '',
                     wechat: 'nmd22288',
                     hot: 0,
                     star: 0,

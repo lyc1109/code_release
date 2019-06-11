@@ -49,7 +49,7 @@
                 },
                 userInfo: [
                     {title: '金币', num: 0},
-                    {title: '发布', num: 0, url: '/my_publish?type=fb'},
+                    {title: '已发布', num: 0, url: '/my_publish?type=fb'},
                     {title: '推广', num: 0, url: '/my_spread'},
                     {title: '文章', num: 0, url: '/my_publish?type=wz'}
                 ],
@@ -108,7 +108,7 @@
                                     setTimeout(() => {
                                         this.$router.push('/home')
                                     }, 1000)
-                                    sessionStorage.removeItem('user')
+                                    sessionStorage.removeItem('loginStatus')
                                     Toast.success('已退出登录')
                                 }
                             }).catch((err) => {

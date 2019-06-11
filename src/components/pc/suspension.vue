@@ -2,7 +2,7 @@
     <div>
     <!--右侧悬浮-->
     <div class="right_box"  v-if="!reg.test(navigator.userAgent)">
-        <el-link :underline="false">联 系<br>客 服</el-link>
+        <el-link :underline="false" @click="contactQq">联 系<br>客 服</el-link>
         <el-link :underline="false" v-popover:popover>手 机 端<br>入 口</el-link>
         <el-link :underline="false" @click="register">有 奖<br>注 册</el-link>
 
@@ -14,7 +14,7 @@
         <div class="bottom_box" v-else>
             <el-link :underline="false" v-popover:popover>手机端入口</el-link>
 
-            <el-popover placement="left" width="200" trigger="hover" ref="popover">
+            <el-popover placement="left" width="200" trigger="click" ref="popover">
                 <img :src="mobileImg" alt="">
             </el-popover>
         </div>
@@ -28,7 +28,7 @@
 
 <script>
     import loginBox from '@/views/pc/login/login'
-    import mobileImg from '@/assets/images/mobile.jpg'
+    // import mobileImg from '@/assets/images/mobile.jpg'
 
     export default {
         name: "suspension",
@@ -37,12 +37,22 @@
                 showLogin: false,
                 loginType: '',
                 loginTit: '',
-                mobileImg: mobileImg,
+                mobileImg: '',
                 reg: /Android|webOS|iPhone|iPod|iPad|BlackBerry/i,
                 navigator: navigator
             }
         },
+        created() {
+            this.fetchData()
+        },
         methods: {
+            fetchData() {
+                this.$api.getMobileQRCode().then((res) => {
+                    if (res) {
+                        this.mobileImg = res.qrcode
+                    }
+                })
+            },
             // 控制登录显示隐藏
             toggleLogin(val) {
                 return val ? this.showLogin = true : this.showLogin = false
@@ -63,6 +73,14 @@
                     this.$router.go(0)
                 }, 1000)
                 this.showLogin = false
+            },
+            // 联系客服
+            contactQq() {
+                this.$api.getServiceQQ().then((res) => {
+                    if (res) {
+                        window.location.href = `tencent://message/?uin=${res.qq}&Site=&Menu=yes`
+                    }
+                })
             }
         },
         components: {

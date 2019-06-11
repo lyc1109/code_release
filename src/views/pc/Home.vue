@@ -4,7 +4,7 @@
             <div style="position: relative;margin-top: 20px;">
                 <!--微信群-->
                 <div class="wxq" v-if="ewmList.length">
-                    <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" v-if="item.modelType !== 2">
+                    <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" v-if="item.modalType !== 2">
                         <div>
                             <img :src="item.imgUrl1">
                         </div>
@@ -21,11 +21,11 @@
                            v-if="(new Date() - new Date(item.lastRefreshTime)) > 1000*3600*24">
                             {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
                         </p>
-                        <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>
+<!--                        <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>-->
                         <!--<div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>-->
-                        <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">
-                            <el-button type="text">点击推广</el-button>
-                        </p>
+<!--                        <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">-->
+<!--                            <el-button type="text">点击推广</el-button>-->
+<!--                        </p>-->
                     </div>
                 </div>
             </div>
@@ -34,10 +34,10 @@
             <article style="margin-top: 20px;">
                 <el-tabs v-model="article" type="border-card" @tab-click="changeArticle(article)">
                     <el-tab-pane v-for="(item, index) in articleData" :key="index" :label="item.name"
-                                 :name="String(item.id)">
+                                 :name="String(item.id)" v-if="item.modelType === 2">
                         <!--文章-->
                         <div class="index_article">
-                            <div class="article_list" v-for="(item, index) in articleList" :key="index" @click="articleDetail(item.id)" v-if="item.modelType === 2">
+                            <div class="article_list" v-for="(item, index) in articleList" :key="index" @click="articleDetail(item.id)">
                                 <div class="article_img">
                                     <img :src="item.url" alt="">
                                 </div>
@@ -122,7 +122,13 @@
                 this.$api.getTradeList().then((res) => {
                     this.articleData = res.data
                     if (this.articleData.length) {
-                        this.article = String(this.articleData[0].id)
+                        let articleData = []
+                        this.articleData.forEach((value) => {
+                            if (value.modelType === 2) {
+                                articleData.push(value)
+                            }
+                        })
+                        this.article = String(articleData[0].id)
                     }
                 })
             },
@@ -135,7 +141,12 @@
                 }).then((res) => {
                     if (res) {
                         this.page.total = res.info.total
-                        this.articleList = res.info.list
+                        res.info.list.forEach((value) => {
+                            // console.log(value)
+                            if (value.modalType === 2) {
+                                this.articleList.push(value)
+                            }
+                        })
                     }
                 })
             },

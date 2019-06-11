@@ -55,7 +55,7 @@
                                 <p>{{ item.description }}</p>
                                 <div class="article_info_detail">
                                     <el-tag size="mini">{{ item.section }}</el-tag>
-                                    <el-tag size="mini" v-if="personTab === 'fb'" type="danger">剩余{{ item.popularizeCount }}次({{ item.popularizePrice }}元/次)推广</el-tag>
+                                    <el-tag size="mini" v-if="personTab === 'fb'" type="danger">剩余{{ item.popularizeCount }}次({{ item.popularizePrice }}金币/次)推广</el-tag>
                                     <span>{{ item.createTime }}</span>
 <!--                                    <i class="iconai-eye iconfont"></i>-->
 <!--                                    <span style="margin-left: 5px;">{{ item.popOriginalId }}</span>-->
@@ -92,7 +92,7 @@
                                     <img :src="item.url">
                                 </div>
                                 <h5>{{ item.name }}</h5>
-                                <span>推广{{ item.typ }}次, 赚取{{ item.popularizePrice }}金币</span>
+<!--                                <span>推广{{ item.typ }}次, 赚取{{ item.popularizePrice }}金币</span>-->
                                 <span @click="delArticle(item)">删除</span>
                             </div>
                         </div>
@@ -186,7 +186,7 @@
                 avatar: avatar,
                 userInfo: [
                     {title: '金币', num: 0},
-                    {title: '发布', num: 0},
+                    {title: '已发布', num: 0},
                     {title: '推广', num: 0},
                     {title: '文章', num: 0}
                 ],
@@ -207,7 +207,7 @@
                 defaultOpen: ['content', 'person'],
                 personTab: 'fb',
                 personTabList: [
-                    {name: '发布', value: 'fb'},
+                    {name: '已发布', value: 'fb'},
                     {name: '推广', value: 'tg'},
                     {name: '文章', value: 'wz'},
                     {name: '赚金币', value: 'zjb'}
@@ -237,14 +237,27 @@
                 editType: ''
             }
         },
+        watch: {
+            $route(to, from) {
+                if (to.fullPath === '/person') {
+                    this.defaultVal = ''
+                    this.personTab = 'fb'
+                    this.fetchPublish()
+                }
+            }
+        },
         created() {
             if (this.$route.query && this.$route.query.type) {
                 this.defaultVal = String(this.$route.query.type)
+            }else {
+                this.defaultVal = ''
+                this.personTab = 'fb'
+                this.fetchPublish()
             }
 //            console.log(this.$route.query.tab)
             if (this.$route.query.tab) {
                 switch (this.$route.query.tab) {
-                    case '发布':
+                    case '已发布':
                         this.personTab = 'fb'
                         this.fetchPublish()
                         break
@@ -263,9 +276,16 @@
                     // no default
                 }
             } else {
+                this.defaultVal = ''
                 this.personTab = 'fb'
                 this.fetchPublish()
             }
+            // console.log(this.$route.fullPath === '/person')
+            // if (this.$route.fullPath === '/person') {
+            //     this.defaultVal = ''
+            //     this.personTab = 'fb'
+            //     this.fetchPublish()
+            // }
             this.fetchMenus()
             this.fetchData()
             this.fetchTabs()
@@ -281,7 +301,7 @@
                     }
                     if (this.$route.query.tab) {
                         switch (this.$route.query.tab) {
-                            case '发布':
+                            case '已发布':
                                 this.personTab = 'fb'
                                 this.fetchPublish()
                                 break
@@ -307,7 +327,7 @@
 
                 if (this.$route.query.tab) {
                     switch (this.$route.query.tab) {
-                        case '发布':
+                        case '已发布':
                             this.personTab = 'fb'
                             this.fetchPublish()
                             break
@@ -329,6 +349,13 @@
                     this.personTab = 'fb'
                     this.fetchPublish()
                 }
+                // if (this.$route.query && this.$route.query.type) {
+                //     this.defaultVal = String(this.$route.query.type)
+                // }else {
+                //     this.defaultVal = ''
+                //     this.personTab = 'fb'
+                //     this.fetchPublish()
+                // }
             })
         },
         methods: {
@@ -416,7 +443,7 @@
                         this.$router.replace({
                             path: this.$route.path,
                             query: {
-                                tab: '发布'
+                                tab: '已发布'
                             }
                         })
                         break
@@ -474,7 +501,7 @@
                 this.page.size = val
                 if (this.$route.query.tab) {
                     switch (this.$route.query.tab) {
-                        case '发布':
+                        case '已发布':
                             this.personTab = 'fb'
                             this.fetchPublish()
                             break
@@ -494,7 +521,7 @@
                 this.page.current = val
                 if (this.$route.query.tab) {
                     switch (this.$route.query.tab) {
-                        case '发布':
+                        case '已发布':
                             this.personTab = 'fb'
                             this.fetchPublish()
                             break
@@ -702,7 +729,7 @@
                     })
                     this.defaultVal = ''
                     switch (data.title) {
-                        case '发布':
+                        case '已发布':
                             this.personTab = 'fb'
                             this.fetchPublish()
                             break

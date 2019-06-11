@@ -161,6 +161,7 @@
             if (this.$route.query.id) {
                 this.fetchData()
             }
+            this.modelType = this.$route.query.modelType == 1 ? true : false
         },
         mounted() {
             this.fetchTrade()
@@ -177,8 +178,9 @@
 //            },
             $route(to, from) {
                 if (to.query) {
-                    console.log(to.query.modelType == 1)
+                    // console.log(to.query.modelType == 1)
                     this.modelType = to.query.modelType == 1 ? true : false
+                    this.fetchTrade()
                 }
             }
         },
@@ -250,13 +252,14 @@
                     this.publishForm.position3 = this.publishForm.area[2]
                 }
                 form = this.publishForm
-                if (this.type === 'gzh' || this.type === 'gr' || this.type === 'qt') {
+                if (this.$route.query.type === 0) {
                     delete form.ownerWechat
                     delete form.imgUrl2
-                } else if (this.type === 'wxq') {
+                } else if (this.$route.query.type === 1) {
                     form['ownerWechat'] = this.publishForm.ownerWechat
                     form['imgUrl2'] = this.publishForm.imgUrl2
                 }
+                form.sectionId = this.$route.query.type
                 // console.log(form)
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
