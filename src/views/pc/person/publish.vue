@@ -35,7 +35,7 @@
                     <i class="el-icon-plus avatar-uploader-icon" v-else></i>
                 </el-upload>
             </el-form-item>
-            <el-form-item prop="imgUrl1" label="二维码">
+            <el-form-item prop="imgUrl1" :label="codeText">
                 <el-upload :action="fileUploadUrl"
                            :on-success="changeGroupCode"
                            class="avatar-uploader"
@@ -61,7 +61,7 @@
                 <el-input v-model="publishForm.ownerWechat" placeholer="请输入群主微信号" size="mini"></el-input>
             </el-form-item>
             <el-form-item>
-                发布或修改需要消费: <span style="color: red; font-weight: bold;">{{ gold }}</span>金币，剩余<span style="color: red; font-weight: bold;">{{ coin }}</span>金币
+                发布需要消费: <span style="color: red; font-weight: bold;">{{ gold }}</span>金币，剩余<span style="color: red; font-weight: bold;">{{ coin }}</span>金币
                 <el-button type="success" size="mini" @click="recharge" style="margin-left: 5px;">充值</el-button>
                 <el-button type="success" size="mini" @click="getGold">赚金币</el-button>
             </el-form-item>
@@ -154,7 +154,8 @@
                 title: '发布',
                 fileUploadUrl: `${process.env.VUE_APP_BASE_API}/file/add`,
                 modelType: 1,
-                gold: 0
+                gold: 0,
+                codeText: '二维码'
             }
         },
         created() {
@@ -162,6 +163,10 @@
                 this.fetchData()
             }
             this.modelType = this.$route.query.modelType == 1 ? true : false
+            if (this.modelType)
+                this.codeText = '群二维码'
+            else
+                this.codeText = '二维码'
         },
         mounted() {
             this.fetchTrade()
@@ -180,6 +185,10 @@
                 if (to.query) {
                     // console.log(to.query.modelType == 1)
                     this.modelType = to.query.modelType == 1 ? true : false
+                    if (this.modelType)
+                        this.codeText = '群二维码'
+                    else
+                        this.codeText = '二维码'
                     this.fetchTrade()
                 }
             }

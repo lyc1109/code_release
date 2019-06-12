@@ -7,7 +7,7 @@
 <!--                       label="充值金额"-->
 <!--                       placeholder="请输入充值金额"-->
 <!--                       :error-message="amountError" @input="changeAmount(rechargeForm.count)"></van-field>-->
-            <van-cell required is-link :value="money" @click="count = true" title="充值金额"></van-cell>
+            <van-cell required is-link :value="`${money}元`" @click="count = true" title="充值金额"></van-cell>
             <van-cell title="付款二维码">
                 <img :src="codeUrl" style="width: 10rem;" alt="">
             </van-cell>
@@ -74,9 +74,9 @@
                 this.$api.getRechargeSetting().then((res) => {
                     if (res) {
                         this.codeUrl = res.rechargeQRCodeUrl
-                        this.countList = res.rechargeSelect
-//                        console.log(this.countList)
+                        this.countData = res.rechargeSelect
                         res.rechargeSelect.forEach((value) => {
+                            // console.log(value.money)
                             this.countList.push(value.money)
                         })
                         this.money = res.rechargeSelect[0].money
@@ -128,6 +128,7 @@
                 let obj = this.countData.filter((data) => {
                     return data.money === val
                 })
+                console.log(obj)
                 this.gold = obj[0].coin
                 this.rechargeForm.rechargeSelectId = obj[0].id
                 this.money = obj[0].money

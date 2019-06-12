@@ -4,7 +4,9 @@
             <div class="avatar_m">
                 <img :src="user && user.coverUrl ? user.coverUrl : avatar" alt="">
             </div>
-            <p class="user_name">{{ user.user }}</p>
+            <p class="user_name">{{ user.user }}
+                <van-tag @click="checkIn" type="danger" size="large">签到</van-tag>
+            </p>
             <div class="user_info_num_list flex">
                 <div class="user_info_num" v-for="(item, index) in userInfo" :key="index" @click="toDetail(item)">
                     <span class="info_num">{{ item.num }}</span>
@@ -13,6 +15,7 @@
             </div>
         </div>
         <van-cell title="返回首页" is-link to="/"></van-cell>
+<!--        <van-cell title="点我签到" is-link @click="checkIn"></van-cell>-->
         <van-cell-group title="内容管理">
             <van-cell v-for="(item, index) in operateList"
                       :key="index"
@@ -83,6 +86,14 @@
                         this.userInfo[1].num = res.publish
                         this.userInfo[2].num = res.popularize
                         this.userInfo[3].num = res.article
+                    }
+                })
+            },
+            // 签到
+            checkIn() {
+                this.$api.checkin().then((res) => {
+                    if (res) {
+                        Toast.success('签到成功')
                     }
                 })
             },

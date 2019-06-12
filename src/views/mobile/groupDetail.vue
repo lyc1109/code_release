@@ -110,6 +110,11 @@
                 section: ''
             }
         },
+        watch: {
+            '$route' (to, from) {
+                this.fetchData()
+            }
+        },
         created() {
             this.fetchHostList()
             this.fetchData()

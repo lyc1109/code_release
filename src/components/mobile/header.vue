@@ -10,7 +10,7 @@
             <div slot="right">
                 <van-icon name="bars" @click="showNav"></van-icon>
                 <van-icon name="search" @click="search"/>
-                <van-icon name="notes-o" @click="checkIn"></van-icon>
+<!--                <van-icon name="notes-o" @click="checkIn"></van-icon>-->
                 <van-icon name="user-circle-o" @click="loginOrPerson"></van-icon>
             </div>
         </van-nav-bar>

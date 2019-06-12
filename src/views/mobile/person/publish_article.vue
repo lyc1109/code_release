@@ -76,8 +76,11 @@
         },
         created() {
             this.fetchTrade()
-            if (this.$route.query && this.$route.query.id) {
-                this.fetchData()
+            if (this.$route.query) {
+                this.publishForm.sectionId = this.$route.query.type
+                if (this.$route.query.id) {
+                    this.fetchData()
+                }
             }
             this.fetchCount()
         },

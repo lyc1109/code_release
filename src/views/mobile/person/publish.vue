@@ -16,7 +16,7 @@
                          v-if="publishForm.url && publishForm.url !== ''">
                 </div>
             </van-cell>
-            <van-cell title="二维码" required>
+            <van-cell :title="codeText" required>
                 <div slot="label">
                     <van-uploader :after-read="changeShowGroup" :max-size="maxSize">
                         <van-icon name="plus" class="upload_control"></van-icon>
@@ -37,10 +37,10 @@
             <van-field v-model="publishForm.ownerWechat" required clearable placeholder="请填写群主微信号" label="群主微信号"
                        :error-message="wechatError" v-if="$route.query.modelType === 1"
                        @input="changeWechat(publishForm.ownerWechat)"></van-field>
-            <p class="tips">提示：发布或修改需要消费<b>{{ gold }}</b>金币，剩余<b>{{ userData.gold }}</b>金币</p>
+            <p class="tips">提示：发布需要消费<b>{{ gold }}</b>金币，剩余<b>{{ userData.gold }}</b>金币</p>
         </van-cell-group>
         <div class="operate_btn flex">
-            <van-button type="info" @click="save">保存</van-button>
+            <van-button type="info" @click="save">发布</van-button>
             <van-button @click="toRecharge">充值</van-button>
             <van-button @click="toGetGold">赚金币</van-button>
         </div>
@@ -88,10 +88,18 @@
                 trade: false,
                 area: false,
                 section: '',
-                gold: 0
+                gold: 0,
+                codeText: '二维码'
             }
         },
         created() {
+            if (this.$route.query) {
+                this.publishForm.sectionId = this.$route.query.type
+                if (this.$route.query.modelType)
+                    this.codeText = '群二维码'
+                else
+                    this.codeText = '二维码'
+            }
             // if (this.$route.query && this.$route.query.title && this.$route.query.title.includes('编辑')) {
             //     this.fetchData()
             // }
@@ -198,22 +206,22 @@
                 })
             },
             // 修改类型
-            changeType(val) {
-                this.type = false
-                // console.log(val)
-                this.publishForm.type = val
-            },
-            // 修改行业
-            changeTrade(val) {
-                let obj = this.tradeList.filter((value) => {
-                    return val.id === value.id
-                })
-                this.trade = false
-                if (obj.length) {
-                    this.publishForm.sectionId = obj[0].id
-                    this.section = obj[0].name
-                }
-            },
+            // changeType(val) {
+            //     this.type = false
+            //     // console.log(val)
+            //     this.publishForm.type = val
+            // },
+            // // 修改行业
+            // changeTrade(val) {
+            //     let obj = this.tradeList.filter((value) => {
+            //         return val.id === value.id
+            //     })
+            //     this.trade = false
+            //     if (obj.length) {
+            //         this.publishForm.sectionId = obj[0].id
+            //         this.section = obj[0].name
+            //     }
+            // },
             // 修改地区
             changeArea(data) {
                 this.publishForm.area = ''
@@ -223,15 +231,15 @@
                 })
             },
             // 取消修改类型
-            cancelType() {
-                this.type = false
-                this.$refs.type.reset()
-            },
+            // cancelType() {
+            //     this.type = false
+            //     this.$refs.type.reset()
+            // },
             // 取消修改行业
-            cancelTrade() {
-                this.trade = false
-                this.$refs.trade.reset()
-            },
+            // cancelTrade() {
+            //     this.trade = false
+            //     this.$refs.trade.reset()
+            // },
             // 取消修改地区
             cancelArea() {
                 this.area = false
