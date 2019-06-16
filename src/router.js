@@ -12,7 +12,7 @@ let pcRouter = [
     {
         path: '/home',
         name: 'home',
-        component: () => import('./views/pc/Home'),
+        component: resolve => require(['./views/pc/Home.vue'], resolve),
         meta: {
             title: '首页'
         }
@@ -20,7 +20,7 @@ let pcRouter = [
     {
         path: '/list',
         name: 'list',
-        component: () => import('./views/pc/list'),
+        component: resolve => require(['./views/pc/list.vue'], resolve),
         meta: {
             title: '二维码列表'
         }
@@ -28,7 +28,7 @@ let pcRouter = [
     {
         path: '/group/:id',
         name: 'groupDetail',
-        component: () => import('./views/pc/groupDetail'),
+        component: resolve => require(['./views/pc/groupDetail.vue'], resolve),
         meta: {
             title: '二维码详情'
         }
@@ -36,7 +36,7 @@ let pcRouter = [
     {
         path: '/article/:id',
         name: 'articleDetail',
-        component: () => import('./views/pc/articleDetail'),
+        component: resolve => require(['./views/pc/articleDetail.vue'], resolve),
         meta: {
             title: '文章详情'
         }
@@ -44,7 +44,7 @@ let pcRouter = [
     {
         path: '/person',
         name: 'person',
-        component: () => import('./views/pc/person/index'),
+        component: resolve => require(['./views/pc/person/index.vue'], resolve),
         meta: {
             title: '个人中心',
             requireAuth: true
@@ -53,7 +53,7 @@ let pcRouter = [
     {
         path: '/search',
         name: 'search',
-        component: () => import('./views/pc/search'),
+        component: resolve => require(['./views/pc/search.vue'], resolve),
         meta: {
             title: '搜索结果'
         }
@@ -61,7 +61,7 @@ let pcRouter = [
     {
         path: '/recharge',
         name: 'recharge',
-        component: () => import('./views/pc/person/recharge'),
+        component: resolve => require(['./views/pc/person/recharge.vue'], resolve),
         meta: {
             title: '我要充值',
             requireAuth: true
@@ -78,7 +78,7 @@ let mobileRouter = [
     {
         path: '/home',
         name: 'home',
-        component: () => import('./views/mobile/home'),
+        component: resolve => require(['./views/mobile/home.vue'], resolve),
         meta: {
             title: '首页'
         }
@@ -86,7 +86,7 @@ let mobileRouter = [
     {
         path: '/list',
         name: 'list',
-        component: () => import('./views/mobile/list'),
+        component: resolve => require(['./views/mobile/list.vue'], resolve),
         meta: {
             title: '列表页'
         }
@@ -94,7 +94,7 @@ let mobileRouter = [
     {
         path: '/search',
         name: 'search',
-        component: () => import('./views/mobile/search'),
+        component: resolve => require(['./views/mobile/search.vue'], resolve),
         meta: {
             title: '搜索页'
         }
@@ -102,7 +102,7 @@ let mobileRouter = [
     {
         path: '/group/:id',
         name: 'groupDetail',
-        component: () => import('./views/mobile/groupDetail'),
+        component: resolve => require(['./views/mobile/groupDetail.vue'], resolve),
         meta: {
             title: '二维码详情'
         }
@@ -110,7 +110,7 @@ let mobileRouter = [
     {
         path: '/article/:id',
         name: 'articleDetail',
-        component: () => import('./views/mobile/articleDetail'),
+        component: resolve => require(['./views/mobile/articleDetail.vue'], resolve),
         meta: {
             title: '文章详情'
         }
@@ -118,7 +118,7 @@ let mobileRouter = [
     {
         path: '/login',
         name: 'login',
-        component: () => import('./views/mobile/login/index'),
+        component: resolve => require(['./views/mobile/login/index.vue'], resolve),
         meta: {
             title: '登录'
         }
@@ -126,7 +126,7 @@ let mobileRouter = [
     {
         path: '/register',
         name: 'register',
-        component: () => import('./views/mobile/login/register'),
+        component: resolve => require(['./views/mobile/login/register.vue'], resolve),
         meta: {
             title: '注册'
         }
@@ -134,7 +134,7 @@ let mobileRouter = [
     {
         path: '/forget',
         name: 'forget',
-        component: () => import('./views/mobile/login/forget'),
+        component: resolve => require(['./views/mobile/login/forget.vue'], resolve),
         meta: {
             title: '忘记密码'
         }
@@ -142,7 +142,7 @@ let mobileRouter = [
     {
         path: '/person',
         name: 'person',
-        component: () => import('./views/mobile/person/index'),
+        component: resolve => require(['./views/mobile/person/index.vue'], resolve),
         meta: {
             title: '个人中心',
             requireAuth: true
@@ -151,7 +151,7 @@ let mobileRouter = [
     {
         path: '/publish',
         name: 'publish',
-        component: () => import('./views/mobile/person/publish'),
+        component: resolve => require(['./views/mobile/person/publish.vue'], resolve),
         meta: {
             title: '发布',
             requireAuth: true
@@ -160,7 +160,7 @@ let mobileRouter = [
     {
         path: '/publish_article',
         name: 'publish_article',
-        component: () => import('./views/mobile/person/publish_article'),
+        component: resolve => require(['./views/mobile/person/publish_article.vue'], resolve),
         meta: {
             title: '发布文章',
             requireAuth: true
@@ -169,7 +169,7 @@ let mobileRouter = [
     {
         path: '/my_publish',
         name: 'my_publish',
-        component: () => import('./views/mobile/person/my_publish'),
+        component: resolve => require(['./views/mobile/person/my_publish.vue'], resolve),
         meta: {
             title: '我的发布',
             requireAuth: true
@@ -178,7 +178,7 @@ let mobileRouter = [
     {
         path: '/my_spread',
         name: 'my_spread',
-        component: () => import('./views/mobile/person/my_spread'),
+        component: resolve => require(['./views/mobile/person/my_spread.vue'], resolve),
         meta: {
             title: '我的推广',
             requireAuth: true
@@ -187,7 +187,7 @@ let mobileRouter = [
     {
         path: '/profile',
         name: 'profile',
-        component: () => import('./views/mobile/person/profile'),
+        component: resolve => require(['./views/mobile/person/profile.vue'], resolve),
         meta: {
             title: '个人资料',
             requireAuth: true
@@ -196,7 +196,7 @@ let mobileRouter = [
     {
         path: '/recharge',
         name: 'recharge',
-        component: () => import('./views/mobile/person/recharge'),
+        component: resolve => require(['./views/mobile/person/recharge.vue'], resolve),
         meta: {
             title: '我要充值',
             requireAuth: true
@@ -205,7 +205,7 @@ let mobileRouter = [
     {
         path: '/record',
         name: 'record',
-        component: () => import('./views/mobile/person/record'),
+        component: resolve => require(['./views/mobile/person/record.vue'], resolve),
         meta: {
             title: '明细记录',
             requireAuth: true
@@ -214,7 +214,7 @@ let mobileRouter = [
     {
         path: '/invite/:id',
         name: 'invite',
-        component: () => import('./views/mobile/person/invite'),
+        component: resolve => require(['./views/mobile/person/invite.vue'], resolve),
         meta: {
             title: '邀请推广',
             requireAuth: true
@@ -223,7 +223,7 @@ let mobileRouter = [
     {
         path: '/getGold',
         name: 'getGold',
-        component: () => import('./views/mobile/person/getGold'),
+        component: resolve => require(['./views/mobile/person/getGold.vue'], resolve),
         meta: {
             title: '赚金币',
             requireAuth: true
@@ -234,7 +234,7 @@ const logout = [
     {
         path: '/logout',
         name: 'logout',
-        component: () => import('./views/logout'),
+        component: resolve => require(['./views/logout.vue'], resolve),
         meta: {
             title: '退出登录'
         }
@@ -249,7 +249,6 @@ if (reg.test(navigator.userAgent)) {
 }
 export default new Router({
     mode: 'hash',
-    // base: '/code',
     base: process.env.BASE_URL,
     routes
 })
