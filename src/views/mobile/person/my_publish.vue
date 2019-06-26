@@ -204,6 +204,9 @@
             flex: 1;
             margin-left: .17rem;
             position: relative;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
 
             &>p{
                 display: inline-block;

@@ -53,7 +53,7 @@
                 userInfo: [
                     {title: '金币', num: 0},
                     {title: '已发布', num: 0, url: '/my_publish?type=fb'},
-                    {title: '推广', num: 0, url: '/my_spread'},
+                    // {title: '推广', num: 0, url: '/my_spread'},
                     {title: '文章', num: 0, url: '/my_publish?type=wz'}
                 ],
                 operateList: [],

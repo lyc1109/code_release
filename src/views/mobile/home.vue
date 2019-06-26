@@ -38,7 +38,7 @@
                 <h2>{{ item.name }}</h2>
                 <p>{{ item.description }}</p>
                 <div class="article_index_info">
-                    <span>{{ item.createTime }}</span>
+                    <span>{{ item.modifyTime }}</span>
 <!--                    <van-icon name="eye" style="float: right;">{{ item.watched }}</van-icon>-->
                 </div>
                 <!--                <span>{{ listData.length > 0 ? item.realTime : new Date() | moment('YYYY/MM/DD HH:mm') }}</span>-->

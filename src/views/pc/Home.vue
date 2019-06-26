@@ -45,7 +45,7 @@
                                     <h3><el-button type="text">{{ item.name }}</el-button></h3>
                                     <p>{{ item.description }}</p>
                                     <div class="article_info_detail">
-                                        <span>发布时间：{{ item.createTime }}</span>
+                                        <span>发布时间：{{ item.modifyTime }}</span>
 <!--                                        <i class="iconai-eye iconfont"></i>-->
 <!--                                        <span style="margin-left: 5px;">{{ item.watchNum }}</span>-->
                                     </div>
