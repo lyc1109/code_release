@@ -128,6 +128,7 @@
                                 articleData.push(value)
                             }
                         })
+                        console.log(articleData)
                         this.article = String(articleData[0].id)
                     }
                 })
@@ -141,8 +142,8 @@
                 }).then((res) => {
                     if (res) {
                         this.page.total = res.info.total
+                        this.articleList = []
                         res.info.list.forEach((value) => {
-                            // console.log(value)
                             if (value.modalType === 2) {
                                 this.articleList.push(value)
                             }
@@ -156,11 +157,11 @@
             },
             // 跳转文章
             changeArticle(val) {
-                if (val === '0') {
-                    this.article = ''
-                } else {
-                    this.article = val
-                }
+                this.article = val
+                // if (val === '0') {
+                //     this.article = ''
+                // } else {
+                // }
                 this.fetchArticle()
             },
             // 修改文章每页展示的条数
@@ -170,9 +171,9 @@
             },
             // 修改文章页数
             changePage(val) {
-                if (this.article == 0) {
-                    this.article = ''
-                }
+                // if (this.article == 0) {
+                //     this.article = ''
+                // }
                 this.page.current = val
                 this.fetchArticle()
             },

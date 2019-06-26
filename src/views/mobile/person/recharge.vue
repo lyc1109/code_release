@@ -19,7 +19,7 @@
                     <img :src="rechargeForm.url" alt="" v-if="rechargeForm.url" class="upload_avatar">
                 </div>
             </van-cell>
-            <van-cell title="金币规则" :value="rules"></van-cell>
+            <van-cell title="充值说明" :value="rules"></van-cell>
             <van-cell title="您将入账金币" :value="gold"></van-cell>
             <van-field v-model="rechargeForm.serial"
                        required

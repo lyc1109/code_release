@@ -1,9 +1,9 @@
 <template>
     <el-form :model="article" ref="article" :rules="articleRule" label-width="100px">
         <!--<el-form-item prop="sectionId" label="所属行业">-->
-            <!--<el-select v-model="article.sectionId" placeholder="请选择所属行业" size="mini">-->
-                <!--<el-option v-for="(item, index) in tradeList" :key="index" :label="item.name" :value="item.id"></el-option>-->
-            <!--</el-select>-->
+        <!--<el-select v-model="article.sectionId" placeholder="请选择所属行业" size="mini">-->
+        <!--<el-option v-for="(item, index) in tradeList" :key="index" :label="item.name" :value="item.id"></el-option>-->
+        <!--</el-select>-->
         <!--</el-form-item>-->
         <el-form-item prop="name" label="名称">
             <el-input v-model="article.name" placeholder="请填写名称" size="mini"></el-input>
@@ -26,7 +26,8 @@
             </el-upload>
         </el-form-item>
         <el-form-item>
-            发布或修改需要消费: <span style="color: red; font-weight: bold;">{{ gold }}</span>金币，剩余<span style="color: red; font-weight: bold;">{{ coin }}</span>金币
+            发布或修改需要消费: <span style="color: red; font-weight: bold;">{{ gold }}</span>金币，剩余<span
+                style="color: red; font-weight: bold;">{{ coin }}</span>金币
             <el-button type="success" size="mini" @click="recharge" style="margin-left: 5px;">充值</el-button>
             <el-button type="success" size="mini" @click="getGold">赚金币</el-button>
         </el-form-item>
@@ -63,10 +64,10 @@
                     coverUrl: ''
                 },
                 articleRule: {
-                    sectionId: [{ required: true, message: '请选择行业', trigger: 'change' }],
-                    name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-                    description: [{ required: true, message: '请输入介绍', trigger: 'change' }],
-                    content: [{ required: true, message: '请输入内容', trigger: 'change' }],
+                    sectionId: [{required: true, message: '请选择行业', trigger: 'change'}],
+                    name: [{required: true, message: '请输入名称', trigger: 'blur'}],
+                    description: [{required: true, message: '请输入介绍', trigger: 'change'}],
+                    content: [{required: true, message: '请输入内容', trigger: 'change'}],
                     // coverUrl: [{ required: true, validator: validUrl, trigger: 'change' }],
                 },
                 tradeList: [],
@@ -87,6 +88,19 @@
             $route(to, from) {
                 if (to.query) {
                     this.fetchTrade()
+
+                    if (to.query.id) {
+                        this.fetchData()
+                    } else {
+                        this.article.name = ''
+                        this.article.description = ''
+                        this.article.content = ''
+                        this.article.coverUrl = ''
+                    }
+
+                    if (to.query.title) {
+                        to.query.title.includes('发布') ? this.title = '发布文章' : this.title = '编辑文章'
+                    }
                 }
             }
         },
@@ -94,7 +108,7 @@
             this.fetchTrade()
             this.fetchCount()
             if (this.$route.query && this.$route.query.title) {
-                return this.$route.query.title.includes('发布文章') ? this.title = '发布文章' : this.title = '编辑文章'
+                return this.$route.query.title.includes('发布') ? this.title = '发布文章' : this.title = '编辑文章'
             }
         },
         methods: {
@@ -146,12 +160,13 @@
                             this.$message.error('请上传封面')
                             return false
                         }
+                        this.article.sectionId = this.$route.query.type
                         this.$api.addArticle(this.article).then((res) => {
                             if (res) {
                                 this.$message.success(`${this.title}成功`)
                                 setTimeout(() => {
                                     this.$router.push('/person')
-                                    this.$router.go(0)
+                                    // this.$router.go(0)
                                 }, 500)
                             }
                         })
@@ -180,7 +195,7 @@
 
 <style scoped lang="scss" type="text/scss">
     .avatar-uploader {
-        /deep/.el-upload {
+        /deep/ .el-upload {
             border: 1px dashed #d9d9d9;
             border-radius: 6px;
             cursor: pointer;
@@ -188,7 +203,7 @@
             overflow: hidden;
         }
 
-        /deep/.el-upload:hover {
+        /deep/ .el-upload:hover {
             border-color: #409EFF;
         }
 

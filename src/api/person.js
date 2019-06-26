@@ -125,6 +125,13 @@ const api = {
      */
     getPopularizePriceOption(params = {}) {
         return http.get(`${base}/getPopularizePriceOption`, params)
+    },
+    /**
+     * 金币规则
+     * @returns {*}
+     */
+    getCoinRule() {
+        return http.get(`${base}/getCoinRule`)
     }
 }
 

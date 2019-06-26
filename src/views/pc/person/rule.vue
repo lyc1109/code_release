@@ -1,7 +1,7 @@
 <template>
     <div>
         <h2 style="text-align: center;margin-bottom: 20px;">金币规则</h2>
-        <p style="line-height: 25px;">{{ goldRule }}</p>
+        <p style="line-height: 25px;" v-html="goldRule"></p>
     </div>
 </template>
 
@@ -10,7 +10,7 @@
         name: "rule",
         data() {
             return {
-                goldRule: '富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本'
+                goldRule: ''
             }
         },
         created() {
@@ -19,9 +19,9 @@
         methods: {
             // 初始化数据
             fetchData() {
-                this.$api.getRechargeSetting().then((res) => {
+                this.$api.getCoinRule().then((res) => {
                     if (res) {
-                        this.goldRule = res.msg
+                        this.goldRule = res.rule
                     }
                 })
             }

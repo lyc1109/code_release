@@ -14,10 +14,14 @@
                     <p>剩余{{ item.popularizeCount }}次({{ item.popularizePrice }}金币/次)推广</p>
                     <span>{{ item.section }}</span>
                     <span style="margin-left: .4rem;">{{ item.createTime }}</span>
-                    <van-icon name="delete" @click.stop="del(item)"></van-icon>
-                    <van-icon name="add" @click.stop="toInvite(item)" v-if="$route.query.type === 'fb'"></van-icon>
-                    <van-icon name="upgrade" @click.stop="toTop(item)" v-if="$route.query.type === 'fb'"></van-icon>
-                    <van-icon name="edit" @click.stop="edit(item)" v-if="$route.query.type === 'wz'"></van-icon>
+                    <span class="operate_btn"  @click.stop="del(item)">删除</span>
+                    <span class="operate_btn"  @click.stop="toInvite(item)" v-if="$route.query.type === 'fb'">邀请</span>
+                    <span class="operate_btn" @click.stop="toTop(item)" v-if="$route.query.type === 'fb'">置顶</span>
+                    <span class="operate_btn"  @click.stop="edit(item)" v-if="$route.query.type === 'wz'">编辑</span>
+<!--                    <van-icon name="delete" @click.stop="del(item)"></van-icon>-->
+<!--                    <van-icon name="add" @click.stop="toInvite(item)" v-if="$route.query.type === 'fb'"></van-icon>-->
+<!--                    <van-icon name="upgrade" @click.stop="toTop(item)" v-if="$route.query.type === 'fb'"></van-icon>-->
+<!--                    <van-icon name="edit" @click.stop="edit(item)" v-if="$route.query.type === 'wz'"></van-icon>-->
                 </div>
             </div>
         </div>
@@ -228,8 +232,11 @@
             bottom: 0;
             width: 100%;
 
-            .van-icon {
+            .operate_btn {
                 float: right;
+                font-size: 1.2rem;
+                margin-left: .4rem;
+                color: #980303;
 
                 &:before {
                     font-size: 1.6rem;

@@ -22,7 +22,7 @@
                     <i class="el-icon-plus avatar-uploader-icon" v-else></i>
                 </el-upload>
             </el-form-item>
-            <el-form-item prop="rules" label="金币规则">
+            <el-form-item prop="rules" label="充值说明">
                 <span>{{ rules }}</span>
             </el-form-item>
             <el-form-item prop="gold" label="您将入账金币">

@@ -289,7 +289,7 @@
                                 this.$message.success(`${this.title}成功`)
                                 setTimeout(() => {
                                     this.$router.push('/person')
-                                    this.$router.go(0)
+                                    // this.$router.go(0)
                                 }, 500)
                             }
                         })

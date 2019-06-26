@@ -20,15 +20,31 @@
         data() {
             return {
                 isShowRule: this.isShow,
-                rule: '富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本富文本'
+                rule: ''
             }
         },
         watch: {
             isShow(val) {
-                return val ? this.isShowRule = true : this.isShowRule = false
+                if (val) {
+                    this.isShowRule = true
+                    this.fetchData()
+                } else {
+                    this.isShowRule = false
+                }
             }
         },
+        created() {
+            this.fetchData()
+        },
         methods: {
+            // 初始化数据
+            fetchData() {
+                this.$api.getCoinRule().then((res) => {
+                    if (res) {
+                        this.rule = res.rule
+                    }
+                })
+            },
             toggle() {
                 this.$emit('toggle', false)
             },

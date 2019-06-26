@@ -31,7 +31,7 @@
             </el-col>
             <el-col :span="17">
                 <!--个人中心首页-->
-                <div class="person_index" v-if="defaultVal === ''">
+                <div class="person_index" v-if="defaultVal === '' && !$route.query.type">
                     <el-tabs v-model="personTab" type="card" @tab-click="changePersonTab(personTab)">
                         <el-tab-pane v-for="(item, index) in personTabList" :key="index" :label="item.name"
                                      :name="item.value"></el-tab-pane>
@@ -208,7 +208,7 @@
                 personTab: 'fb',
                 personTabList: [
                     {name: '已发布', value: 'fb'},
-                    {name: '推广', value: 'tg'},
+                    // {name: '推广', value: 'tg'},
                     {name: '文章', value: 'wz'},
                     {name: '赚金币', value: 'zjb'}
                 ],
@@ -623,6 +623,7 @@
             },
             // 编辑
             edit(data) {
+                console.log(data)
                 // const obj = this.contentList.filter((value) => {
                 //     return value.name.includes(data.section)
                 // })
@@ -633,7 +634,8 @@
                         // title: this.personTab === 'fb' ? `编辑${data.section}` : '编辑文章',
                         // type: obj.length > 0 ? obj[0].value : 'wz',
                         title: '编辑文章',
-                        type: 'wz',
+                        type: data.sectionId,
+                        modelType: data.modalType,
                         id: data.id
                     }
                 })
