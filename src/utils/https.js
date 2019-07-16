@@ -6,7 +6,8 @@ import router from '@/router'
 // 常量配置
 const isProduct = process.env.NODE_ENV === "production"
 const requestTimeOut = 30000
-const baseUrl = process.env.VUE_APP_BASE_API
+const origin = window.location.origin
+const baseUrl = isProduct ? origin + process.env.VUE_APP_BASE_API : process.env.VUE_APP_BASE_API
 
 // 设置ContentType
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
