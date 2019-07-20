@@ -4,7 +4,7 @@
         <p v-if="reg.test(navigator.userAgent)" style="margin-top: 2px;">客服QQ：
             <a :href="url">{{ qq }}</a>
         </p>
-        <p style="margin-top: 2px;">客服邮箱：<a href="####">3506387286@qq.com</a></p>
+        <p style="margin-top: 2px;">客服邮箱：<a href="####">1413907055@qq.com</a></p>
     </el-footer>
 </template>
 
