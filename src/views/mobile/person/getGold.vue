@@ -10,7 +10,7 @@
                 <img :src="item.imgUrl1" alt="">
                 <p>{{ item.name }}</p>
                 <p class="shadow" @click.stop="spread(item.id)">
-                    <el-button type="text">点击赚金币</el-button>
+                    <el-button type="text">点击赚{{ item.popularizePrice }}金币</el-button>
                 </p>
             </div>
             <p style="text-align: center;font-size: 1.8rem;width: 100%;" v-if="goldList.length === 0">暂无数据</p>
@@ -139,7 +139,7 @@
             }
             .shadow {
                 position: absolute;
-                bottom: -10px;
+                bottom: 28px;
                 left: 0;
                 width: 100%;
                 height: 25px;

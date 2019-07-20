@@ -53,7 +53,7 @@
                         this.recordList.forEach((value, index, array) => {
                             switch (value.type){
                                 case 0:
-                                    array[index].origin = "一般消费"
+                                    array[index].origin = "发布消费"
                                     break
                                 case 1:
                                     array[index].origin = "充值"

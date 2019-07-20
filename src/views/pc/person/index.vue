@@ -119,11 +119,11 @@
                                  @click="groupDetail(item.id)">
                                 <div>
                                     <img :src="item.url">
+                                    <p class="shadow" @click.stop="spread(item.id)">
+                                        <el-button type="text">点击赚{{ item.popularizePrice }}金币</el-button>
+                                    </p>
                                 </div>
                                 <h5>{{ item.name }}</h5>
-                                <p class="shadow" @click.stop="spread(item.id)">
-                                    <el-button type="text">点击赚金币</el-button>
-                                </p>
                             </div>
                         </div>
                         <el-pagination :current-page.sync="page.current"
