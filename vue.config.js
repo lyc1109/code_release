@@ -28,7 +28,6 @@ module.exports = {
             return {
                 plugins: ([
                     new CompressionPlugin({
-                        algorithm: 'gzip',
                         test: /\.js$|\.html$|.\css/, //匹配文件名
                         threshold: 1,//对超过10k的数据压缩
                         deleteOriginalAssets: false //不删除源文件
@@ -40,13 +39,12 @@ module.exports = {
                                 drop_debugger: false,
                                 pure_funcs: ['console.log']//移除console
                             }
-                        },
-                        sourceMap: false,
-                        parallel: true
+                        }
                     })
                 ])
             }
+        } else {
+            console.log(config)
         }
-
     }
 }
