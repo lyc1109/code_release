@@ -1,10 +1,14 @@
 <template>
     <div>
         <header-box></header-box>
+        <van-notice-bar v-for="(item, index) in noticeList" :key="index" :text="item" left-icon="volume-o"
+                        color="#1989fa"
+                        background="#ecf9ff"></van-notice-bar>
         <div style="position: relative;margin-top: 20px;">
             <!--微信群-->
             <div class="wxq">
-                <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" v-if="item.modelType !== 2">
+                <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)"
+                     v-if="item.modelType !== 2">
                     <div>
                         <img :src="item.imgUrl1">
                     </div>
@@ -21,11 +25,11 @@
                        v-if="(new Date() - new Date(item.lastRefreshTime)) >= 1000*3600*24">
                         {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
                     </p>
-<!--                    <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>-->
+                    <!--                    <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>-->
                     <!--<div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>-->
-<!--                    <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">-->
-<!--                        <el-button type="text">点击推广</el-button>-->
-<!--                    </p>-->
+                    <!--                    <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">-->
+                    <!--                        <el-button type="text">点击推广</el-button>-->
+                    <!--                    </p>-->
                 </div>
             </div>
             <van-pagination
@@ -57,16 +61,19 @@
                     total: 0
                 },
                 spreadImg: '',
-                spreadBox: false
+                spreadBox: false,
+                noticeList: []
             }
         },
         created() {
             this.fetchData()
+            this.fetchNotice()
         },
         watch: {
             $route(to, from) {
                 if (to.query.id) {
                     this.fetchData()
+                    this.fetchNotice()
                 }
             }
         },
@@ -88,6 +95,19 @@
                 }).then((res) => {
                     this.page.total = res.info.total
                     this.ewmList = res.info.list
+                })
+            },
+            // 通知栏
+            fetchNotice() {
+                this.noticeList = []
+                this.$api.getTradeList().then((res) => {
+                    if (res) {
+                        res.data.forEach((data) => {
+                            if (data.id === Number(this.$route.query.id))
+                                this.noticeList.push(data.description)
+                        })
+                        console.log(this.noticeList)
+                    }
                 })
             },
             // 改变页码
@@ -139,7 +159,7 @@
             cursor: pointer;
             position: relative;
 
-            .spread_img{
+            .spread_img {
                 position: absolute;
                 top: 0;
                 left: 0;
@@ -148,7 +168,7 @@
                 border-top: 5rem solid #ff7a4a;
                 border-right: 5rem solid transparent;
             }
-            .spread_text{
+            .spread_text {
                 position: absolute;
                 top: 8px;
                 left: 5px;
@@ -156,7 +176,7 @@
                 text-align: left;
                 border-radius: 8px;
             }
-            .shadow{
+            .shadow {
                 position: absolute;
                 bottom: -10px;
                 left: 0;
@@ -168,7 +188,7 @@
                 /*border-bottom-right-radius: 8px;*/
                 cursor: pointer;
 
-                .el-button{
+                .el-button {
                     color: #fff;
                     padding: 0;
                 }

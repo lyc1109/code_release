@@ -10,7 +10,8 @@
             <div style="position: relative;margin-top: 20px;">
                 <!--微信群-->
                 <div class="wxq" v-if="ewmList.length">
-                    <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" v-if="item.modelType !== 2">
+                    <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)"
+                         v-if="item.modelType !== 2">
                         <div>
                             <img :src="item.imgUrl1">
                         </div>
@@ -28,11 +29,11 @@
                             {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
                         </p>
 
-<!--                        <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>-->
+                        <!--                        <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>-->
                         <!--<div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>-->
-<!--                        <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">-->
-<!--                            <el-button type="text">点击推广</el-button>-->
-<!--                        </p>-->
+                        <!--                        <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">-->
+                        <!--                            <el-button type="text">点击推广</el-button>-->
+                        <!--                        </p>-->
                     </div>
                 </div>
                 <el-pagination :current-page.sync="page.current"
@@ -81,6 +82,7 @@
             $route(to, from) {
                 if (to.query.id) {
                     this.fetchData()
+                    this.fetchNotice()
                 }
             }
         },
@@ -102,17 +104,20 @@
                 }
                 this.$api.getTradeDetail(params).then((res) => {
                     if (res) {
-                        console.log(res)
+//                        console.log(res)
                         this.page.total = res.info.total
                         this.ewmList = res.info.list
                     }
                 })
             },
+            // 通知栏
             fetchNotice() {
+                this.noticeList = []
                 this.$api.getTradeList().then((res) => {
                     if (res) {
                         res.data.forEach((data) => {
-                            this.noticeList.push(data.description)
+                            if (data.id === Number(this.$route.query.id))
+                                this.noticeList.push(data.description)
                         })
                     }
                 })
@@ -153,9 +158,10 @@
 </script>
 
 <style scoped lang="scss" type="text/scss">
-    .home{
+    .home {
         padding-bottom: 50px;
     }
+
     .wxq {
         margin-top: 10px;
         display: flex;
@@ -173,7 +179,7 @@
             cursor: pointer;
             position: relative;
 
-            .spread_img{
+            .spread_img {
                 position: absolute;
                 top: 0;
                 left: 0;
@@ -182,7 +188,7 @@
                 border-top: 70px solid #ff7a4a;
                 border-right: 70px solid transparent;
             }
-            .spread_text{
+            .spread_text {
                 position: absolute;
                 top: 8px;
                 left: 5px;
@@ -190,7 +196,7 @@
                 text-align: left;
                 border-radius: 8px;
             }
-            .shadow{
+            .shadow {
                 position: absolute;
                 bottom: -10px;
                 left: 0;
@@ -202,7 +208,7 @@
                 border-bottom-right-radius: 8px;
                 cursor: pointer;
 
-                .el-button{
+                .el-button {
                     color: #fff;
                     padding: 0;
                 }
@@ -243,23 +249,24 @@
                 white-space: nowrap;
                 font-weight: normal;
             }
-            p{
+            p {
                 font-size: 12px;
                 color: #aaa;
             }
         }
     }
-    .notice{
+
+    .notice {
         border: 1px solid #C9DFF4;
         background: #F5F8FC;
         padding-left: 10px;
         border-radius: 3px;
         margin-top: 10px;
 
-        .el-carousel__item{
+        .el-carousel__item {
             line-height: 30px;
 
-            p{
+            p {
                 color: #1479d7;
                 width: 98%;
                 overflow: hidden;
