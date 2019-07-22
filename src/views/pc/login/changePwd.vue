@@ -1,6 +1,6 @@
 <template>
     <div style="padding-right: 20px;">
-        <el-form :model="changePwdForm" ref="changePwd" :rules="changePwdRule" label-width="100px" v-if="isOnStep">
+        <el-form :model="changePwdForm" ref="changePwd" :rules="changePwdRule" label-width="100px" v-if="!isOnStep">
             <el-form-item prop="mail" label="邮箱">
                 <el-input v-model="changePwdForm.mail" placeholder="请输入邮箱" size="small"></el-input>
             </el-form-item>
