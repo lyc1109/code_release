@@ -13,8 +13,9 @@
             </van-cell>
             <van-cell title="生日" is-link @click="changeBirthday" :value="profileForm.birth"></van-cell>
             <van-cell title="地区" is-link @click="changeArea" :value="profileForm.area"></van-cell>
-            <div style="padding: 2rem;">
-                <van-button type="info" size="large" @click="success">保存</van-button>
+            <div class="operate_btn flex">
+                <van-button type="info" size="large" @click="success" style="width: 200%;">保存</van-button>
+                <van-button size="large" @click="$router.go(-1)">取消</van-button>
             </div>
         </van-cell-group>
 
@@ -171,5 +172,12 @@
         top: 21px;
         border: 1px solid #eee;
         border-radius: 5px;
+    }
+    .operate_btn {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 44px;
     }
 </style>

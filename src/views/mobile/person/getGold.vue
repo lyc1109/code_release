@@ -7,11 +7,13 @@
         <div class="article_index flex">
             <div class="article_index_list" v-for="(item, index) in goldList" :key="index" @click="groupDetail(item.id)"
                  v-if="goldList.length">
-                <img :src="item.imgUrl1" alt="">
+                <div style="position: relative;height: 70%;overflow: hidden;">
+                    <img :src="item.imgUrl1" alt="">
+                    <p class="shadow" @click.stop="spread(item.id)">
+                        <el-button type="text">点击赚{{ item.popularizePrice }}金币</el-button>
+                    </p>
+                </div>
                 <p>{{ item.name }}</p>
-                <p class="shadow" @click.stop="spread(item.id)">
-                    <el-button type="text">点击赚{{ item.popularizePrice }}金币</el-button>
-                </p>
             </div>
             <p style="text-align: center;font-size: 1.8rem;width: 100%;" v-if="goldList.length === 0">暂无数据</p>
         </div>
@@ -48,8 +50,8 @@
             }
         },
         created() {
-          this.fetchTabs()
-          this.fetchData()
+            this.fetchTabs()
+            this.fetchData()
         },
         methods: {
             fetchTabs() {
@@ -129,6 +131,7 @@
                 border-top: 5rem solid #ff7a4a;
                 border-right: 5rem solid transparent;
             }
+
             .spread_text {
                 position: absolute;
                 top: 8px;
@@ -137,9 +140,10 @@
                 text-align: left;
                 border-radius: 8px;
             }
+
             .shadow {
                 position: absolute;
-                bottom: 28px;
+                bottom: 0;
                 left: 0;
                 width: 100%;
                 height: 25px;
@@ -148,6 +152,7 @@
                 /*border-bottom-left-radius: 8px;*/
                 /*border-bottom-right-radius: 8px;*/
                 cursor: pointer;
+                margin-bottom: 0;
 
                 .el-button {
                     color: #fff;

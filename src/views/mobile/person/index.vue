@@ -84,8 +84,8 @@
                     if (res) {
                         this.userInfo[0].num = res.coin
                         this.userInfo[1].num = res.publish
-                        this.userInfo[2].num = res.popularize
-                        this.userInfo[3].num = res.article
+                        this.userInfo[2].num = res.article
+                        // this.userInfo[3].num = res.article
                     }
                 })
             },

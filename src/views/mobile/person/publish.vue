@@ -43,6 +43,7 @@
             <van-button type="info" @click="save">发布</van-button>
             <van-button @click="toRecharge">充值</van-button>
             <van-button @click="toGetGold">赚金币</van-button>
+            <van-button @click="$router.go(-1)">取消</van-button>
         </div>
 
         <!--<van-popup v-model="type" position="bottom">-->

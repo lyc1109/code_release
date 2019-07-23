@@ -110,7 +110,8 @@
         margin-top: 10px;
 
         img{
-            width: 120px;
+            width: 600px;
+            min-height: 200px;
         }
     }
     .avatar-uploader {

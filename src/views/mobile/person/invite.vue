@@ -8,7 +8,8 @@
             <van-cell title="推广单价" is-link :value="invite.price" @click="showPrice = true" required></van-cell>
         </van-cell-group>
         <div class="operate_btn flex">
-            <van-button type="info" size="large" @click="success">保存</van-button>
+            <van-button type="info" size="large" @click="success" style="width: 200%;">保存</van-button>
+            <van-button size="large" @click="$router.go(-1)">取消</van-button>
         </div>
 
         <van-popup v-model="showPrice" position="bottom">

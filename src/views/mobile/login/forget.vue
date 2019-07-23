@@ -12,8 +12,8 @@
                         left-icon="manager"
                         type="email"
                         placeholder="邮箱"
-                        :error-message="emailError"
-                        @input="changeEmail(forgetForm.mail)"></van-field>
+                        :error-message="mailError"
+                        @input="changeMail(forgetForm.mail)"></van-field>
                 <van-field v-model="forgetForm.code"
                            clearable placeholder="验证码"
                            :error-message="codeError"
@@ -31,13 +31,13 @@
                         left-icon="manager"
                         type="email"
                         placeholder="邮箱"
-                        :error-message="mailError"
-                        @input="changeMail(forgetForm2.mail)"></van-field>
+                        :error-message="emailError"
+                        @input="changeEmail(forgetForm2.mail)"></van-field>
                 <van-field v-model="forgetForm2.code"
                            clearable placeholder="验证码"
                            :error-message="mailCodeError"
-                           left-icon="youzan-shield">
-<!--                    <img :src="codeUrl" slot="button" @click="refreshImg" class="code_img">-->
+                           left-icon="youzan-shield"
+                           @input="changeMailCode(forgetForm2.code)">
                 </van-field>
                 <van-field
                         v-model="forgetForm2.pass"
@@ -80,7 +80,8 @@
                 forgetForm2: {
                     mail: '',
                     code: '',
-                    pass: ''
+                    pass: '',
+                    confirmPwd: ''
                 },
                 isOnStep: true
             }
@@ -127,7 +128,7 @@
                 }
             },
             changeMailCode(val) {
-                if (val.length !== 4) {
+                if (val.length !== 6) {
                     this.mailCodeError = '验证码格式错误'
                 } else {
                     this.mailCodeError = ''
@@ -151,7 +152,7 @@
             },
             // 下一步
             nextStep() {
-                if (this.emailError === '' && this.codeError === '') {
+                if (this.forgetForm.mail !== '' && this.forgetForm.code !== '') {
                     this.$api.resetPass(this.forgetForm)
                         .then((res) => {
                             if (res) {
@@ -168,7 +169,7 @@
             },
             // 修改成功
             success() {
-                if (this.mailError === '' && this.passError === '' && this.confirmPassError === '') {
+                if (this.forgetForm2.mail !== '' && this.forgetForm2.code !== '' && this.forgetForm2.pass !== '' && this.forgetForm2.confirmPwd !== '') {
                     this.$api.changePassByMail(this.forgetForm2)
                         .then((res) => {
                             if (res) {

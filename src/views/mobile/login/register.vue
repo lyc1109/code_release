@@ -78,7 +78,7 @@
             },
             // 注册成功
             success() {
-                if (this.emailError !== '' && this.codeError !== '' && this.passError !== '' && this.confirmPassError !== '') {
+                if (this.registerForm.mail !== '' && this.registerForm.code !== '' && this.registerForm.pass !== '' && this.registerForm.confirmPwd !== '') {
                     this.$api.register(this.registerForm)
                         .then((res) => {
                             if (res) {

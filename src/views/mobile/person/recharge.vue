@@ -8,8 +8,8 @@
 <!--                       placeholder="请输入充值金额"-->
 <!--                       :error-message="amountError" @input="changeAmount(rechargeForm.count)"></van-field>-->
             <van-cell required is-link :value="`${money}元`" @click="count = true" title="充值金额"></van-cell>
-            <van-cell title="付款二维码">
-                <img :src="codeUrl" style="width: 10rem;" alt="">
+            <van-cell title="付款二维码" class="pay_code">
+                <img :src="codeUrl" style="width: 30rem;min-height: 10rem;" alt="">
             </van-cell>
             <van-cell title="完成支付截图">
                 <div slot="label">
@@ -26,8 +26,9 @@
                        label="转账流水号"
                        placeholder="请输入转账流水号"
                        :error-message="numError" @input="changeNum(rechargeForm.serial)"></van-field>
-            <div style="padding: 2rem;">
-                <van-button type="info" size="large" @click="success">充值</van-button>
+            <div class="operate_btn flex">
+                <van-button type="info" size="large" @click="success" style="width: 200%;">充值</van-button>
+                <van-button size="large" @click="$router.go(-1)">取消</van-button>
             </div>
         </van-cell-group>
 
@@ -170,5 +171,17 @@
         top: 21px;
         border: 1px solid #eee;
         border-radius: 5px;
+    }
+    .pay_code{
+        /deep/.van-cell__value{
+            flex: 3;
+        }
+    }
+    .operate_btn {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 44px;
     }
 </style>

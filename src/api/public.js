@@ -88,6 +88,13 @@ const api = {
      */
     getMobileQRCode() {
         return http.get(`${base}/getMobileQRCode`)
+    },
+    /**
+     * 获取邮箱
+     * @returns {*}
+     */
+    getServiceMail() {
+        return http.get(`${base}/getServiceMail`)
     }
 }
 

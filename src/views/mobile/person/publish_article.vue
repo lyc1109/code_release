@@ -33,7 +33,8 @@
             </van-cell>
             <p class="tips">提示：发布或修改需要消费<b>{{ gold }}</b>金币，剩余<b>{{ userData.gold }}</b>金币</p>
             <div class="operate_btn">
-                <van-button type="info" size="large" @click="save">发布</van-button>
+                <van-button type="info" size="large" @click="save" style="width: 200%;">发布</van-button>
+                <van-button size="large" @click="$router.go(-1)">取消</van-button>
             </div>
         </van-cell-group>
 
@@ -219,6 +220,7 @@
         left: 0;
         width: 100%;
         height: 44px;
+        display: flex;
 
         /*.van-button {*/
         /*    flex: 1;*/

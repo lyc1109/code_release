@@ -3,25 +3,30 @@
         <van-tabs v-model="articleTabIndex" @change="changeTabs">
             <van-tab v-for="(item, index) in articleTabList" :key="index" :title="item.name"></van-tab>
         </van-tabs>
-        <div class="article_index_main" v-for="(item, index) in articleData" :key="index" v-if="articleData.length" @click="toDetail(item)">
-            <div class="article_index_img" v-if="item.url && item.url !== ''">
-                <img :src="item.url" alt="">
-            </div>
-            <div class="article_index_main_info">
-                <h2>{{ item.name }}</h2>
-                <p>{{ item.description }}</p>
-                <div class="article_index_info">
-                    <p>剩余{{ item.popularizeCount }}次({{ item.popularizePrice }}金币/次)推广</p>
-                    <span>{{ item.section }}</span>
-                    <span style="margin-left: .4rem;">{{ item.createTime }}</span>
-                    <span class="operate_btn"  @click.stop="del(item)">删除</span>
-                    <span class="operate_btn"  @click.stop="toInvite(item)" v-if="$route.query.type === 'fb'">邀请</span>
-                    <span class="operate_btn" @click.stop="toTop(item)" v-if="$route.query.type === 'fb'">置顶</span>
-                    <span class="operate_btn"  @click.stop="edit(item)" v-if="$route.query.type === 'wz'">编辑</span>
-<!--                    <van-icon name="delete" @click.stop="del(item)"></van-icon>-->
-<!--                    <van-icon name="add" @click.stop="toInvite(item)" v-if="$route.query.type === 'fb'"></van-icon>-->
-<!--                    <van-icon name="upgrade" @click.stop="toTop(item)" v-if="$route.query.type === 'fb'"></van-icon>-->
-<!--                    <van-icon name="edit" @click.stop="edit(item)" v-if="$route.query.type === 'wz'"></van-icon>-->
+        <div class="article_index_main" v-for="(item, index) in articleData" :key="index" v-if="articleData.length"
+             @click="toDetail(item)">
+            <div class="flex">
+                <div class="article_index_img" v-if="item.url && item.url !== ''">
+                    <img :src="item.url" alt="">
+                </div>
+                <div class="article_index_main_info">
+                    <h2>{{ item.name }}</h2>
+                    <p>{{ item.description }}</p>
+                    <div class="article_index_info">
+                        <p>剩余{{ item.popularizeCount }}次({{ item.popularizePrice }}金币/次)推广</p>
+                        <span>{{ item.section }}</span>
+                        <span style="margin-left: .4rem;">{{ item.createTime }}</span>
+                        <!--                    <van-icon name="delete" @click.stop="del(item)"></van-icon>-->
+                        <!--                    <van-icon name="add" @click.stop="toInvite(item)" v-if="$route.query.type === 'fb'"></van-icon>-->
+                        <!--                    <van-icon name="upgrade" @click.stop="toTop(item)" v-if="$route.query.type === 'fb'"></van-icon>-->
+                        <!--                    <van-icon name="edit" @click.stop="edit(item)" v-if="$route.query.type === 'wz'"></van-icon>-->
+                    </div>
+                    <div class="operate_group flex">
+                        <span class="operate_btn" @click.stop="del(item)">删除</span>
+                        <span class="operate_btn" @click.stop="toInvite(item)" v-if="$route.query.type === 'fb'">推广</span>
+                        <span class="operate_btn" @click.stop="toTop(item)" v-if="$route.query.type === 'fb'">置顶</span>
+                        <span class="operate_btn" @click.stop="edit(item)" v-if="$route.query.type === 'wz'">编辑</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -176,14 +181,17 @@
             },
             // 置顶
             toTop(data) {
-                this.$api.refreshCode({
-                    id: data.id
-                }).then((res) => {
-                    if (res) {
-                        Toast.success('置顶成功')
-                        this.fetchPublish()
-                    }
-                })
+                Dialog.confirm({message: '确定置顶？'})
+                    .then(() => {
+                        this.$api.refreshCode({
+                            id: data.id
+                        }).then((res) => {
+                            if (res) {
+                                Toast.success('置顶成功')
+                                this.fetchPublish()
+                            }
+                        })
+                    })
             }
         }
     }
@@ -191,7 +199,7 @@
 
 <style scoped lang="scss" type="text/scss">
     .article_index_main {
-        display: flex;
+        /*display: flex;*/
         padding: 1rem;
         border-bottom: 1px solid #ececec;
 
@@ -208,7 +216,7 @@
             white-space: nowrap;
             overflow: hidden;
 
-            &>p{
+            & > p {
                 display: inline-block;
                 line-height: 20px;
                 height: 20px;
@@ -231,20 +239,9 @@
         }
 
         .article_index_info {
-            position: absolute;
-            bottom: 0;
+            /*position: absolute;*/
+            /*bottom: 0;*/
             width: 100%;
-
-            .operate_btn {
-                float: right;
-                font-size: 1.2rem;
-                margin-left: .4rem;
-                color: #980303;
-
-                &:before {
-                    font-size: 1.6rem;
-                }
-            }
 
             .van-icon-edit {
                 color: #1784ef;
@@ -254,11 +251,29 @@
             .van-icon-delete {
                 color: #ef3b3b;
             }
+
             .van-icon-add {
                 color: #4eb4ff;
             }
-            .van-icon-upgrade{
+
+            .van-icon-upgrade {
                 color: #68d227;
+            }
+        }
+
+        .operate_group {
+            margin-top: 1rem;
+
+            .operate_btn {
+                /*float: right;*/
+                font-size: 1.2rem;
+                margin-left: .4rem;
+                color: #980303;
+                flex: 1;
+
+                &:before {
+                    font-size: 1.6rem;
+                }
             }
         }
 

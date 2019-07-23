@@ -4,7 +4,7 @@
         <p v-if="reg.test(navigator.userAgent)" style="margin-top: 2px;">客服QQ：
             <a :href="url">{{ qq }}</a>
         </p>
-        <p style="margin-top: 2px;">客服邮箱：<a href="####">1413907055@qq.com</a></p>
+        <p style="margin-top: 2px;">客服邮箱：<a href="####">{{ email }}</a></p>
     </el-footer>
 </template>
 
@@ -16,6 +16,7 @@
                 qq: '',
                 reg: /Android|webOS|iPhone|iPod|iPad|BlackBerry/i,
                 navigator: navigator,
+                email: ''
                 // url: `mqqwpa://im/chat?chat_type=wpa&uin=${this.qq}&version=1&src_type=web&web_src=http:://wpa.b.qq.com`
             }
         },
@@ -27,8 +28,18 @@
         created() {
             if (this.reg.test(this.navigator.userAgent))
                 this.contactService()
+
+            this.getEmail()
         },
         methods: {
+            // 联系邮箱
+            getEmail() {
+                this.$api.getServiceMail().then((res) => {
+                    if (res) {
+                        this.email = res.mail
+                    }
+                })
+            },
             // 联系客服
             contactService() {
                 this.$api.getServiceQQ().then((res) => {

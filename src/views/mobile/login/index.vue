@@ -10,13 +10,13 @@
                     clearable
                     left-icon="manager"
                     type="email"
-                    placeholder="邮箱" :error-message="emailError"></van-field>
+                    placeholder="邮箱" :error-message="emailError" @input="changeEmail(loginForm.principal)"></van-field>
 
             <van-field
                     v-model="loginForm.pass"
                     type="password"
                     placeholder="密码"
-                    left-icon="lock"></van-field>
+                    left-icon="lock" :error-message="passError" @input="changePass(loginForm.pass)"></van-field>
         </van-cell-group>
         <div style="margin-top: 1rem;">
             没有账号？点击
@@ -38,7 +38,8 @@
                     principal: '',
                     pass: ''
                 },
-                emailError: ''
+                emailError: '',
+                passError: ''
             }
         },
         mounted() {
@@ -53,10 +54,8 @@
         methods: {
             // 确定
             success() {
-                const reg = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
-                if (!reg.test(this.loginForm.principal)) {
-                    this.emailError = '请输入正确的邮箱'
-                } else {
+                if (this.loginForm.principal !== '' && this.loginForm.pass !== '') {
+
                     this.emailError = ''
                     this.loginForm['rememberMe'] = true
                     this.$api.login(this.loginForm)
@@ -67,6 +66,9 @@
                                 this.$router.push('/')
                             }
                         })
+                } else {
+                    if (this.loginForm.principal === '') this.emailError = '请输入邮箱'
+                    if (this.loginForm.pass === '') this.passError = '请输入密码'
                 }
             },
             // 注册
@@ -81,6 +83,17 @@
                 const reg = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
                 if (!reg.test(val)) {
                     this.emailError = '请输入正确的邮箱'
+                } else if (val === '') {
+                    this.emailError = '请输入邮箱'
+                }else {
+                    this.emailError = ''
+                }
+            },
+            changePass(val) {
+                if (val === '') {
+                    this.passError = '请输入邮箱'
+                }else {
+                    this.passError = ''
                 }
             }
         }

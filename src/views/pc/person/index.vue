@@ -770,6 +770,10 @@
                         this.fetchPublish()
                     }
                 })
+            },
+            // 微信群详情
+            groupDetail(id) {
+                this.$router.push(`/group/${id}`)
             }
         },
         components: {
@@ -936,6 +940,7 @@
                 position: relative;
                 border-radius: 8px;
                 border: 1px solid #ddd;
+                overflow: hidden;
 
                 img {
                     /*width: 100%;*/

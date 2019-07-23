@@ -20,12 +20,12 @@ module.exports = {
         }
     },
     configureWebpack: config => {
+        config.externals = {
+            'vue': 'Vue',
+            'vue-router': 'VueRouter',
+            'moment': 'moment'
+        }
         if (isProduct) {
-            config.externals = {
-                'vue': 'Vue',
-                'vue-router': 'VueRouter',
-                'moment': 'moment'
-            }
             return {
                 plugins: ([
                     new CompressionPlugin({
