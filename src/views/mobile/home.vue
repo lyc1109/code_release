@@ -1,6 +1,9 @@
 <template>
     <div>
         <header-box></header-box>
+        <van-notice-bar v-for="(item, index) in noticeList" :key="index" :text="item" left-icon="volume-o"
+                        color="#1989fa"
+                        background="#ecf9ff"></van-notice-bar>
         <!--        微信群-->
         <div class="article_index flex">
             <div class="article_index_list" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" v-if="ewmList.length && item.modelType !== 2">
@@ -79,7 +82,8 @@
                     total: 0
                 },
                 spreadImg: '',
-                spreadBox: false
+                spreadBox: false,
+                noticeList: []
             }
         },
         computed: {
@@ -93,6 +97,7 @@
         created() {
             this.fetchData()
             this.fetchArticle()
+            this.fetchNotice()
         },
         methods: {
             // 初始化数据
@@ -111,6 +116,15 @@
                         name: '全部',
                         id: ''
                     })
+                })
+            },
+            // 通知栏
+            fetchNotice() {
+                this.noticeList = []
+                this.$api.getHomePageInfo().then((res) => {
+                    if (res) {
+                        this.noticeList.push(res.info)
+                    }
                 })
             },
             fetchArticle() {

@@ -2,11 +2,14 @@
     <div>
         <div class="home">
             <header-box actived="/area" :isList="true"></header-box>
-            <el-carousel direction="vertical" height="30px" class="notice" v-if="noticeList.length">
-                <el-carousel-item v-for="(item,index) in noticeList" :key="index">
-                    <p v-html="`<i class='iconfont icongonggao' style='margin-right: 5px;'></i>${item}`"></p>
-                </el-carousel-item>
-            </el-carousel>
+            <van-notice-bar class="notice" v-for="(item, index) in noticeList" :key="index" :text="item" left-icon="volume-o"
+                            color="#1989fa"
+                            background="#ecf9ff"></van-notice-bar>
+<!--            <el-carousel direction="vertical" height="30px" class="notice" v-if="noticeList.length">-->
+<!--                <el-carousel-item v-for="(item,index) in noticeList" :key="index">-->
+<!--                    <p v-html="`<i class='iconfont icongonggao' style='margin-right: 5px;'></i>${item}`"></p>-->
+<!--                </el-carousel-item>-->
+<!--            </el-carousel>-->
             <div style="position: relative;margin-top: 20px;">
                 <!--微信群-->
                 <div class="wxq" v-if="ewmList.length">

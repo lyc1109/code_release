@@ -3,7 +3,7 @@
         <el-dialog :visible.sync="isShowBox" title="邀请推广" @close="toggle" width="30%">
             <el-form :model="inviteForm" :rules="inviteRule" label-width="100px" ref="invite">
                 <el-form-item prop="count" label="推广次数">
-                    <el-input v-model="inviteForm.count" placeholder="请输入推广次数" type="number" size="small"></el-input>
+                    <el-input v-model="inviteForm.count" placeholder="请输入推广次数" type="number" size="small" min-length="20"></el-input>
                 </el-form-item>
                 <el-form-item prop="price" label="推广单价">
                     <el-select v-model="inviteForm.price" placeholder="请选择推广单价" size="small">
@@ -38,14 +38,23 @@
             }
         },
         data() {
+            const validCount = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入推广次数'))
+                } else if (value < 20) {
+                    callback(new Error('推广次数必须大于20'))
+                } else {
+                    callback()
+                }
+            }
             return {
                 isShowBox: this.isShow,
                 inviteForm: {
-                    count: 0,
+                    count: 20,
                     price: ''
                 },
                 inviteRule: {
-                    count: [{ required: true, message: '请输入推广次数', trigger: 'blur' }],
+                    count: [{ required: true, validator: validCount, trigger: 'blur' }],
                     price: [{ required: true, message: '请输入推广单价', trigger: 'change' }]
                 },
                 priceList: [],

@@ -82,6 +82,9 @@
                                 case 6:
                                     array[index].origin = "刷新置顶"
                                     break
+                                case 8:
+                                    array[index].origin = '推广金币返还'
+                                    break
                                 default:
                                     array[index].origin = "未知"
                                     break

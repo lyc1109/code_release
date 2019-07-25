@@ -1,9 +1,9 @@
 <template>
     <el-footer class="index_foot">
         Copyright © 2019 微群发布
-        <p v-if="reg.test(navigator.userAgent)" style="margin-top: 2px;">客服QQ：
-            <a :href="url">{{ qq }}</a>
-        </p>
+<!--        <p v-if="reg.test(navigator.userAgent)" style="margin-top: 2px;">客服QQ：-->
+<!--            <a :href="url">{{ qq }}</a>-->
+<!--        </p>-->
         <p style="margin-top: 2px;">客服邮箱：<a href="####">{{ email }}</a></p>
     </el-footer>
 </template>

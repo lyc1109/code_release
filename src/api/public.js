@@ -95,6 +95,13 @@ const api = {
      */
     getServiceMail() {
         return http.get(`${base}/getServiceMail`)
+    },
+    /**
+     * 获取首页滚动信息
+     * @returns {*}
+     */
+    getHomePageInfo() {
+        return http.get(`${base}/getHomePageInfo`)
     }
 }
 

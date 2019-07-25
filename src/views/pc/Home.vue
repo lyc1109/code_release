@@ -1,72 +1,87 @@
 <template>
     <div class="home">
         <header-box actived="/" :isList="true"></header-box>
-            <div style="position: relative;margin-top: 20px;">
-                <!--微信群-->
-                <div class="wxq" v-if="ewmList.length">
-                    <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" v-if="item.modalType !== 2">
-                        <div>
-                            <img :src="item.imgUrl1">
-                        </div>
-                        <span>{{ item.name }}</span>
-                        <p style="text-align: left;padding-left: 5px;"
-                           v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600">
-                            {{ moment().diff(moment(item.lastRefreshTime), 'minute') }}分钟前更新
-                        </p>
-                        <p style="text-align: left;padding-left: 5px;"
-                           v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600*24 && (new Date() - new Date(item.lastRefreshTime)) > 1000*3600">
-                            {{ moment().diff(moment(item.lastRefreshTime), 'hour') }}小时前更新
-                        </p>
-                        <p style="text-align: left;padding-left: 5px;"
-                           v-if="(new Date() - new Date(item.lastRefreshTime)) > 1000*3600*24">
-                            {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
-                        </p>
-<!--                        <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>-->
-                        <!--<div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>-->
-<!--                        <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">-->
-<!--                            <el-button type="text">点击推广</el-button>-->
-<!--                        </p>-->
+
+        <!--通告滚动栏-->
+        <van-notice-bar class="notice" v-for="(item, index) in noticeList" :key="index" :text="item" left-icon="volume-o"
+                        color="#1989fa"
+                        background="#ecf9ff"></van-notice-bar>
+<!--        <el-carousel direction="vertical" height="30px" class="notice" v-if="noticeList.length">-->
+<!--            <el-carousel-item v-for="(item,index) in noticeList" :key="index">-->
+<!--                <p v-html="`<i class='iconfont icongonggao' style='margin-right: 5px;'></i>${item}`"></p>-->
+<!--            </el-carousel-item>-->
+<!--        </el-carousel>-->
+
+        <div style="position: relative;margin-top: 20px;">
+            <!--微信群-->
+            <div class="wxq" v-if="ewmList.length">
+                <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)"
+                     v-if="item.modalType !== 2">
+                    <div>
+                        <img :src="item.imgUrl1">
                     </div>
+                    <span>{{ item.name }}</span>
+                    <p style="text-align: left;padding-left: 5px;"
+                       v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600">
+                        {{ moment().diff(moment(item.lastRefreshTime), 'minute') }}分钟前更新
+                    </p>
+                    <p style="text-align: left;padding-left: 5px;"
+                       v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600*24 && (new Date() - new Date(item.lastRefreshTime)) > 1000*3600">
+                        {{ moment().diff(moment(item.lastRefreshTime), 'hour') }}小时前更新
+                    </p>
+                    <p style="text-align: left;padding-left: 5px;"
+                       v-if="(new Date() - new Date(item.lastRefreshTime)) > 1000*3600*24">
+                        {{ moment().diff(moment(item.lastRefreshTime), 'day') }}天前更新
+                    </p>
+                    <!--                        <div class="spread_img" v-if="isLogin && item.popularizeCount"></div>-->
+                    <!--<div class="spread_text" v-if="isLogin && item.popularizeCount">可推广</div>-->
+                    <!--                        <p class="shadow" v-if="isLogin && item.popularizeCount" @click.stop="spread(item.id)">-->
+                    <!--                            <el-button type="text">点击推广</el-button>-->
+                    <!--                        </p>-->
                 </div>
             </div>
+        </div>
 
-            <!-- 阅读推荐-->
-            <article style="margin-top: 20px;">
-                <el-tabs v-model="article" type="border-card" @tab-click="changeArticle(article)">
-                    <el-tab-pane v-for="(item, index) in articleData" :key="index" :label="item.name"
-                                 :name="String(item.id)" v-if="item.modelType === 2">
-                        <!--文章-->
-                        <div class="index_article">
-                            <div class="article_list" v-for="(item, index) in articleList" :key="index" @click="articleDetail(item.id)">
-                                <div class="article_img">
-                                    <img :src="item.url" alt="">
-                                </div>
-                                <div class="article_info">
-                                    <h3><el-button type="text">{{ item.name }}</el-button></h3>
-                                    <p>{{ item.description }}</p>
-                                    <div class="article_info_detail">
-                                        <span>发布时间：{{ item.modifyTime }}</span>
-<!--                                        <i class="iconai-eye iconfont"></i>-->
-<!--                                        <span style="margin-left: 5px;">{{ item.watchNum }}</span>-->
-                                    </div>
-                                </div>
-<!--                                <div class="share">-->
-<!--                                    <i class="iconpengyouquan iconfont"></i>-->
-<!--                                    <span>分享</span>-->
-<!--                                </div>-->
+        <!-- 阅读推荐-->
+        <article style="margin-top: 20px;">
+            <el-tabs v-model="article" type="border-card" @tab-click="changeArticle(article)">
+                <el-tab-pane v-for="(item, index) in articleData" :key="index" :label="item.name"
+                             :name="String(item.id)" v-if="item.modelType === 2">
+                    <!--文章-->
+                    <div class="index_article">
+                        <div class="article_list" v-for="(item, index) in articleList" :key="index"
+                             @click="articleDetail(item.id)">
+                            <div class="article_img">
+                                <img :src="item.url" alt="">
                             </div>
-                            <el-pagination :current-page.sync="page.current"
-                                           :page-size="page.size"
-                                           :total="page.total"
-                                           background
-                                           layout="total, prev, pager, next, jumper"
-                                           @size-change="changeSize"
-                                           @current-change="changePage"
-                                           style="float: right;margin-top: 10px;"></el-pagination>
+                            <div class="article_info">
+                                <h3>
+                                    <el-button type="text">{{ item.name }}</el-button>
+                                </h3>
+                                <p>{{ item.description }}</p>
+                                <div class="article_info_detail">
+                                    <span>发布时间：{{ item.modifyTime }}</span>
+                                    <!--                                        <i class="iconai-eye iconfont"></i>-->
+                                    <!--                                        <span style="margin-left: 5px;">{{ item.watchNum }}</span>-->
+                                </div>
+                            </div>
+                            <!--                                <div class="share">-->
+                            <!--                                    <i class="iconpengyouquan iconfont"></i>-->
+                            <!--                                    <span>分享</span>-->
+                            <!--                                </div>-->
                         </div>
-                    </el-tab-pane>
-                </el-tabs>
-            </article>
+                        <el-pagination :current-page.sync="page.current"
+                                       :page-size="page.size"
+                                       :total="page.total"
+                                       background
+                                       layout="total, prev, pager, next, jumper"
+                                       @size-change="changeSize"
+                                       @current-change="changePage"
+                                       style="float: right;margin-top: 10px;"></el-pagination>
+                    </div>
+                </el-tab-pane>
+            </el-tabs>
+        </article>
 
         <el-dialog :visible.sync="spreadBox" width="25%">
             <img :src="spreadImg" alt="">
@@ -93,7 +108,8 @@
                     total: 10
                 },
                 spreadImg: '',
-                spreadBox: false
+                spreadBox: false,
+                noticeList: []
             }
         },
         computed: {
@@ -107,6 +123,7 @@
         created() {
             this.fetchData()
             this.fetchArticle()
+            this.fetchNotice()
         },
         methods: {
             // 初始化数据
@@ -148,6 +165,15 @@
                                 this.articleList.push(value)
                             }
                         })
+                    }
+                })
+            },
+            // 通知栏
+            fetchNotice() {
+                this.noticeList = []
+                this.$api.getHomePageInfo().then((res) => {
+                    if (res) {
+                        this.noticeList.push(res.info)
                     }
                 })
             },
@@ -223,7 +249,7 @@
             cursor: pointer;
             position: relative;
 
-            .spread_img{
+            .spread_img {
                 position: absolute;
                 top: 0;
                 left: 0;
@@ -232,7 +258,8 @@
                 border-top: 70px solid #ff7a4a;
                 border-right: 70px solid transparent;
             }
-            .spread_text{
+
+            .spread_text {
                 position: absolute;
                 top: 8px;
                 left: 5px;
@@ -240,7 +267,8 @@
                 text-align: left;
                 border-radius: 8px;
             }
-            .shadow{
+
+            .shadow {
                 position: absolute;
                 bottom: -10px;
                 left: 0;
@@ -252,7 +280,7 @@
                 border-bottom-right-radius: 8px;
                 cursor: pointer;
 
-                .el-button{
+                .el-button {
                     color: #fff;
                     padding: 0;
                 }
@@ -293,7 +321,8 @@
                 white-space: nowrap;
                 font-weight: normal;
             }
-            p{
+
+            p {
                 font-size: 12px;
                 color: #aaa;
             }
@@ -329,12 +358,13 @@
                     width: 180px;
                 }
             }
-            .article_info{
+
+            .article_info {
                 margin-left: 10px;
                 width: 80%;
                 position: relative;
 
-                h3{
+                h3 {
                     .el-button {
                         font-size: 16px;
                         font-weight: normal;
@@ -346,7 +376,8 @@
                         text-align: left;
                     }
                 }
-                p{
+
+                p {
                     height: 20px;
                     width: 97%;
                     overflow: hidden;
@@ -354,25 +385,47 @@
                     white-space: nowrap;
                     display: inline-block;
                 }
-                .article_info_detail{
+
+                .article_info_detail {
                     font-size: 12px;
                     position: absolute;
                     bottom: 0;
 
-                    span{
+                    span {
                         margin-right: 10px;
                     }
-                    .iconai-eye{
+
+                    .iconai-eye {
                         color: #ccc;
                         position: relative;
                         top: 2px;
                     }
                 }
             }
-            .share{
+
+            .share {
                 position: absolute;
                 bottom: 10px;
                 right: 0;
+            }
+        }
+    }
+    .notice {
+        border: 1px solid #C9DFF4;
+        background: #F5F8FC;
+        padding-left: 10px;
+        border-radius: 3px;
+        margin-top: 10px;
+
+        .el-carousel__item {
+            line-height: 30px;
+
+            p {
+                color: #1479d7;
+                width: 98%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
         }
     }
