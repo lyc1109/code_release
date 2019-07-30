@@ -7,7 +7,7 @@
         <!--        微信群-->
         <div class="article_index flex">
             <div class="article_index_list" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" v-if="ewmList.length && item.modelType !== 2">
-                <img :src="item.imgUrl1" alt="">
+                <img :src="item.url" alt="">
                 <p>{{ item.name }}</p>
                 <p style="text-align: left;padding-left: 5px;"
                    v-if="(new Date() - new Date(item.lastRefreshTime)) < 1000*3600">

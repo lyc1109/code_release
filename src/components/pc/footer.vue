@@ -5,6 +5,7 @@
 <!--            <a :href="url">{{ qq }}</a>-->
 <!--        </p>-->
         <p style="margin-top: 2px;">客服邮箱：<a href="####">{{ email }}</a></p>
+        <p style="margin-top: 2px;">京ICP备19029150号-1 <span style="margin-left: 10px;">工信部链接：<a href="http://beian.miit.gov.cn">http://beian.miit.gov.cn</a></span></p>
     </el-footer>
 </template>
 

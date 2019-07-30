@@ -70,7 +70,7 @@
                 <div class="wxq">
                     <div class="wxq_box" v-for="(item, index) in ewmList" :key="index" @click="groupDetail(item.id)" v-if="item.modelType !== 2">
                         <div>
-                            <img :src="item.imgUrl1">
+                            <img :src="item.url">
                         </div>
                         <span>{{ item.name }}</span>
                         <p style="text-align: left;padding-left: 5px;"
