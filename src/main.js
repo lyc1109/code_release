@@ -70,7 +70,7 @@ router.beforeEach((to, from, next) => {
 })
 router.afterEach((route) => {
     if (route.meta.title) {
-        document.title = route.meta.title;
+        document.title = route.meta.title + ' - 免费微信群二维码发布分享平台';
     }
 })
 new Vue({
